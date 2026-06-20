@@ -96,8 +96,14 @@ html, body { overflow-x: hidden; max-width: 100%; }
   /* Toutes les cases en carré 1/1 par défaut */
   .cell:nth-child(n) { grid-column:span 1 !important; aspect-ratio:1/1 !important; background:#0a0a0a; }
 
-  /* Toutes les 4 cases, la 1ère est panoramique : 1,5,9,13,17,21,25,29,33 */
-  .cell:nth-child(4n+1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* 1ère case : photo pleine largeur */
+  .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+
+  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, L'Oréal Gold */
+  .cell:nth-child(2),
+  .cell:nth-child(4),
+  .cell:nth-child(9),
+  .cell:nth-child(18) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
 
   /* Films → fond noir */
   .cell:nth-child(2)  { background:#0a0a0a !important; }  /* Mirror */
