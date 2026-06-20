@@ -57,14 +57,14 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .cell:nth-child(15) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(16) { grid-column:span 1; aspect-ratio:8/9; background:#0a0a0a; }
 .cell:nth-child(17) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
-/* Ligne 7 : 4 carrés */
-.cell:nth-child(18) { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(19) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9 */
+.cell:nth-child(18) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(19) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 8 : 4 carrés */
 .cell:nth-child(20) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(21) { grid-column:span 1; aspect-ratio:8/9; }
-/* Ligne 8 : L'Oréal 16/9 + Human Bomb 16/9 (séparés par rien — 2+2=4) */
-.cell:nth-child(22) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
-.cell:nth-child(23) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(22) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(23) { grid-column:span 1; aspect-ratio:8/9; }
 /* Ligne 9 : carré + 16/9 + carré */
 .cell:nth-child(24) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(25) { grid-column:span 2; aspect-ratio:16/9; }
@@ -279,16 +279,16 @@ const CONFIG = [
   // Ligne 5 : carré + série Le Réel span2 + carré
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
-  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'images/USA.mov'},
+  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'images/USA.mov', noLink:true},
   {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'images/Air_previz.mov'},
-  // Ligne 7 : 4 carrés
+  // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'images/Gold.mov'},
+  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'images/HB.mov', noLink:true},
+  // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
   {type:'image', t:'Sans titre III',    s:'Image IA · 2025'},
   {type:'image', t:'Silence',           s:'Image IA · 2025'},
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
-  // Ligne 8 : L'Oréal 16/9 + Human Bomb 16/9
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'images/Gold.mov'},
-  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'images/HB.mov', noLink:true},
   // Ligne 9 : carré + 16/9 + carré
   {type:'image', t:'Rive',              s:'Image IA · 2024'},
   {type:'image', t:'Spectre',           s:'Image IA · 2025'},
