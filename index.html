@@ -99,6 +99,9 @@ html, body { overflow-x: hidden; max-width: 100%; }
   /* Toutes les 4 cases, la 1ère est panoramique : 1,5,9,13,17,21,25,29,33 */
   .cell:nth-child(4n+1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
 
+  /* Films → pleine largeur rectangulaire */
+  .cell-vimeo { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+
   /* Films → fond noir */
   .cell:nth-child(2)  { background:#0a0a0a !important; }  /* Mirror */
   .cell:nth-child(4)  { background:#0a0a0a !important; }  /* Shore Stories */
@@ -404,6 +407,7 @@ CONFIG.forEach((item,i)=>{
     cell.appendChild(img);
   } else {
     // Vimeo
+    cell.classList.add('cell-vimeo');
     const wrap=document.createElement('div');
     wrap.className='vimeo-wrap';
     if(item.vimeoId){
