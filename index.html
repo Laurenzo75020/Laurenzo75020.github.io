@@ -513,7 +513,10 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 function alignBioRight(){
   const left=document.querySelector('.bio-left');
   const right=document.querySelector('.bio-right');
-  if(left&&right) right.style.paddingTop=left.offsetHeight+'px';
+  if(left&&right){
+    if(window.innerWidth>768) right.style.paddingTop=left.offsetHeight+'px';
+    else right.style.paddingTop='';
+  }
 }
 alignBioRight();
 window.addEventListener('resize',alignBioRight);
