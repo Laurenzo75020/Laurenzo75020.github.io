@@ -99,11 +99,16 @@ html, body { overflow-x: hidden; max-width: 100%; }
   /* 1ère case : photo pleine largeur */
   .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
 
-  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, L'Oréal Gold */
+  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air */
   .cell:nth-child(2),
   .cell:nth-child(4),
   .cell:nth-child(9),
-  .cell:nth-child(18) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+
+  /* Photos alternées en span2 */
+  .cell:nth-child(22),
+  .cell:nth-child(27),
+  .cell:nth-child(32) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
 
   /* Films → fond noir */
   .cell:nth-child(2)  { background:#0a0a0a !important; }  /* Mirror */
