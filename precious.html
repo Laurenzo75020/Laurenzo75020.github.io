@@ -180,24 +180,47 @@
   .nav button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
   @media (max-width:760px){
-    .darwin{flex-direction:column;align-items:flex-start;justify-content:center}
-    .darwin2 .mid{grid-template-columns:1fr}
-    .compare3{grid-template-columns:1fr}
+    html,body{overflow:hidden}
+    .slide{
+      height:100dvh;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      justify-content:flex-start !important;
+      padding-top:clamp(4.2rem,14vw,5.5rem);
+      padding-bottom:clamp(3.5rem,12vw,4.5rem);
+    }
+    .stmt .top,.stmt .bottom{flex:0 0 auto}
+    .stmt .bottom.lift{margin-bottom:0}
+    .stmt .bottom{margin-top:clamp(1.2rem,4vw,1.8rem)}
+
+    .darwin{flex-direction:column;align-items:flex-start;justify-content:flex-start}
+    .darwin2{height:auto;min-height:100%}
+    .darwin2 .mid{grid-template-columns:1fr;flex:0 0 auto;gap:1.4rem}
+    .darwin2 .mid .viewport{height:52vw;min-height:220px}
+    .darwin2 .derive{margin-top:1.2rem}
+
+    .darwin3{height:auto;min-height:100%}
+    .feature{height:56vw;min-height:200px;flex:0 0 auto}
+
+    .compare3{grid-template-columns:1fr;gap:1.6rem}
+    .compare3.vcols .col + .col{border-left:none;padding-left:0;
+      border-top:1px solid color-mix(in srgb,var(--fg) 22%,transparent);padding-top:1.2rem}
     .col .sub{min-height:0}
     .body{max-width:none}
-  }
+    .body.wide{max-width:none}
 
-  /* ---- page de garde ---- */
-  .cover{justify-content:center;align-items:flex-start;gap:clamp(1.4rem,3vw,2.2rem)}
-  .cover .kicker-top{font-family:var(--sans);font-weight:600;font-size:clamp(.78rem,1.3vw,.92rem);
-    letter-spacing:.18em;text-transform:uppercase;opacity:.55}
-  .cover h1{font-family:var(--disp);font-weight:780;line-height:.95;letter-spacing:-.025em;
-    font-size:clamp(2.6rem,7vw,5.6rem);max-width:16ch}
-  .cover .dossier-sub{font-family:var(--sans);font-weight:450;font-size:clamp(1.05rem,2vw,1.35rem);
-    line-height:1.4;opacity:.75;max-width:38ch}
-  .cover .foot{margin-top:clamp(2rem,4vw,3.4rem);font-family:var(--sans);font-weight:600;
-    font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.5;
-    display:flex;gap:1.2rem;flex-wrap:wrap}
+    .schema,.carbon-chart{flex:0 0 auto;height:auto;margin-top:1.4rem}
+    .schema svg,.carbon-chart svg{max-width:100%}
+    .res-preuve .proof{margin-top:1.2rem}
+
+    .cover .word{font-size:clamp(3.6rem,20vw,6rem)}
+    .cover .sentence-tail{font-size:clamp(1.3rem,6vw,1.9rem)}
+    .corner-credit{position:static;margin-top:2rem;text-align:left}
+
+    .steps{margin-top:1.2rem !important}
+
+    .hud{padding:0 1.4rem 1.1rem}
+  }
 
   /* ---- capture DARWIN encadrée sur fond pastel (jamais de blanc qui déborde) ---- */
   .framed{position:relative;border-radius:10px;padding:clamp(.6rem,1.4vw,1rem);
@@ -657,6 +680,21 @@
     if(url){launch.href=url;}
     else{launch.addEventListener('click',e=>e.preventDefault());launch.style.opacity=.55;}
   }
+
+  // swipe tactile (mobile) — horizontal = changer de slide, vertical = laisser défiler le contenu
+  let touchX=0, touchY=0, touching=false;
+  document.getElementById('deck').addEventListener('touchstart', e=>{
+    if(e.touches.length!==1) return;
+    touchX=e.touches[0].clientX; touchY=e.touches[0].clientY; touching=true;
+  }, {passive:true});
+  document.getElementById('deck').addEventListener('touchend', e=>{
+    if(!touching) return; touching=false;
+    const dx=e.changedTouches[0].clientX-touchX;
+    const dy=e.changedTouches[0].clientY-touchY;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){
+      if(dx<0) next(); else prev();
+    }
+  }, {passive:true});
 
   render();
 </script>
