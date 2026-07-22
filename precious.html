@@ -279,17 +279,23 @@
     border:1px solid color-mix(in srgb,var(--fg) 22%,transparent);
     box-shadow:0 22px 55px -22px color-mix(in srgb,var(--fg) 45%,transparent)}
   .feature-full img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-  .feature-trio{display:flex;align-items:stretch;justify-content:center;gap:clamp(.6rem,1.6vw,1.1rem);
+  .feature-trio{display:flex;align-items:stretch;justify-content:center;gap:0;
     flex:0 0 auto;height:clamp(260px,42vh,460px);overflow:hidden}
   .feature-trio .shot{flex:0 1 auto;height:100%;display:flex;align-items:flex-start;
-    border-radius:8px;overflow:hidden;background:var(--card);
-    box-shadow:0 18px 44px -20px color-mix(in srgb,var(--fg) 40%,transparent)}
+    overflow:hidden;background:var(--card);
+    padding:0 clamp(.7rem,1.8vw,1.3rem);
+    border-right:1px solid color-mix(in srgb,var(--fg) 25%,transparent)}
+  .feature-trio .shot:last-child{border-right:none}
   .feature-trio .shot img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
   .darwin3 .below{max-width:78ch}
   .darwin3 .below h2{margin-top:.3rem}
   .darwin3 .below .lead{font-family:var(--sans);font-weight:450;font-size:clamp(.95rem,1.6vw,1.12rem);
     line-height:1.45;opacity:.8;margin-top:.6rem}
   .darwin3 .below .support{margin-top:.6rem}
+
+  .mini-steps{display:flex;flex-wrap:wrap;gap:.5rem 1.3rem;margin-top:clamp(1rem,2vw,1.4rem);
+    padding-top:clamp(.8rem,1.6vw,1.1rem);border-top:1px solid color-mix(in srgb,var(--fg) 20%,transparent)}
+  .mini-steps span{font-family:var(--sans);font-weight:500;font-size:.82rem;opacity:.55}
 
   /* ---- DARWIN, page ADN (3e page) ---- */
   .adn-note{font-family:var(--sans);font-weight:600;font-size:clamp(.92rem,1.6vw,1.08rem);
@@ -343,7 +349,7 @@
       <div class="bottom reveal">
         <p class="body wide">Elle le devient si c'est Dorian qui tape les prompts. Bien tenue, <span class="hl">l'IA nous renvoie notre meilleure version</span>.</p>
         <p class="support">L'IA ne remplace pas le regard : elle l'amplifie, ou le trahit, selon qui la tient.</p>
-        <p class="support" style="margin-top:1rem">Une IA canalisée, questionnée — jamais subie : <span class="hl">je maîtrise l'outil, ce n'est pas l'outil qui maîtrise le sujet</span>. Qui ne s'occupe pas de l'IA aujourd'hui laisse l'IA s'occuper de lui demain.</p>
+        <p class="support" style="margin-top:1rem">Une IA canalisée et questionnée n'est jamais subie. <span class="hl">Je maîtrise l'outil, ce n'est pas l'outil qui maîtrise le sujet.</span> Car qui ne s'occupe pas de l'IA aujourd'hui laisse l'IA s'occuper de lui demain.</p>
       </div>
     </section>
 
@@ -355,8 +361,7 @@
       </div>
       <div class="bottom reveal">
         <p class="body wide">C'est de se demander <span class="hl">ce qu'on en fait</span>.</p>
-        <p class="support">Tout est dans la main de celui qui organise le biotope — la même IA peut surveiller, ou libérer. La différence ne tient jamais à la technologie : elle tient à l'intention de celui qui l'installe, et à sa manière de faire vivre ensemble les équipes qui composent ce biotope.</p>
-        <p class="support" style="margin-top:1em">Organiser ce biotope, <span class="hl">c'est déjà votre métier</span>.</p>
+        <p class="support">Ce choix se fait projet après projet — jamais dans l'abstrait. <span class="hl">C'est une décision concrète, pas une posture.</span></p>
       </div>
     </section>
 
@@ -370,8 +375,8 @@
         <h2 class="reveal">De nouveaux métiers vont naître.</h2>
       </div>
       <div class="bottom reveal">
-        <p class="body wide">Dans les années 1960-70, l'arrivée des premiers ordinateurs de gestion a fait naître le directeur informatique. Dans les années 2010, la digitalisation a fait naître le <span class="hl">Community Manager</span> et le Data Protection Officer. Aucun n'existait avant que la rupture ne l'exige.</p>
-        <p class="support">Ce même bouleversement s'annonce dans la manière de produire. Entamer cette réflexion, c'est déjà anticiper la mutation à venir. Ni la course effrénée, ni le refus : <span class="hl">la mutation responsable</span> s'organise ainsi, projet après projet.</p>
+        <p class="body wide">Dans les années 1960-70, l'arrivée des premiers ordinateurs de gestion a fait naître le directeur informatique. Dans les années 2010, la digitalisation a fait naître le <span class="hl">Community Manager</span> et l'Influenceur. Aucun n'existait avant que la rupture ne l'exige.</p>
+        <p class="support">Il ne s'agit pas de se lancer dans une course effrénée, ni d'être réactionnaires, mais d'entamer une <span class="hl">mutation responsable</span> qui s'organise projet après projet.</p>
       </div>
     </section>
 
@@ -547,19 +552,20 @@
     <!-- 11 · DARWIN — l'ADN de la marque -->
     <section class="slide stmt" style="--card:#E7C9C2;justify-content:flex-start">
       <div class="top">
+        <div class="eyebrow reveal">Une proposition de collaboration</div>
         <h2 class="reveal">L'iconographie d'une marque à l'heure de l'IA générative.</h2>
       </div>
-      <div class="steps reveal" style="margin-top:clamp(1.4rem,2.8vw,2rem)">
-        <div class="step"><span class="n">01</span><span class="s">L'ADN de la marque
-          <span class="sd">Banque d'images, campagnes, produits — en haute définition, pour que l'IA en assimile les codes sans les approximer.</span></span></div>
-        <div class="step"><span class="n">02</span><span class="s">Les références
-          <span class="sd">Produits, packaging, shoots — pour les mises en situation.</span></span></div>
-        <div class="step"><span class="n">03</span><span class="s">Le mood
-          <span class="sd">Un univers extérieur à la marque — il introduit tension et variantes.</span></span></div>
-        <div class="step"><span class="n">04</span><span class="s">Le brief artistique
-          <span class="sd">En texte : forme, composition, structure — des pistes à trier avant de produire.</span></span></div>
+      <div class="bottom reveal">
+        <p class="body wide">Tout commence par une discussion éthique : établir ensemble <span class="hl">le champ des possibles</span> — ce qu'on peut faire, ce qu'on ne fait pas.</p>
+        <p class="support">Une fois ce cadre posé, une méthode se déroule en quatre temps — des étapes techniques, secondaires face à la question de fond.</p>
       </div>
-      <p class="adn-note reveal">Plus l'image d'origine est en haute définition, plus les résultats gagnent en précision. Mais cette collaboration soulève des questions qui méritent d'être posées ensemble — droits d'auteur, empreinte carbone, place du geste humain. Rien n'est acté : tout reste à débattre.</p>
+      <div class="mini-steps reveal">
+        <span>01 — L'ADN de la marque</span>
+        <span>02 — Les références</span>
+        <span>03 — Le mood</span>
+        <span>04 — Le brief artistique</span>
+      </div>
+      <p class="adn-note reveal">Mais cette collaboration soulève des questions qui méritent d'être posées ensemble — droits d'auteur, empreinte carbone, place du geste humain. Rien n'est acté : tout reste à débattre.</p>
     </section>
 
 <!-- 11 · LES TROIS VOIES -->
@@ -592,7 +598,7 @@
           <div class="metric"><div class="v">5 sem.</div><div class="k">Délai</div></div>
           <div class="metric"><div class="v"><span class="hl">−60/−80 %</span></div><div class="k">Coût indicatif</div></div>
           <div class="metric"><div class="v"><span class="hl">≈ 2–20 kg CO2e</span></div><div class="k">Pour un projet complet — ex. un film de 45 s</div></div>
-          <p class="src">Estimation — un coût en crédits ne se traduit pas directement en carbone ; ordre de grandeur à partir des coûts unitaires par génération et d'un retour d'expérience Année Zéro (film 45 s, ≈ 8 000 € de crédits Freepik/Magnifik)</p>
+          <p class="src">Un coût en crédits ne se traduit pas directement en carbone. Ici, l'ordre de grandeur a été calculé à partir des coûts unitaires par génération et d'un retour d'expérience Année Zéro (film 45 s, ≈ 8 000 € de crédits Freepik/Magnifik).</p>
         </div>
       </div>
       <p class="rule reveal"><span class="arrow">↳</span> Un tournage émet en tonnes, une génération IA en kilos — c'est précisément ce que l'élaboration d'une application pourrait automatiquement chiffrer, et que nous pourrions développer.</p>
@@ -609,7 +615,7 @@
         <div class="step"><span class="n">01</span><span class="s">La transition vers l'IA, en interne.
           <span class="sd">Accompagner vos équipes dans l'adoption — méthodes, outils, bonnes pratiques.</span></span></div>
         <div class="step"><span class="n">02</span><span class="s">Une masterclass pour appréhender les enjeux de l'IA.
-          <span class="sd">L'IA dans le domaine de l'image et de la recherche, mais aussi le développement d'applications internes pour répondre à vos besoins métier — pour vos équipes.</span></span></div>
+          <span class="sd">L'IA dans le domaine de l'image et de la recherche — pour vos équipes.</span></span></div>
         <div class="step"><span class="n">03</span><span class="s">Une demande précise, dans un département.
           <span class="sd">Un besoin ciblé — business affairs, éco-production, production management.</span></span></div>
         <div class="step"><span class="n">04</span><span class="s">Proposer de fabriquer une application qui compare le coût.
@@ -624,9 +630,9 @@
       </div>
       <div class="steps reveal" style="margin-top:clamp(1.6rem,3vw,2.4rem)">
         <div class="step"><span class="n">01</span><span class="s">Un terrain de recherche à explorer ensemble
-          <span class="sd">L'imagerie scientifique — matière moléculaire, crème, liquide — reste un territoire inépuisable, notamment pour vos clients beauté et spiritueux. Un point de départ que je peux mettre à votre service.</span></span></div>
+          <span class="sd">L'imagerie scientifique — matière moléculaire, crème, liquide — reste un territoire inépuisable, pour vos clients. Un point de départ que je peux mettre à votre service.</span></span></div>
         <div class="step"><span class="n">02</span><span class="s">Un pont possible vers Année Zéro
-          <span class="sd">Il ne s'agit pas de concurrencer les agences, mais de montrer ce que des spécialistes sont capables de proposer comme solutions rapides.</span></span></div>
+          <span class="sd">Il ne s'agit pas de concurrencer les agences, mais de montrer ce que des spécialistes sont capables de proposer : des solutions rapides, aussi bien pour les propositions créatives que pour la production IA.</span></span></div>
         <div class="step"><span class="n">03</span><span class="s">Intervenir comme spécialiste
           <span class="sd">En réunion, en pitch, face à une agence ou un client.</span></span></div>
       </div>
