@@ -51,12 +51,18 @@
     }
 
     .gallery{
-      column-count:3;
-      column-gap:var(--gap);
-      column-fill:auto;
+      display:flex;
+      gap:var(--gap);
       padding:2rem 2rem 5rem;
     }
-    .cell{ break-inside:avoid; margin-bottom:var(--gap); line-height:0; }
+    .col{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:var(--gap);
+      min-width:0;
+    }
+    .cell{ line-height:0; }
     .cell img{ width:100%; height:auto; display:block; }
 
     footer{
@@ -84,13 +90,13 @@
     }
 
     @media (max-width:980px){
-      .gallery{ column-count:2; column-gap:32px; padding:1.5rem 1.5rem 4rem; }
-      .cell{ margin-bottom:32px; }
+      .gallery{ gap:32px; padding:1.5rem 1.5rem 4rem; }
+      .col{ gap:32px; }
     }
 
     @media (max-width:560px){
-      .gallery{ column-count:2; column-gap:14px; padding:1rem 1rem 3rem; }
-      .cell{ margin-bottom:14px; }
+      .gallery{ gap:14px; padding:1rem 1rem 3rem; }
+      .col{ gap:14px; }
       .back-link{ top:1rem; left:1.25rem; font-size:0.6rem; }
     }
   </style>
@@ -156,8 +162,10 @@
         const columns = [[], [], []];
         images.forEach((img, i) => columns[i % 3].push(img));
 
-        columns.forEach(col => {
-          col.forEach(img => {
+        columns.forEach(colImages => {
+          const colEl = document.createElement('div');
+          colEl.className = 'col';
+          colImages.forEach(img => {
             const fig = document.createElement('figure');
             fig.className = 'cell';
             const el = document.createElement('img');
@@ -165,8 +173,9 @@
             el.alt = '';
             el.loading = 'lazy';
             fig.appendChild(el);
-            gallery.appendChild(fig);
+            colEl.appendChild(fig);
           });
+          gallery.appendChild(colEl);
         });
       } catch (err) {
         gallery.innerHTML = '<p class="loading">Erreur de chargement de la galerie.</p>';
