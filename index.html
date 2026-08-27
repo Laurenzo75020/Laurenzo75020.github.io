@@ -6,7 +6,7 @@
 <title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap" rel="stylesheet">
 <style>
   :root{ --ink:#f5f3ee; }
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -36,15 +36,17 @@
 
   .signature{
     position:fixed;
-    top:6vh;
-    left:50%;
-    transform:translateX(-50%);
+    top:5vh;
+    left:2.2rem;
     z-index:2;
-    text-align:center;
-    font-size:0.68rem;
-    letter-spacing:0.22em;
+    text-align:left;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:900;
+    font-size:clamp(1.6rem, 4vw, 2.6rem);
+    letter-spacing:0.02em;
     text-transform:uppercase;
-    opacity:0.75;
+    line-height:1;
+    opacity:0.95;
   }
 
   nav.choice{
@@ -81,7 +83,7 @@
   }
 
   @media (max-width:560px){
-    .signature{ top:5vh; font-size:0.6rem; }
+    .signature{ top:4vh; left:1.4rem; font-size:clamp(1.3rem, 6vw, 1.8rem); }
     nav.choice{ bottom:7vh; gap:0.8rem; }
   }
 </style>
