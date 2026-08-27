@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laurent Bourdoiseau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#f5f3ee; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    background:#0a0a0a;
+    color:var(--ink);
+    font-family:'Fraunces', serif;
+    overflow:hidden;
+  }
+
+  .bg{
+    position:fixed;
+    inset:0;
+    background-image:url('accueil.jpg');
+    background-size:cover;
+    background-position:center 38%;
+    z-index:0;
+  }
+
+  .veil{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
+    z-index:1;
+  }
+
+  .signature{
+    position:fixed;
+    top:6vh;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    text-align:center;
+    font-size:0.68rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    opacity:0.75;
+  }
+
+  nav.choice{
+    position:fixed;
+    bottom:9vh;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:1.1rem;
+  }
+
+  nav.choice a{
+    color:var(--ink);
+    text-decoration:none;
+    font-weight:300;
+    font-style:italic;
+    font-size:clamp(1.6rem, 4.5vw, 2.6rem);
+    letter-spacing:0.02em;
+    opacity:0.82;
+    transition:opacity 0.4s ease, letter-spacing 0.4s ease;
+  }
+
+  nav.choice a:hover{
+    opacity:1;
+    letter-spacing:0.05em;
+  }
+
+  nav.choice .sep{
+    font-weight:300;
+    font-size:clamp(1.2rem, 3vw, 1.8rem);
+    opacity:0.4;
+  }
+
+  @media (max-width:560px){
+    .signature{ top:5vh; font-size:0.6rem; }
+    nav.choice{ bottom:7vh; gap:0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="veil"></div>
+
+  <div class="signature">Laurent Bourdoiseau</div>
+
+  <nav class="choice">
+    <a href="photo/">Photo</a>
+    <span class="sep">/</span>
+    <a href="ia/">IA</a>
+  </nav>
+
+</body>
+</html>
