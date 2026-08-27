@@ -74,7 +74,7 @@
   </main>
 
   <script>
-    const REPO_API = "https://api.github.com/repos/Laurenzo75020/BOOK/contents/photo/images";
+    const REPO_API = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo";
     const IMG_EXT = /\.(jpe?g|png|webp)$/i;
 
     async function loadGallery() {
@@ -104,7 +104,7 @@
             const fig = document.createElement('figure');
             fig.className = 'cell';
             const el = document.createElement('img');
-            el.src = 'images/' + encodeURIComponent(img.name);
+            el.src = encodeURIComponent(img.name);
             el.alt = '';
             el.loading = 'lazy';
             fig.appendChild(el);
