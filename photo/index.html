@@ -169,7 +169,7 @@
             const fig = document.createElement('figure');
             fig.className = 'cell';
             const el = document.createElement('img');
-            el.src = encodeURIComponent(img.name);
+            el.src = encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
             el.alt = '';
             el.loading = 'lazy';
             fig.appendChild(el);
