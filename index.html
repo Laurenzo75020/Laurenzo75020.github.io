@@ -246,7 +246,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
       <div class="contact-label">Représentation</div>
       <a href="https://www.anneezerocontent.com" target="_blank" style="font-family:'Barlow',sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:.4rem;text-decoration:none;display:block;margin-bottom:1rem;">anneezerocontent.com</a>
       <a href="https://www.instagram.com/anneezerocontent/?hl=fr" target="_blank" style="display:flex;align-items:center;gap:.8rem;border-bottom:none;padding-bottom:0;">
-        <img src="images/anneezerocontent.jpg" width="36" height="36" alt="Année Zéro" style="border-radius:8px;display:block;flex-shrink:0;">
+        <img src="../images/anneezerocontent.jpg" width="36" height="36" alt="Année Zéro" style="border-radius:8px;display:block;flex-shrink:0;">
         <span style="display:flex;flex-direction:column;gap:.2rem;">
           <span style="font-family:'Barlow',sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:.4rem;">@anneezerocontent</span>
           <span style="font-family:'Barlow',sans-serif;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);">anneezerocontent.com</span>
@@ -268,36 +268,36 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 // t: titre affiché au survol
 // s: sous-titre affiché au survol
 // vimeoId: ID Vimeo (uniquement pour type 'vimeo')
-// Les images sont automatiquement : images/image1.jpg, image2.jpg...
+// Les images sont automatiquement : ../images/image1.jpg, image2.jpg...
 // ============================================================
 const CONFIG = [
   // Ligne 1 : image 16/9 + Mirror 16/9
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'images/mirror.mov'},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'images/Shore_story.mov'},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov'},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
-  {type:'series', t:'Fragment', s:'Série · 2024', images: ['images/__SERIEs/serie2/serie2-1.jpg','images/__SERIEs/serie2/serie2-2.jpg']},
+  {type:'series', t:'Fragment', s:'Série · 2024', images: ['../images/__SERIEs/serie2/serie2-1.jpg','../images/__SERIEs/serie2/serie2-2.jpg']},
   {type:'image', t:'Nuit blanche',      s:'Image IA · 2024'},
   {type:'image', t:'Fragment',          s:'Image IA · 2025'},
   // Ligne 4 : Breaking-Up 16/9 + carré + carré
-  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', preview:'images/break_up.mov'},
+  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', preview:'../images/break_up.mov'},
   {type:'image', t:"L'Ombre",           s:'Image IA · 2025'},
   {type:'hidden', t:'Mémoire',          s:'Image IA · 2024'},
   // Ligne 4b : Le Réel série (span2) + carré + carré
   {type:'series', t:'', s:'', images:[]},
   {type:'image', t:'Traversée',         s:'Image IA · 2025'},
-  {type:'series', t:'Le Réel', s:'Série · 2024', images: Array.from({length:9},(_,i)=>`images/__SERIEs/serie1/${i+1}.jpg`)},
+  {type:'series', t:'Le Réel', s:'Série · 2024', images: Array.from({length:9},(_,i)=>`../images/__SERIEs/serie1/${i+1}.jpg`)},
   // Ligne 5 : carré + série Le Réel span2 + carré
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
-  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'images/USA.mov', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'images/Air_previz.mov'},
+  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'../images/Air_previz.mov'},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'images/Gold.mov'},
-  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'images/HB.mov', noLink:true},
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'../images/Gold.mov'},
+  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true},
   // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
   {type:'image', t:'Sans titre III',    s:'Image IA · 2025'},
@@ -402,7 +402,7 @@ CONFIG.forEach((item,i)=>{
     imgIndex++;
     return;
   } else if(item.type==='image'){
-    const src=`images/image${imgIndex}.jpg`;
+    const src=`../images/image${imgIndex}.jpg`;
     imgIndex++;
     const img=document.createElement('img');
     img.src=src;
