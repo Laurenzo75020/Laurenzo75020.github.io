@@ -170,7 +170,7 @@
       const gallery = document.getElementById('gallery');
       const countEl = document.getElementById('photoCount');
       try {
-        const res = await fetch(REPO_API, { cache: "no-store" });
+        const res = await fetch(REPO_API + '?t=' + Date.now(), { cache: "no-store" });
         if (!res.ok) throw new Error("API error " + res.status);
         const files = await res.json();
 
