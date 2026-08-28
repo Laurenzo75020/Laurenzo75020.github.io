@@ -103,7 +103,7 @@
       height:auto;
       display:block;
       box-shadow:0 20px 60px rgba(0,0,0,0.5);
-      cursor:default;
+      cursor:zoom-out;
     }
 
     @media (max-width:768px){
@@ -225,9 +225,7 @@
       lightbox.classList.remove('open');
       lightboxImg.src = '';
     }
-    lightbox.addEventListener('click', (e) => {
-      if (e.target !== lightboxImg) closeLightbox();
-    });
+    lightbox.addEventListener('click', () => closeLightbox());
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
     });
