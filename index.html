@@ -27,25 +27,20 @@
     object-fit:cover;
     object-position:center 38%;
     transition:filter 0.5s ease;
-    filter:brightness(0.88);
   }
 
-  @media (min-width:900px) and (min-aspect-ratio:1/1){
-    .bg-half{
-      object-fit:contain;
-      object-position:center center;
-      background:#0a0a0a;
-    }
-  }
-
-  .bg-left{ clip-path:inset(0 50% 0 0); }
-  .bg-right{ clip-path:inset(0 0 0 50%); }
+  .bg-left{ clip-path:inset(0 50% 0 0); filter:brightness(1); }
+  .bg-right{ clip-path:inset(0 0 0 50%); filter:brightness(0.65); }
 
   body.hover-left .bg-left{ filter:brightness(1.15) saturate(1.05); }
   body.hover-left .bg-right{ filter:brightness(0.55); }
 
   body.hover-right .bg-right{ filter:brightness(1.15) saturate(1.05); }
   body.hover-right .bg-left{ filter:brightness(0.55); }
+
+  @media (min-width:900px) and (min-aspect-ratio:1/1){
+    .bg-half{ object-position:center center; }
+  }
 
   .veil{
     position:fixed;
@@ -129,8 +124,14 @@
 </head>
 <body>
 
-  <img class="bg-half bg-left" src="accueil.jpg" alt="">
-  <img class="bg-half bg-right" src="accueil.jpg" alt="">
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-left" src="accueil.jpg" alt="">
+  </picture>
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-right" src="accueil.jpg" alt="">
+  </picture>
   <div class="veil"></div>
 
   <div class="signature">Laurent Bourdoiseau</div>
@@ -144,14 +145,29 @@
   <script>
     (function(){
       var body = document.body;
-      window.addEventListener('mousemove', function(e){
-        var isLeft = e.clientX < window.innerWidth / 2;
+
+      function setSide(clientX){
+        var isLeft = clientX < window.innerWidth / 2;
         body.classList.toggle('hover-left', isLeft);
         body.classList.toggle('hover-right', !isLeft);
-      });
-      window.addEventListener('mouseleave', function(){
+      }
+
+      function clearSide(){
         body.classList.remove('hover-left', 'hover-right');
-      });
+      }
+
+      // Souris (desktop)
+      window.addEventListener('mousemove', function(e){ setSide(e.clientX); });
+      window.addEventListener('mouseleave', clearSide);
+
+      // Tactile (mobile)
+      window.addEventListener('touchstart', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchmove', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchend', clearSide);
 
       document.addEventListener('click', function(e){
         if (e.target.closest('a')) return; // liens Photo/IA gèrent déjà leur propre clic
