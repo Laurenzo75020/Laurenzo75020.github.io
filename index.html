@@ -16,6 +16,7 @@
     color:var(--ink);
     font-family:'Fraunces', serif;
     overflow:hidden;
+    cursor:pointer;
   }
 
   .bg-half{
@@ -142,6 +143,12 @@
       });
       window.addEventListener('mouseleave', function(){
         body.classList.remove('hover-left', 'hover-right');
+      });
+
+      document.addEventListener('click', function(e){
+        if (e.target.closest('a')) return; // liens Photo/IA gèrent déjà leur propre clic
+        var isLeft = e.clientX < window.innerWidth / 2;
+        window.location.href = isLeft ? 'photo/' : 'ia/';
       });
     })();
   </script>
