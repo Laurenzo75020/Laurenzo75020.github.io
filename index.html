@@ -21,9 +21,10 @@
   .bg{
     position:fixed;
     inset:0;
-    background-image:url('portrait_sequence.gif');
-    background-size:cover;
-    background-position:center 38%;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 38%;
     z-index:0;
   }
 
@@ -51,9 +52,9 @@
 
   nav.choice{
     position:fixed;
-    bottom:9vh;
+    top:50%;
     left:50%;
-    transform:translateX(-50%);
+    transform:translate(-50%, -50%);
     z-index:2;
     display:flex;
     align-items:center;
@@ -84,13 +85,15 @@
 
   @media (max-width:560px){
     .signature{ top:4vh; left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
-    nav.choice{ bottom:7vh; gap:0.8rem; }
+    nav.choice{ gap:0.8rem; }
   }
 </style>
 </head>
 <body>
 
-  <div class="bg"></div>
+  <video class="bg" autoplay muted loop playsinline poster="split_visage_poster.jpg">
+    <source src="split_visage_loop.mp4" type="video/mp4">
+  </video>
   <div class="veil"></div>
 
   <div class="signature">Laurent Bourdoiseau</div>
