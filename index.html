@@ -52,13 +52,29 @@
 
   nav.choice{
     position:fixed;
-    top:50%;
+    top:calc(50% + 50px);
     left:50%;
-    transform:translate(-50%, -50%);
     z-index:2;
-    display:flex;
-    align-items:center;
-    gap:1.1rem;
+  }
+
+  nav.choice a,
+  nav.choice .sep{
+    position:absolute;
+    transform:translateY(-50%);
+    white-space:nowrap;
+  }
+
+  nav.choice a.photo{
+    right:0.55rem;
+  }
+
+  nav.choice a.ia{
+    left:0.55rem;
+  }
+
+  nav.choice .sep{
+    left:0;
+    transform:translate(-50%, -50%);
   }
 
   nav.choice a{
@@ -85,7 +101,8 @@
 
   @media (max-width:560px){
     .signature{ top:4vh; left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
-    nav.choice{ gap:0.8rem; }
+    nav.choice a.photo{ right:0.4rem; }
+    nav.choice a.ia{ left:0.4rem; }
   }
 </style>
 </head>
@@ -99,9 +116,9 @@
   <div class="signature">Laurent Bourdoiseau</div>
 
   <nav class="choice">
-    <a href="photo/">Photo</a>
+    <a class="photo" href="photo/">Photo</a>
     <span class="sep">/</span>
-    <a href="ia/">IA</a>
+    <a class="ia" href="ia/">IA</a>
   </nav>
 
 </body>
