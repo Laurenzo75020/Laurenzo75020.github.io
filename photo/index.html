@@ -161,6 +161,7 @@
 
         pages = files
           .filter(f => f.type === "file" && IMG_EXT.test(f.name))
+          .filter(f => !/^page_0(\D|$)/i.test(f.name))
           .sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true, sensitivity:"base" }));
 
         if(pages.length === 0){
