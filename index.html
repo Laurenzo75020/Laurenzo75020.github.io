@@ -3,240 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laurent Bourdoiseau — Portfolio</title>
+<title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap" rel="stylesheet">
 <style>
-  :root{ --ink:#0a0a0a; --bg:#ffffff; }
+  :root{ --ink:#f5f3ee; }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ height:100%; }
   body{
-    background:var(--bg);
+    background:#0a0a0a;
     color:var(--ink);
-    font-family:'Barlow', sans-serif;
+    font-family:'Fraunces', serif;
     overflow:hidden;
     cursor:pointer;
   }
-  .top-menu a{ cursor:pointer; }
 
-  .top-menu{
+  .bg-half{
     position:fixed;
-    top:1.4rem;
-    left:2rem;
-    right:2rem;
-    z-index:200;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-weight:600;
-    font-size:0.85rem;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 38%;
+    transition:filter 0.5s ease;
+  }
+
+  .bg-left{ clip-path:inset(0 50% 0 0); filter:brightness(1); }
+  .bg-right{ clip-path:inset(0 0 0 50%); filter:brightness(0.65); }
+
+  body.hover-left .bg-left{ filter:brightness(1.15) saturate(1.05); }
+  body.hover-left .bg-right{ filter:brightness(0.55); }
+
+  body.hover-right .bg-right{ filter:brightness(1.15) saturate(1.05); }
+  body.hover-right .bg-left{ filter:brightness(0.55); }
+
+  @media (min-width:900px) and (min-aspect-ratio:1/1){
+    .bg-half{ object-position:center center; }
+  }
+
+  .veil{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
+    z-index:1;
     pointer-events:none;
   }
-  .top-menu a{
+
+  .signature{
+    position:fixed;
+    top:5vh;
+    left:2.2rem;
+    z-index:2;
+    text-align:left;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:900;
+    font-size:clamp(2.6rem, 5.85vw, 6.5rem);
+    line-height:0.88;
+    letter-spacing:-0.02em;
+    text-transform:uppercase;
+    opacity:0.95;
+    pointer-events:none;
+  }
+
+  nav.choice{
+    position:fixed;
+    top:calc(50% + 50px);
+    left:50%;
+    z-index:2;
+  }
+
+  nav.choice a,
+  nav.choice .sep{
+    position:absolute;
+    transform:translateY(-50%);
+    white-space:nowrap;
+  }
+
+  nav.choice a.photo{
+    right:0.55rem;
+  }
+
+  nav.choice a.ia{
+    left:0.55rem;
+  }
+
+  nav.choice .sep{
+    left:0;
+    transform:translate(-50%, -50%);
+  }
+
+  nav.choice a{
     color:var(--ink);
     text-decoration:none;
-    opacity:0.85;
-    transition:opacity 0.2s;
-    pointer-events:auto;
-  }
-  .top-menu a:hover{ opacity:1; }
-
-  .counter{
-    position:fixed;
-    top:1.4rem;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:200;
-    font-size:0.75rem;
-    letter-spacing:0.1em;
-    color:#999;
-    pointer-events:none;
+    font-weight:300;
+    font-style:italic;
+    font-size:clamp(1.6rem, 4.5vw, 2.6rem);
+    letter-spacing:0.02em;
+    opacity:0.82;
+    transition:opacity 0.4s ease, letter-spacing 0.4s ease;
   }
 
-  .stage{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:5vh 4vw;
+  nav.choice a:hover{
+    opacity:1;
+    letter-spacing:0.05em;
   }
-  .stage img{
-    max-width:100%;
-    max-height:100%;
-    width:auto;
-    height:auto;
-    display:block;
-    opacity:0;
-    transition:opacity 0.35s ease;
-    -webkit-user-drag:none;
-    -webkit-user-select:none;
-    user-select:none;
-    pointer-events:none;
-  }
-  .stage img.show{ opacity:1; }
 
-  .arrow{
-    position:fixed;
-    top:0;
-    bottom:0;
-    width:12%;
-    min-width:56px;
-    display:flex;
-    align-items:center;
-    z-index:150;
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    color:var(--ink);
-    opacity:0;
-    transition:opacity 0.2s;
-  }
-  .stage:hover ~ .arrow,
-  .arrow:hover{ opacity:0.55; }
-  .arrow.prev{ left:0; justify-content:flex-start; padding-left:1.2rem; }
-  .arrow.next{ right:0; justify-content:flex-end; padding-right:1.2rem; }
-  .arrow svg{ width:28px; height:28px; }
-  .arrow[disabled]{ visibility:hidden; }
-
-  .loading{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:0.75rem;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:#999;
+  nav.choice .sep{
+    font-weight:300;
+    font-size:clamp(1.2rem, 3vw, 1.8rem);
+    opacity:0.4;
   }
 
   @media (max-width:560px){
-    .top-menu{ top:1rem; left:1.25rem; right:1.25rem; font-size:0.7rem; }
-    .counter{ top:1rem; font-size:0.65rem; }
-    .arrow{ width:18%; }
-    .stage{ padding:2vh 1vw; }
-  }
-
-  @media (max-width:560px) and (orientation:portrait){
-    .stage{ padding:1vh 0.5vw; }
+    .signature{ top:4vh; left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
+    nav.choice a.photo{ right:0.4rem; }
+    nav.choice a.ia{ left:0.4rem; }
   }
 </style>
 </head>
 <body>
 
-  <div class="top-menu">
-    <a href="../" id="homeLink">← Accueil</a>
-    <a href="mosaique.html">Mosaïque</a>
-  </div>
-  <div class="counter" id="counter"></div>
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-left" src="accueil.jpg" alt="">
+  </picture>
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-right" src="accueil.jpg" alt="">
+  </picture>
+  <div class="veil"></div>
 
-  <div class="stage" id="stage">
-    <div class="loading" id="loading">Chargement…</div>
-  </div>
+  <div class="signature">Laurent Bourdoiseau</div>
 
-  <button class="arrow prev" id="prevBtn" aria-label="Page précédente">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
-  </button>
-  <button class="arrow next" id="nextBtn" aria-label="Page suivante">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
-  </button>
+  <nav class="choice">
+    <a class="photo" href="photo/">Photo</a>
+    <span class="sep">/</span>
+    <a class="ia" href="ia/">IA</a>
+  </nav>
 
   <script>
-    // Dossier contenant les pages du book (une image par page, mise en page déjà intégrée à l'image)
-    const REPO_API = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo/book";
-    const IMG_EXT = /\.(jpe?g|png|webp)$/i;
+    (function(){
+      var body = document.body;
 
-    let pages = [];
-    let current = 0;
-
-    const stage = document.getElementById('stage');
-    const counter = document.getElementById('counter');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    async function loadPages(){
-      try{
-        const res = await fetch(REPO_API + '?t=' + Date.now(), { cache:"no-store" });
-        if(!res.ok) throw new Error("API error " + res.status);
-        const files = await res.json();
-
-        pages = files
-          .filter(f => f.type === "file" && IMG_EXT.test(f.name))
-          .filter(f => !/^page_0(\D|$)/i.test(f.name))
-          .sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true, sensitivity:"base" }));
-
-        if(pages.length === 0){
-          stage.innerHTML = '<div class="loading">Aucune page trouvée.</div>';
-          return;
-        }
-
-        stage.innerHTML = '<img id="pageImg" src="" alt="">';
-        showPage(0);
-      }catch(err){
-        stage.innerHTML = '<div class="loading">Erreur de chargement.</div>';
-        console.error(err);
+      function setSide(clientX){
+        var isLeft = clientX < window.innerWidth / 2;
+        body.classList.toggle('hover-left', isLeft);
+        body.classList.toggle('hover-right', !isLeft);
       }
-    }
 
-    function showPage(i){
-      current = Math.max(0, Math.min(i, pages.length - 1));
-      const img = document.getElementById('pageImg');
-      const file = pages[current];
-      const src = 'book/' + encodeURIComponent(file.name) + '?v=' + file.sha.slice(0,8);
+      function clearSide(){
+        body.classList.remove('hover-left', 'hover-right');
+      }
 
-      img.classList.remove('show');
-      const swap = () => {
-        img.src = src;
-        img.onload = () => img.classList.add('show');
-      };
-      setTimeout(swap, 150);
+      // Souris (desktop)
+      window.addEventListener('mousemove', function(e){ setSide(e.clientX); });
+      window.addEventListener('mouseleave', clearSide);
 
-      counter.textContent = (current + 1) + ' / ' + pages.length;
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === pages.length - 1;
+      // Tactile (mobile)
+      window.addEventListener('touchstart', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchmove', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchend', clearSide);
 
-      // preload voisins
-      [current - 1, current + 1].forEach(idx => {
-        if(idx >= 0 && idx < pages.length){
-          const pre = new Image();
-          pre.src = 'book/' + encodeURIComponent(pages[idx].name) + '?v=' + pages[idx].sha.slice(0,8);
-        }
+      document.addEventListener('click', function(e){
+        if (e.target.closest('a')) return; // liens Photo/IA gèrent déjà leur propre clic
+        var isLeft = e.clientX < window.innerWidth / 2;
+        window.location.href = isLeft ? 'photo/' : 'ia/';
       });
-    }
-
-    prevBtn.addEventListener('click', () => showPage(current - 1));
-    nextBtn.addEventListener('click', () => showPage(current + 1));
-
-    // Clic sur la moitié gauche/droite de la fenêtre pour naviguer
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('a') || e.target.closest('.arrow')) return;
-      const isLeft = e.clientX < window.innerWidth / 2;
-      isLeft ? showPage(current - 1) : showPage(current + 1);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'ArrowLeft') showPage(current - 1);
-      if(e.key === 'ArrowRight') showPage(current + 1);
-    });
-
-    // swipe mobile
-    let touchStartX = null;
-    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
-    document.addEventListener('touchend', e => {
-      if(touchStartX === null) return;
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if(Math.abs(dx) > 50) dx > 0 ? showPage(current - 1) : showPage(current + 1);
-      touchStartX = null;
-    }, {passive:true});
-
-    loadPages();
-
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('dragstart', e => e.preventDefault());
+    })();
   </script>
 
 </body>
