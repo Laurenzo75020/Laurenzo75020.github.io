@@ -16,7 +16,9 @@
     color:var(--ink);
     font-family:'Barlow', sans-serif;
     overflow:hidden;
+    cursor:pointer;
   }
+  .top-menu a{ cursor:pointer; }
 
   .top-menu{
     position:fixed;
@@ -198,6 +200,13 @@
 
     prevBtn.addEventListener('click', () => showPage(current - 1));
     nextBtn.addEventListener('click', () => showPage(current + 1));
+
+    // Clic sur la moitié gauche/droite de la fenêtre pour naviguer
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('a') || e.target.closest('.arrow')) return;
+      const isLeft = e.clientX < window.innerWidth / 2;
+      isLeft ? showPage(current - 1) : showPage(current + 1);
+    });
 
     document.addEventListener('keydown', (e) => {
       if(e.key === 'ArrowLeft') showPage(current - 1);
