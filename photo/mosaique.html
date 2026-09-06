@@ -83,7 +83,7 @@
       min-width:0;
     }
     .cell{ line-height:0; }
-    .cell img{ width:100%; height:auto; display:block; }
+    .cell img{ width:100%; height:auto; display:block; -webkit-user-drag:none; -webkit-user-select:none; user-select:none; }
 
     footer{
       padding:1.5rem 2rem 2.5rem;
@@ -124,6 +124,9 @@
       display:block;
       box-shadow:0 20px 60px rgba(0,0,0,0.5);
       cursor:zoom-out;
+      -webkit-user-drag:none;
+      -webkit-user-select:none;
+      user-select:none;
     }
 
     @media (max-width:768px){
@@ -253,6 +256,8 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
     });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
   </script>
 
 </body>
