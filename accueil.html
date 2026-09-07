@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laurent Bourdoiseau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#f5f3ee; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    background:#0a0a0a;
+    color:var(--ink);
+    font-family:'Fraunces', serif;
+    overflow:hidden;
+    cursor:pointer;
+  }
+
+  .bg-half{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 38%;
+    transition:filter 0.5s ease;
+  }
+
+  .bg-left{ clip-path:inset(0 50% 0 0); filter:brightness(1); }
+  .bg-right{ clip-path:inset(0 0 0 50%); filter:brightness(0.65); }
+
+  body.hover-left .bg-left{ filter:brightness(1.15) saturate(1.05); }
+  body.hover-left .bg-right{ filter:brightness(0.55); }
+
+  body.hover-right .bg-right{ filter:brightness(1.15) saturate(1.05); }
+  body.hover-right .bg-left{ filter:brightness(0.55); }
+
+  @media (min-width:900px) and (min-aspect-ratio:1/1){
+    .bg-half{ object-position:center center; }
+  }
+
+  .veil{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .signature{
+    position:fixed;
+    top:5vh;
+    left:2.2rem;
+    z-index:2;
+    text-align:left;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:900;
+    font-size:clamp(2.6rem, 5.85vw, 6.5rem);
+    line-height:0.88;
+    letter-spacing:-0.02em;
+    text-transform:uppercase;
+    opacity:0.95;
+    pointer-events:none;
+  }
+
+  nav.choice{
+    position:fixed;
+    top:calc(50% + 50px);
+    left:50%;
+    z-index:2;
+  }
+
+  nav.choice a,
+  nav.choice .sep{
+    position:absolute;
+    transform:translateY(-50%);
+    white-space:nowrap;
+  }
+
+  nav.choice a.photo{
+    right:0.55rem;
+  }
+
+  nav.choice a.ia{
+    left:0.55rem;
+  }
+
+  nav.choice .sep{
+    left:0;
+    transform:translate(-50%, -50%);
+  }
+
+  nav.choice a{
+    color:var(--ink);
+    text-decoration:none;
+    font-weight:300;
+    font-style:italic;
+    font-size:clamp(1.6rem, 4.5vw, 2.6rem);
+    letter-spacing:0.02em;
+    opacity:0.82;
+    transition:opacity 0.4s ease, letter-spacing 0.4s ease;
+  }
+
+  nav.choice a:hover{
+    opacity:1;
+    letter-spacing:0.05em;
+  }
+
+  nav.choice .sep{
+    font-weight:300;
+    font-size:clamp(1.2rem, 3vw, 1.8rem);
+    opacity:0.4;
+  }
+
+  @media (max-width:560px){
+    .signature{ top:4vh; left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
+    nav.choice a.photo{ right:0.4rem; }
+    nav.choice a.ia{ left:0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-left" src="accueil.jpg" alt="">
+  </picture>
+  <picture>
+    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg">
+    <img class="bg-half bg-right" src="accueil.jpg" alt="">
+  </picture>
+  <div class="veil"></div>
+
+  <div class="signature">Laurent Bourdoiseau</div>
+
+  <nav class="choice">
+    <a class="photo" href="photo/">Photo</a>
+    <span class="sep">/</span>
+    <a class="ia" href="ia/">IA</a>
+  </nav>
+
+  <script>
+    (function(){
+      var body = document.body;
+
+      function setSide(clientX){
+        var isLeft = clientX < window.innerWidth / 2;
+        body.classList.toggle('hover-left', isLeft);
+        body.classList.toggle('hover-right', !isLeft);
+      }
+
+      function clearSide(){
+        body.classList.remove('hover-left', 'hover-right');
+      }
+
+      // Souris (desktop)
+      window.addEventListener('mousemove', function(e){ setSide(e.clientX); });
+      window.addEventListener('mouseleave', clearSide);
+
+      // Tactile (mobile)
+      window.addEventListener('touchstart', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchmove', function(e){
+        if (e.touches[0]) setSide(e.touches[0].clientX);
+      }, { passive:true });
+      window.addEventListener('touchend', clearSide);
+
+      document.addEventListener('click', function(e){
+        if (e.target.closest('a')) return; // liens Photo/IA gèrent déjà leur propre clic
+        var isLeft = e.clientX < window.innerWidth / 2;
+        window.location.href = isLeft ? 'photo/' : 'ia/';
+      });
+    })();
+  </script>
+
+</body>
+</html>
