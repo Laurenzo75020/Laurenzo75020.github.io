@@ -15,12 +15,12 @@
     .top-menu{
       position:fixed;
       top:1.4rem;
-      left:2rem;
       right:2rem;
       z-index:200;
       display:flex;
-      justify-content:space-between;
-      align-items:center;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:0.5rem;
       font-family:'Barlow', sans-serif;
       font-weight:600;
       font-size:0.85rem;
@@ -145,15 +145,16 @@
     @media (max-width:560px){
       .gallery{ gap:14px; padding:1rem 1rem 3rem; }
       .col{ gap:14px; }
-      .top-menu{ top:1rem; left:1.25rem; right:1.25rem; font-size:0.7rem; }
+      .top-menu{ top:1rem; right:1.25rem; font-size:0.7rem; gap:0.4rem; }
     }
   </style>
 </head>
 <body>
 
   <div class="top-menu">
-    <a href="../">← Accueil</a>
+    <a href="../accueil.html">← Accueil</a>
     <a href="./">Portfolio</a>
+    <a href="../ia/">IA</a>
   </div>
 
   <div class="name-hero">

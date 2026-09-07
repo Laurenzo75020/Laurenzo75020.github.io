@@ -23,12 +23,12 @@
   .top-menu{
     position:fixed;
     top:1.4rem;
-    left:2rem;
     right:2rem;
     z-index:200;
     display:flex;
-    justify-content:space-between;
-    align-items:center;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:0.5rem;
     font-weight:600;
     font-size:0.85rem;
     letter-spacing:0.1em;
@@ -115,7 +115,7 @@
   }
 
   @media (max-width:560px){
-    .top-menu{ top:1rem; left:1.25rem; right:1.25rem; font-size:0.7rem; }
+    .top-menu{ top:1rem; right:1.25rem; font-size:0.7rem; gap:0.4rem; }
     .counter{ top:1rem; font-size:0.65rem; }
     .arrow{ width:18%; }
     .stage{ padding:2vh 1vw; }
@@ -129,8 +129,9 @@
 <body>
 
   <div class="top-menu">
-    <a href="../" id="homeLink">← Accueil</a>
+    <a href="../accueil.html" id="homeLink">← Accueil</a>
     <a href="mosaique.html">Mosaïque</a>
+    <a href="../ia/">IA</a>
   </div>
   <div class="counter" id="counter"></div>
 
