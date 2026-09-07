@@ -97,6 +97,7 @@
   }
   .stage:hover ~ .arrow,
   .arrow:hover{ opacity:0.55; }
+  .arrow.next.hint{ opacity:0.55; }
   .arrow.prev{ left:0; justify-content:flex-start; padding-left:1.2rem; }
   .arrow.next{ right:0; justify-content:flex-end; padding-right:1.2rem; }
   .arrow svg{ width:28px; height:28px; }
@@ -112,25 +113,6 @@
     letter-spacing:0.1em;
     text-transform:uppercase;
     color:#999;
-  }
-
-  .dot-arrow{
-    position:fixed;
-    top:50%;
-    right:2vw;
-    transform:translateY(-50%);
-    width:min(6vw, 90px);
-    color:var(--ink);
-    opacity:0;
-    pointer-events:none;
-    z-index:100;
-    transition:opacity 0.6s ease;
-  }
-  .dot-arrow.show{ opacity:0.45; }
-  .dot-arrow svg{ width:100%; height:auto; display:block; }
-
-  @media (max-width:768px){
-    .dot-arrow{ width:min(14vw, 60px); right:1vw; }
   }
 
   @media (max-width:560px){
@@ -156,12 +138,6 @@
 
   <div class="stage" id="stage">
     <div class="loading" id="loading">Chargement…</div>
-  </div>
-
-  <div class="dot-arrow" id="dotArrow" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 12h15M13 6l6 6-6 6"/>
-    </svg>
   </div>
 
   <button class="arrow prev" id="prevBtn" aria-label="Page précédente">
@@ -225,7 +201,7 @@
       counter.textContent = (current + 1) + ' / ' + pages.length;
       prevBtn.disabled = current === 0;
       nextBtn.disabled = current === pages.length - 1;
-      document.getElementById('dotArrow').classList.toggle('show', current === 0);
+      document.getElementById('nextBtn').classList.toggle('hint', current === 0);
 
       // preload voisins
       [current - 1, current + 1].forEach(idx => {
