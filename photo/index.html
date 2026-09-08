@@ -163,10 +163,11 @@
       height:100%;
       max-width:none;
       max-height:none;
-      object-fit:contain;
+      object-fit:cover;
       object-position:center center;
     }
     .stage img.portrait-contain{
+      object-fit:contain;
       object-position:left center;
     }
 
@@ -321,8 +322,7 @@
           img.classList.add('show');
           if(IS_MOBILE){
             const imgRatio = img.naturalHeight / img.naturalWidth;
-            const viewRatio = window.innerHeight / window.innerWidth;
-            img.classList.toggle('portrait-contain', imgRatio > viewRatio * 1.15);
+            img.classList.toggle('portrait-contain', imgRatio > 1.3);
           }
         };
       };
@@ -330,7 +330,6 @@
 
       counter.textContent = (current + 1) + ' / ' + pages.length;
       prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === pages.length - 1;
       updateScrubberActive();
 
       // preload voisins
@@ -342,20 +341,28 @@
       });
     }
 
+    function goNext(){
+      if(current >= pages.length - 1){
+        window.location.href = '../accueil.html';
+      } else {
+        showPage(current + 1);
+      }
+    }
+
     prevBtn.addEventListener('click', () => showPage(current - 1));
-    nextBtn.addEventListener('click', () => showPage(current + 1));
+    nextBtn.addEventListener('click', goNext);
 
     // Clic sur la moitié gauche/droite de la fenêtre pour naviguer
     document.addEventListener('click', (e) => {
       if (e.target.closest('a') || e.target.closest('.arrow') || e.target.closest('.counter') || e.target.closest('.scrubber')) return;
       if (scrubber.classList.contains('open')) { openScrubber(false); return; }
       const isLeft = e.clientX < window.innerWidth / 2;
-      isLeft ? showPage(current - 1) : showPage(current + 1);
+      isLeft ? showPage(current - 1) : goNext();
     });
 
     document.addEventListener('keydown', (e) => {
       if(e.key === 'ArrowLeft') showPage(current - 1);
-      if(e.key === 'ArrowRight') showPage(current + 1);
+      if(e.key === 'ArrowRight') goNext();
     });
 
     // swipe mobile
@@ -364,7 +371,7 @@
     document.addEventListener('touchend', e => {
       if(touchStartX === null) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
-      if(Math.abs(dx) > 50) dx > 0 ? showPage(current - 1) : showPage(current + 1);
+      if(Math.abs(dx) > 50) dx > 0 ? showPage(current - 1) : goNext();
       touchStartX = null;
     }, {passive:true});
 
@@ -429,7 +436,16 @@
     function openScrubber(open){
       scrubber.classList.toggle('open', open);
       counter.classList.toggle('hidden', open);
-      if(open) scrollActiveIntoView(false);
+      if(open){
+        scrollActiveIntoView(false);
+        scrubber.animate([
+          { transform:'translateX(-50%) translateX(0px)' },
+          { transform:'translateX(-50%) translateX(-14px)' },
+          { transform:'translateX(-50%) translateX(10px)' },
+          { transform:'translateX(-50%) translateX(-5px)' },
+          { transform:'translateX(-50%) translateX(0px)' }
+        ], { duration:600, easing:'ease' });
+      }
     }
 
     scrubber.addEventListener('scroll', () => {
