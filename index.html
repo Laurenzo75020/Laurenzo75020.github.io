@@ -173,7 +173,11 @@
       height:100%;
       max-width:none;
       max-height:none;
-      object-fit:cover;
+      object-fit:contain;
+      object-position:center center;
+    }
+    .stage img.portrait-contain{
+      object-position:left center;
     }
 
     .counter-wrap{ display:none; }
@@ -191,6 +195,7 @@
       padding:0.35rem 0.7rem;
       text-shadow:none;
       box-shadow:0 1px 4px rgba(0,0,0,0.12);
+      white-space:nowrap;
     }
 
     .arrow.prev{ display:none; }
@@ -322,7 +327,14 @@
       img.classList.remove('show');
       const swap = () => {
         img.src = src;
-        img.onload = () => img.classList.add('show');
+        img.onload = () => {
+          img.classList.add('show');
+          if(IS_MOBILE){
+            const imgRatio = img.naturalHeight / img.naturalWidth;
+            const viewRatio = window.innerHeight / window.innerWidth;
+            img.classList.toggle('portrait-contain', imgRatio > viewRatio * 1.15);
+          }
+        };
       };
       setTimeout(swap, 150);
 
