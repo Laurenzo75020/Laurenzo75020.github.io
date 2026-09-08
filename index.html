@@ -53,8 +53,41 @@
     font-size:0.75rem;
     letter-spacing:0.1em;
     color:#999;
-    pointer-events:none;
+    cursor:pointer;
+    pointer-events:auto;
   }
+
+  .scrubber{
+    position:fixed;
+    top:2.6rem;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:210;
+    display:none;
+    max-width:min(80vw, 520px);
+    overflow-x:auto;
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+    background:rgba(255,255,255,0.94);
+    padding:0.5rem 1rem;
+    scrollbar-width:none;
+  }
+  .scrubber::-webkit-scrollbar{ display:none; }
+  .scrubber.open{ display:block; }
+  .scrubber .pad{ display:inline-block; width:40vw; }
+  .scrubber .num{
+    display:inline-block;
+    width:26px;
+    text-align:center;
+    font-size:0.7rem;
+    letter-spacing:0.02em;
+    color:#bbb;
+    scroll-snap-align:center;
+    cursor:pointer;
+    transition:color 0.15s;
+  }
+  .scrubber .num.active{ color:var(--ink); font-weight:600; }
 
   .stage{
     position:fixed;
@@ -148,6 +181,7 @@
     <a href="ia/">IA</a>
   </div>
   <div class="counter" id="counter"></div>
+  <div class="scrubber" id="scrubber"><span class="pad"></span><span class="pad"></span></div>
 
   <div class="stage" id="stage">
     <div class="loading" id="loading">Chargement…</div>
@@ -191,6 +225,7 @@
         }
 
         stage.innerHTML = '<img id="pageImg" src="" alt="">';
+        buildScrubber();
         showPage(0);
       }catch(err){
         stage.innerHTML = '<div class="loading">Erreur de chargement.</div>';
@@ -215,6 +250,7 @@
       prevBtn.disabled = current === 0;
       nextBtn.disabled = current === pages.length - 1;
       nextBtn.classList.toggle('centered', current === 0);
+      updateScrubberActive();
 
       // preload voisins
       [current - 1, current + 1].forEach(idx => {
@@ -230,7 +266,8 @@
 
     // Clic sur la moitié gauche/droite de la fenêtre pour naviguer
     document.addEventListener('click', (e) => {
-      if (e.target.closest('a') || e.target.closest('.arrow')) return;
+      if (e.target.closest('a') || e.target.closest('.arrow') || e.target.closest('.counter') || e.target.closest('.scrubber')) return;
+      if (scrubber.classList.contains('open')) { scrubber.classList.remove('open'); return; }
       const isLeft = e.clientX < window.innerWidth / 2;
       isLeft ? showPage(current - 1) : showPage(current + 1);
     });
@@ -254,6 +291,76 @@
 
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('dragstart', e => e.preventDefault());
+
+    // Bande de navigation "tuner FM"
+    const scrubber = document.getElementById('scrubber');
+    let scrubTimeout = null;
+    let scrubbing = false;
+
+    function buildScrubber(){
+      const frag = document.createDocumentFragment();
+      const padStart = document.createElement('span');
+      padStart.className = 'pad';
+      frag.appendChild(padStart);
+      pages.forEach((p, idx) => {
+        const el = document.createElement('span');
+        el.className = 'num';
+        el.textContent = idx + 1;
+        el.dataset.idx = idx;
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showPage(idx);
+          scrollActiveIntoView(true);
+        });
+        frag.appendChild(el);
+      });
+      const padEnd = document.createElement('span');
+      padEnd.className = 'pad';
+      frag.appendChild(padEnd);
+      scrubber.innerHTML = '';
+      scrubber.appendChild(frag);
+    }
+
+    function updateScrubberActive(){
+      scrubber.querySelectorAll('.num').forEach(el => {
+        el.classList.toggle('active', Number(el.dataset.idx) === current);
+      });
+      if(scrubber.classList.contains('open') && !scrubbing) scrollActiveIntoView(false);
+    }
+
+    function scrollActiveIntoView(smooth){
+      const active = scrubber.querySelector('.num.active');
+      if(active) active.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', inline: 'center', block: 'nearest' });
+    }
+
+    counter.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opening = !scrubber.classList.contains('open');
+      scrubber.classList.toggle('open', opening);
+      if(opening) scrollActiveIntoView(false);
+    });
+
+    scrubber.addEventListener('click', (e) => e.stopPropagation());
+
+    scrubber.addEventListener('scroll', () => {
+      scrubbing = true;
+      clearTimeout(scrubTimeout);
+      scrubTimeout = setTimeout(() => {
+        scrubbing = false;
+        const rect = scrubber.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        let closest = null, closestDist = Infinity;
+        scrubber.querySelectorAll('.num').forEach(el => {
+          const r = el.getBoundingClientRect();
+          const dist = Math.abs((r.left + r.width/2) - centerX);
+          if(dist < closestDist){ closestDist = dist; closest = el; }
+        });
+        if(closest){
+          const idx = Number(closest.dataset.idx);
+          if(idx !== current) showPage(idx);
+        }
+      }, 120);
+    }, { passive:true });
   </script>
 
 </body>
