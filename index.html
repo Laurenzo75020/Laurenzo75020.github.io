@@ -192,6 +192,29 @@
       text-shadow:none;
       box-shadow:0 1px 4px rgba(0,0,0,0.12);
     }
+
+    .arrow.prev{ display:none; }
+    .arrow.next,
+    .arrow.next.centered{
+      display:flex;
+      position:fixed;
+      top:1.4rem;
+      right:1.25rem;
+      left:auto;
+      bottom:auto;
+      transform:none;
+      width:auto;
+      min-width:0;
+      height:auto;
+      background:rgba(255,255,255,0.95);
+      padding:0.35rem 0.55rem;
+      justify-content:center;
+      align-items:center;
+      opacity:1;
+      box-shadow:0 1px 4px rgba(0,0,0,0.12);
+      z-index:195;
+    }
+    .arrow.next svg{ width:18px; height:18px; }
   }
 
   @media (max-width:560px){
