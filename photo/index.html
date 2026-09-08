@@ -384,6 +384,7 @@
     const scrubber = document.getElementById('scrubber');
     let scrubTimeout = null;
     let scrubbing = false;
+    let hinting = false;
 
     function buildScrubber(){
       const frag = document.createDocumentFragment();
@@ -438,14 +439,28 @@
       counter.classList.toggle('hidden', open);
       if(open){
         scrollActiveIntoView(false);
-        scrubber.animate([
-          { transform:'translateX(-50%) translateX(0px)' },
-          { transform:'translateX(-50%) translateX(-14px)' },
-          { transform:'translateX(-50%) translateX(10px)' },
-          { transform:'translateX(-50%) translateX(-5px)' },
-          { transform:'translateX(-50%) translateX(0px)' }
-        ], { duration:600, easing:'ease' });
+        playHint();
       }
+    }
+
+    function playHint(){
+      const itemWidth = 26;
+      const distance = itemWidth * 10;
+      const maxScroll = scrubber.scrollWidth - scrubber.clientWidth;
+      const startScroll = scrubber.scrollLeft;
+      const roomRight = maxScroll - startScroll;
+      const roomLeft = startScroll;
+      const goRight = roomRight >= roomLeft;
+      const target = goRight
+        ? Math.min(startScroll + distance, maxScroll)
+        : Math.max(startScroll - distance, 0);
+
+      hinting = true;
+      scrubber.scrollTo({ left: target, behavior:'smooth' });
+      setTimeout(() => {
+        scrollActiveIntoView(true);
+        setTimeout(() => { hinting = false; }, 400);
+      }, 380);
     }
 
     scrubber.addEventListener('scroll', () => {
@@ -453,6 +468,7 @@
       clearTimeout(scrubTimeout);
       scrubTimeout = setTimeout(() => {
         scrubbing = false;
+        if(hinting) return;
         const rect = scrubber.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         let closest = null, closestDist = Infinity;
