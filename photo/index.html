@@ -136,7 +136,7 @@
   .arrow:hover{ opacity:0.55; }
 
   @media (hover:none) and (pointer:coarse){
-    .arrow{ opacity:0.4; }
+    .arrow{ display:none; }
   }
   .arrow.prev{ left:0; justify-content:flex-start; padding-left:1.2rem; }
   .arrow.next{ right:0; justify-content:flex-end; padding-right:1.2rem; }
@@ -155,20 +155,35 @@
     color:#999;
   }
 
+  .top-bar{ display:none; }
+
+  @media (max-width:768px){
+    .top-bar{
+      display:block;
+      position:fixed;
+      top:0; left:0; right:0;
+      height:4.4rem;
+      background:rgba(255,255,255,0.94);
+      z-index:190;
+    }
+  }
+
   @media (max-width:560px){
     .top-menu{ top:1rem; right:1.25rem; font-size:0.7rem; gap:0.4rem; }
     .counter-wrap{ top:1rem; }
     .counter{ font-size:0.65rem; }
     .arrow{ width:18%; }
-    .stage{ padding:3.2rem 0.4vw 0.6vh 0.4vw; }
+    .stage{ padding:0.6vh 0.4vw; }
   }
 
   @media (max-width:560px) and (orientation:portrait){
-    .stage{ padding:3rem 0.2vw 0.3vh 0.2vw; }
+    .stage{ padding:0.3vh 0.2vw; }
   }
 </style>
 </head>
 <body>
+
+  <div class="top-bar"></div>
 
   <div class="top-menu">
     <a href="../accueil.html" id="homeLink">← Accueil</a>
