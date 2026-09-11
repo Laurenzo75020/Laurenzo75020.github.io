@@ -443,6 +443,33 @@
       }
     }
 
+    function easeOutElastic(t){
+      const c4 = (2 * Math.PI) / 3;
+      return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    }
+    function easeOutCubic(t){
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function scrollTargetFor(el){
+      const r = el.getBoundingClientRect();
+      const sr = scrubber.getBoundingClientRect();
+      return scrubber.scrollLeft + (r.left + r.width / 2) - (sr.left + sr.width / 2);
+    }
+
+    function tweenScrollLeft(target, duration, easing, onDone){
+      const start = scrubber.scrollLeft;
+      const delta = target - start;
+      const startTime = performance.now();
+      function step(now){
+        const t = Math.min((now - startTime) / duration, 1);
+        scrubber.scrollLeft = start + delta * easing(t);
+        if(t < 1){ requestAnimationFrame(step); }
+        else if(onDone){ onDone(); }
+      }
+      requestAnimationFrame(step);
+    }
+
     function centerOnIndex(idx, smooth){
       const clamped = Math.max(0, Math.min(idx, pages.length - 1));
       const el = scrubber.querySelector('.num[data-idx="' + clamped + '"]');
@@ -451,19 +478,20 @@
 
     function playHint(){
       const midIndex = Math.floor((pages.length - 1) / 2);
+      const midEl = scrubber.querySelector('.num[data-idx="' + midIndex + '"]');
+      if(!midEl) return;
 
       hinting = true;
-      centerOnIndex(midIndex, true);
-      setTimeout(() => {
-        centerOnIndex(midIndex - 4, true);
-        setTimeout(() => {
-          centerOnIndex(midIndex + 4, true);
-          setTimeout(() => {
-            scrollActiveIntoView(true);
-            setTimeout(() => { hinting = false; }, 400);
-          }, 350);
-        }, 350);
-      }, 380);
+      // Mouvement unique et doux vers le chiffre médian, avec rebond amorti à l'arrivée
+      tweenScrollLeft(scrollTargetFor(midEl), 1300, easeOutElastic, () => {
+        const activeEl = scrubber.querySelector('.num.active');
+        if(activeEl){
+          // Retour tout aussi doux vers la page réellement en cours
+          tweenScrollLeft(scrollTargetFor(activeEl), 900, easeOutCubic, () => { hinting = false; });
+        } else {
+          hinting = false;
+        }
+      });
     }
 
     scrubber.addEventListener('scroll', () => {
