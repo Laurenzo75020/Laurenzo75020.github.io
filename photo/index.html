@@ -443,23 +443,26 @@
       }
     }
 
+    function centerOnIndex(idx, smooth){
+      const clamped = Math.max(0, Math.min(idx, pages.length - 1));
+      const el = scrubber.querySelector('.num[data-idx="' + clamped + '"]');
+      if(el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', inline: 'center', block: 'nearest' });
+    }
+
     function playHint(){
-      const itemWidth = 26;
-      const distance = itemWidth * 10;
-      const maxScroll = scrubber.scrollWidth - scrubber.clientWidth;
-      const startScroll = scrubber.scrollLeft;
-      const roomRight = maxScroll - startScroll;
-      const roomLeft = startScroll;
-      const goRight = roomRight >= roomLeft;
-      const target = goRight
-        ? Math.min(startScroll + distance, maxScroll)
-        : Math.max(startScroll - distance, 0);
+      const midIndex = Math.floor((pages.length - 1) / 2);
 
       hinting = true;
-      scrubber.scrollTo({ left: target, behavior:'smooth' });
+      centerOnIndex(midIndex, true);
       setTimeout(() => {
-        scrollActiveIntoView(true);
-        setTimeout(() => { hinting = false; }, 400);
+        centerOnIndex(midIndex - 4, true);
+        setTimeout(() => {
+          centerOnIndex(midIndex + 4, true);
+          setTimeout(() => {
+            scrollActiveIntoView(true);
+            setTimeout(() => { hinting = false; }, 400);
+          }, 350);
+        }, 350);
       }, 380);
     }
 
