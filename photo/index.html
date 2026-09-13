@@ -478,20 +478,25 @@
 
     function playHint(){
       const midIndex = Math.floor((pages.length - 1) / 2);
-      const midEl = scrubber.querySelector('.num[data-idx="' + midIndex + '"]');
-      if(!midEl) return;
+      const nudge = 8;
+      let targetIndex;
+      if(current < nudge){
+        // Proche du début : glissement vers la droite
+        targetIndex = Math.min(current + nudge, pages.length - 1);
+      } else if(current > (pages.length - 1) - nudge){
+        // Proche de la fin : glissement vers la gauche
+        targetIndex = Math.max(current - nudge, 0);
+      } else {
+        // Ailleurs : glissement vers le numéro médian
+        targetIndex = midIndex;
+      }
+
+      const targetEl = scrubber.querySelector('.num[data-idx="' + targetIndex + '"]');
+      if(!targetEl) return;
 
       hinting = true;
-      // Mouvement unique et doux vers le chiffre médian, avec rebond amorti à l'arrivée
-      tweenScrollLeft(scrollTargetFor(midEl), 1300, easeOutElastic, () => {
-        const activeEl = scrubber.querySelector('.num.active');
-        if(activeEl){
-          // Retour tout aussi doux vers la page réellement en cours
-          tweenScrollLeft(scrollTargetFor(activeEl), 900, easeOutCubic, () => { hinting = false; });
-        } else {
-          hinting = false;
-        }
-      });
+      // Un seul glissement doux, sur 2 secondes
+      tweenScrollLeft(scrollTargetFor(targetEl), 2000, easeOutCubic, () => { hinting = false; });
     }
 
     scrubber.addEventListener('scroll', () => {
