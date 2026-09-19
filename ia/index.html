@@ -403,7 +403,7 @@ CONFIG.forEach((item,i)=>{
     imgIndex++;
     return;
   } else if(item.type==='image'){
-    const src=`../images/image${imgIndex}.jpg`;
+    const src=`../images/image${imgIndex}.jpg${imgIndex===1?'?v=2':''}`;
     imgIndex++;
     const img=document.createElement('img');
     img.src=src;
