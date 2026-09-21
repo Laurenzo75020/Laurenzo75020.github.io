@@ -31,61 +31,62 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .grid-wrapper { padding:0 2rem; background:#ffffff; }
 .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; background:#ffffff; }
 .cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
-/* Rangée 1: grande + carré + carré */
-/* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
+/* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
-.cell:nth-child(2)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
+.cell:nth-child(2)  { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(3)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
 /* Ligne 2 : carré + Shore Stories 16/9 + carré */
-.cell:nth-child(3)  { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(4)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
-.cell:nth-child(5)  { grid-column:span 1; aspect-ratio:8/9; }
-/* Ligne 3 : Fragment carré + carré + carré */
+.cell:nth-child(4)  { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(5)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
 .cell:nth-child(6)  { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 3 : Fragment carré + carré + carré */
 .cell:nth-child(7)  { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(8)  { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(8)  { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(9)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 4 : Sans titre II 16/9 + carré + Le Réel 16/9 */
-.cell:nth-child(9)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
-.cell:nth-child(10) { grid-column:span 2; aspect-ratio:16/9; }
-.cell:nth-child(11) { display:none; }
+.cell:nth-child(10)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(11) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(12) { display:none; }
 /* Ligne 4b : Le Réel 16/9 pleine largeur */
 /* → Le Réel sera seul sur sa ligne */
 /* Ligne 5 : Breaking-Up 16/9 + carré + carré */
-.cell:nth-child(12) { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(13) { grid-column:span 2; aspect-ratio:16/9; }
-.cell:nth-child(14) { grid-column:span 1; aspect-ratio:8/9; }
-/* Ligne 6 : carré + Moon carré + Air 16/9 */
+.cell:nth-child(13) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(14) { grid-column:span 2; aspect-ratio:16/9; }
 .cell:nth-child(15) { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(16) { grid-column:span 1; aspect-ratio:8/9; background:#0a0a0a; }
-.cell:nth-child(17) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
-/* Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9 */
+/* Ligne 6 : carré + Moon carré + Air 16/9 */
+.cell:nth-child(16) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(17) { grid-column:span 1; aspect-ratio:8/9; background:#0a0a0a; }
 .cell:nth-child(18) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9 */
 .cell:nth-child(19) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(20) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
 /* Ligne 8 : 4 carrés */
-.cell:nth-child(20) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(21) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(22) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(23) { grid-column:span 1; aspect-ratio:8/9; }
-/* Ligne 9 : carré + 16/9 + carré */
 .cell:nth-child(24) { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(25) { grid-column:span 2; aspect-ratio:16/9; }
-.cell:nth-child(26) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 9 : carré + 16/9 + carré */
+.cell:nth-child(25) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(26) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(27) { grid-column:span 1; aspect-ratio:8/9; }
 /* Ligne 10 : 16/9 + 16/9 */
-.cell:nth-child(27) { grid-column:span 2; aspect-ratio:16/9; }
 .cell:nth-child(28) { grid-column:span 2; aspect-ratio:16/9; }
-/* Ligne 11 : 16/9 + 16/9 + carré */
 .cell:nth-child(29) { grid-column:span 2; aspect-ratio:16/9; }
-.cell:nth-child(30) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 11 : 16/9 + 16/9 + carré */
+.cell:nth-child(30) { grid-column:span 2; aspect-ratio:16/9; }
 .cell:nth-child(31) { grid-column:span 1; aspect-ratio:8/9; }
-/* Ligne 12 : carré + 16/9 + 16/9 */
 .cell:nth-child(32) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 12 : carré + 16/9 + 16/9 */
 .cell:nth-child(33) { grid-column:span 1; aspect-ratio:8/9; }
-.cell:nth-child(34) { grid-column:span 2; aspect-ratio:16/9; }
-/* Ligne 13 : 16/9 + 16/9 */
+.cell:nth-child(34) { grid-column:span 1; aspect-ratio:8/9; }
 .cell:nth-child(35) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 13 : 16/9 + 16/9 */
 .cell:nth-child(36) { grid-column:span 2; aspect-ratio:16/9; }
-/* Ligne 14 : 16/9 + 16/9 */
 .cell:nth-child(37) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 14 : 16/9 + 16/9 */
 .cell:nth-child(38) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(39) { grid-column:span 2; aspect-ratio:16/9; }
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
@@ -100,29 +101,29 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
 
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air */
-  .cell:nth-child(2),
-  .cell:nth-child(4),
-  .cell:nth-child(9),
-  .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(3),
+  .cell:nth-child(5),
+  .cell:nth-child(10),
+  .cell:nth-child(18) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
 
   /* Photos alternées en span2 */
-  .cell:nth-child(22),
-  .cell:nth-child(27),
-  .cell:nth-child(32) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(23),
+  .cell:nth-child(28),
+  .cell:nth-child(33) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
 
   /* Films → fond noir */
-  .cell:nth-child(2)  { background:#0a0a0a !important; }  /* Mirror */
-  .cell:nth-child(4)  { background:#0a0a0a !important; }  /* Shore Stories */
+  .cell:nth-child(3)  { background:#0a0a0a !important; }  /* Mirror */
+  .cell:nth-child(5)  { background:#0a0a0a !important; }  /* Shore Stories */
   /* case 12 : Corps */
-  .cell:nth-child(16) { background:#0a0a0a !important; }  /* Moon */
-  .cell:nth-child(17) { background:#0a0a0a !important; }  /* Air */
-  .cell:nth-child(22) { background:#0a0a0a !important; }  /* L'Oréal */
-  .cell:nth-child(23) { background:#0a0a0a !important; }  /* Human Bomb */
+  .cell:nth-child(17) { background:#0a0a0a !important; }  /* Moon */
+  .cell:nth-child(18) { background:#0a0a0a !important; }  /* Air */
+  .cell:nth-child(23) { background:#0a0a0a !important; }  /* L'Oréal */
+  .cell:nth-child(24) { background:#0a0a0a !important; }  /* Human Bomb */
 
   .play-btn svg { width:24px; height:24px; }
-  /* Cells 37-38 en panoramique sur mobile */
-  .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* Cells 38-39 en panoramique sur mobile */
   .cell:nth-child(38) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(39) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .big-name { font-size:clamp(1.8rem,8vw,3rem); margin-bottom:.45rem; }
   .bio-strip { grid-template-columns:1fr; }
   .bio-left { border-right:none; border-bottom:none; padding:1.5rem 1.5rem .8rem; gap:.5rem; }
@@ -224,7 +225,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 
 <div class="section-label reveal" id="works">
   <span>Œuvres — 2024 / 2025</span>
-  <span>38 œuvres</span>
+  <span>39 œuvres</span>
 </div>
 
 <div class="grid-wrapper"><div class="grid" id="grid"></div></div>
@@ -272,8 +273,9 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 // Les images sont automatiquement : ../images/image1.jpg, image2.jpg...
 // ============================================================
 const CONFIG = [
-  // Ligne 1 : image 16/9 + Mirror 16/9
+  // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
@@ -403,7 +405,7 @@ CONFIG.forEach((item,i)=>{
     imgIndex++;
     return;
   } else if(item.type==='image'){
-    const src=`../images/image${imgIndex}.jpg${imgIndex===1?'?v=2':''}`;
+    const src=`../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
     imgIndex++;
     const img=document.createElement('img');
     img.src=src;
