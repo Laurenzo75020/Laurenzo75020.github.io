@@ -1,370 +1,267 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laurent Bourdoiseau — Photos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
-<style>
-  :root{ --ink:#0a0a0a; --bg:#ffffff; }
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Barlow', sans-serif;
-    overflow:hidden;
-    cursor:pointer;
-  }
-  .top-menu a{ cursor:pointer; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laurent Bourdoiseau — Photographie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#ffffff; --ink:#0a0a0a; --grey:#888; --line:rgba(0,0,0,0.08); --gap:56px; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{ background:var(--bg); color:var(--ink); font-family:'Barlow', sans-serif; }
 
-  .top-menu{
-    position:fixed;
-    top:1.4rem;
-    right:2rem;
-    z-index:200;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:0.5rem;
-    font-weight:600;
-    font-size:0.85rem;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    pointer-events:none;
-  }
-  .top-menu a{
-    color:var(--ink);
-    text-decoration:none;
-    opacity:0.9;
-    transition:opacity 0.2s;
-    pointer-events:auto;
-    text-shadow:0 0 6px rgba(255,255,255,0.85), 0 0 12px rgba(255,255,255,0.6), 0 1px 2px rgba(255,255,255,0.9);
-  }
-  .top-menu a:hover{ opacity:1; }
+    .top-menu{
+      position:fixed;
+      top:1.4rem;
+      right:2rem;
+      z-index:200;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:0.5rem;
+      font-family:'Barlow', sans-serif;
+      font-weight:600;
+      font-size:0.85rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      pointer-events:none;
+    }
+    .top-menu a{
+      color:var(--ink);
+      text-decoration:none;
+      opacity:0.85;
+      transition:opacity 0.2s;
+      pointer-events:auto;
+    }
+    .top-menu a:hover{ opacity:1; }
 
-  .counter-wrap{
-    position:fixed;
-    top:1.4rem;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:200;
-  }
+    .name-hero{ padding:6.5rem 0 0; }
+    .bio-strip{ display:grid; grid-template-columns:52fr 48fr; align-items:start; }
+    .bio-left{ padding:0 2rem 2rem; display:flex; flex-direction:column; align-items:flex-start; gap:0.6rem; }
+    .bio-right{ padding-top:0; padding-right:2rem; padding-bottom:1.5rem; padding-left:2rem; display:flex; flex-direction:column; align-items:stretch; }
+    .bio-text{ font-family:'Barlow', sans-serif; font-weight:400; font-size:0.9rem; line-height:1.8; letter-spacing:0.05em; text-transform:uppercase; text-align:right; }
+    .epigraph{
+      font-family:'Barlow', sans-serif;
+      font-weight:400;
+      font-size:0.9rem;
+      line-height:1.8;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      text-align:justify;
+      max-width:75%;
+      margin:0 0 1.6rem auto;
+      color:var(--ink);
+    }
+    .tag{ font-family:'Barlow', sans-serif; font-weight:400; font-size:0.88rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ink); padding:0.32rem 0.9rem; }
 
-  .counter{
-    font-size:0.75rem;
-    letter-spacing:0.1em;
-    color:#555;
-    cursor:pointer;
-    transition:opacity 0.15s;
-    text-shadow:0 0 6px rgba(255,255,255,0.85), 0 0 12px rgba(255,255,255,0.6), 0 1px 2px rgba(255,255,255,0.9);
-  }
-  .counter.hidden{ opacity:0; pointer-events:none; }
+    .section-label{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:1.2rem 2rem;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      font-family:'Barlow', sans-serif;
+      font-size:0.72rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--grey);
+    }
 
-  .scrubber{
-    position:absolute;
-    top:0;
-    left:50%;
-    transform:translateX(-50%);
-    display:none;
-    max-width:min(80vw, 520px);
-    overflow-x:auto;
-    white-space:nowrap;
-    -webkit-overflow-scrolling:touch;
-    background:rgba(255,255,255,0.94);
-    padding:0.5rem 1rem;
-    margin-top:-0.5rem;
-    scrollbar-width:none;
-    cursor:grab;
-    user-select:none;
-  }
-  .scrubber::-webkit-scrollbar{ display:none; }
-  .scrubber.open{ display:block; }
-  .scrubber.dragging{ cursor:grabbing; }
-  .scrubber .pad{ display:inline-block; width:40vw; }
-  .scrubber .num{
-    display:inline-block;
-    width:26px;
-    text-align:center;
-    font-size:0.7rem;
-    letter-spacing:0.02em;
-    color:#bbb;
-    cursor:pointer;
-    transition:color 0.15s;
-  }
-  .scrubber .num.active{ color:var(--ink); font-weight:600; }
+    .gallery{
+      display:flex;
+      gap:var(--gap);
+      padding:2rem 2rem 5rem;
+    }
+    .col{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:var(--gap);
+      min-width:0;
+    }
+    .cell{ line-height:0; }
+    .cell img{ width:100%; height:auto; display:block; -webkit-user-drag:none; -webkit-user-select:none; user-select:none; }
 
-  .stage{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:4.4rem 1vw 1.5vh 1vw;
-  }
-  .stage img{
-    max-width:100%;
-    max-height:100%;
-    width:auto;
-    height:auto;
-    display:block;
-    opacity:0;
-    transition:opacity 0.35s ease;
-    -webkit-user-drag:none;
-    -webkit-user-select:none;
-    user-select:none;
-    pointer-events:none;
-  }
-  .stage img.show{ opacity:1; }
+    footer{
+      padding:1.5rem 2rem 2.5rem;
+      font-family:'Barlow', sans-serif;
+      font-size:0.65rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      color:var(--grey);
+    }
 
-  .arrow{
-    position:fixed;
-    top:0;
-    bottom:0;
-    width:12%;
-    min-width:56px;
-    display:flex;
-    align-items:center;
-    z-index:150;
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    color:var(--ink);
-    opacity:0;
-    transition:opacity 0.2s;
-  }
-  .stage:hover ~ .arrow,
-  .arrow:hover{ opacity:0.55; }
+    .loading{
+      padding:2rem;
+      font-size:0.7rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      opacity:0.4;
+    }
 
-  @media (hover:none) and (pointer:coarse){
-    .arrow{ display:none; }
-  }
-  .arrow.prev{ left:0; justify-content:flex-start; padding-left:1.2rem; }
-  .arrow.next{ right:0; justify-content:flex-end; padding-right:1.2rem; }
-  .arrow svg{ width:28px; height:28px; }
-  .arrow[disabled]{ visibility:hidden; }
+    .cell img{ cursor:zoom-in; }
 
-  .loading{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:1.1rem;
-  }
+    .lightbox{
+      position:fixed;
+      inset:0;
+      z-index:500;
+      background:rgba(10,10,10,0.86);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:6vh 6vw;
+      cursor:zoom-out;
+    }
+    .lightbox.open{ display:flex; }
+    .lightbox img{
+      max-width:88vw;
+      max-height:88vh;
+      width:auto;
+      height:auto;
+      display:block;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      cursor:zoom-out;
+      -webkit-user-drag:none;
+      -webkit-user-select:none;
+      user-select:none;
+    }
 
-  @media (max-width:768px){
-    .top-menu{ top:1rem; right:1rem; gap:0.4rem; font-size:0.7rem; }
-    .stage{ padding:3.2rem 1vw 1rem; }
-    .stage img.portrait-contain{ max-height:85vh; }
-  }
-</style>
+    @media (max-width:768px){
+      .bio-strip{ grid-template-columns:1fr; }
+      .bio-left{ border-right:none; border-bottom:none; padding:1.5rem 1.5rem 0.8rem; gap:0.5rem; }
+      .bio-text{ font-size:0.75rem; text-align:right; }
+      .epigraph{ font-size:0.75rem; max-width:90%; text-align:justify; }
+      .bio-right{ padding:1rem 1.5rem 2rem; align-items:stretch; }
+    }
+
+    @media (max-width:980px){
+      .gallery{ gap:32px; padding:1.5rem 1.5rem 4rem; }
+      .col{ gap:32px; }
+    }
+
+    @media (max-width:560px){
+      .gallery{ gap:14px; padding:1rem 1rem 3rem; }
+      .col{ gap:14px; }
+      .top-menu{ top:1rem; right:1.25rem; font-size:0.7rem; gap:0.4rem; }
+      .name-hero{ padding-top:5.5rem; }
+    }
+  </style>
 </head>
 <body>
 
-<nav class="top-menu">
-  <a href="../">← Accueil</a>
-</nav>
+  <div class="top-menu">
+    <a href="../index.html">← Accueil</a>
+    <a href="./">Portfolio</a>
+    <a href="../ia/">IA</a>
+  </div>
 
-<div id="counterWrap" class="counter-wrap">
-  <div class="counter" id="counter"></div>
-  <div class="scrubber" id="scrubber"></div>
-</div>
+  <div class="name-hero">
+    <div class="bio-strip">
+      <div class="bio-left">
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+          <span class="tag">Street Photography</span>
+          <span class="tag">Portrait</span>
+          <span class="tag">Paris</span>
+        </div>
+      </div>
+      <div class="bio-right">
+        <p class="epigraph">« La photographie n'est pas très éloignée du territoire de l'enfance. On y joue et il s'y joue beaucoup de choses. C'est une syntaxe qu'il faut réactiver à chaque fois (par la marche souvent) pour accéder à cette dimension d'un réel extérieur qui correspond à mon état intérieur : délesté, épuré et candide. »</p>
+        <p class="bio-text">
+          Laurent Bourdoiseau a été l'assistant de William Klein. Son champ d'exploration puise dans les travaux des grands photographes comme Saul Leiter, Harry Gruyaert, Henri Cartier-Bresson, Doisneau, autant que dans la littérature, la psychanalyse ou l'art contemporain.
+        </p>
+      </div>
+    </div>
+  </div>
 
-<div class="stage" id="stage"></div>
+  <div class="section-label">
+    <span>Photographie — Paris</span>
+    <span id="photoCount"></span>
+  </div>
 
-<button class="arrow prev" id="prevBtn" aria-label="Image précédente">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="15 18 9 12 15 6"></polyline>
-  </svg>
-</button>
-<button class="arrow next" id="nextBtn" aria-label="Image suivante">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="9 18 15 12 9 6"></polyline>
-  </svg>
-</button>
+  <main class="gallery" id="gallery" aria-label="Galerie photographie">
+    <p class="loading">Chargement…</p>
+  </main>
 
-<script>
-  const IS_MOBILE = /Android|iPhone|iPad|iPod/.test(navigator.userAgent);
-  const IMG_FOLDER = '../photo/';
-  const stage = document.getElementById('stage');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const counter = document.getElementById('counter');
-  const scrubber = document.getElementById('scrubber');
-  
-  let pages = [];
-  let current = 0;
+  <footer>© 2026 Laurent Bourdoiseau</footer>
 
-  async function loadPages(){
-    try {
-      const imageNames = ['1.jpg','02.jpg','03.jpg','04.jpg','05.jpg','06.jpg','07.jpg','08.jpg','09.jpg','10.jpg','11.jpg','12.jpg','13.jpg','14.jpg','15.jpg','16.jpg','17.jpg','18.jpg','19.jpg','20.jpg','21.jpg','22.jpg','23.jpg','24.jpg','25.jpg','26.jpg','27.jpg','28.jpg','29.jpg','30.jpg','31.jpg','32.jpg','33.jpg','34.jpg','35.jpg','36.jpg','45.jpg','46.jpg','47.jpg','48.jpg'];
-      
-      pages = imageNames.map(name => ({ name }));
-      stage.innerHTML = '<img id="pageImg" src="" alt="">';
-      buildScrubber();
-      showPage(0);
-    }catch(err){
-      stage.innerHTML = '<div class="loading">Erreur de chargement.</div>';
-      console.error(err);
-    }
-  }
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
 
-  function showPage(i){
-    current = Math.max(0, Math.min(i, pages.length - 1));
-    const img = document.getElementById('pageImg');
-    const file = pages[current];
-    const src = IMG_FOLDER + encodeURIComponent(file.name);
+  <script>
+    const REPO_API = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo";
+    const IMG_EXT = /\.(jpe?g|png|webp)$/i;
 
-    img.classList.remove('show');
-    const swap = () => {
-      img.src = src;
-      img.onload = () => {
-        img.classList.add('show');
-        if(IS_MOBILE){
-          const imgRatio = img.naturalHeight / img.naturalWidth;
-          img.classList.toggle('portrait-contain', imgRatio > 1.3);
+    async function loadGallery() {
+      const gallery = document.getElementById('gallery');
+      const countEl = document.getElementById('photoCount');
+      try {
+        const res = await fetch(REPO_API + '?t=' + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("API error " + res.status);
+        const files = await res.json();
+
+        const images = files
+          .filter(f => f.type === "file" && IMG_EXT.test(f.name))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+
+        gallery.innerHTML = "";
+
+        if (images.length === 0) {
+          gallery.innerHTML = '<p class="loading">Aucune image trouvée.</p>';
+          return;
         }
-      };
-    };
-    setTimeout(swap, 150);
 
-    counter.textContent = (current + 1) + ' / ' + pages.length;
-    prevBtn.disabled = current === 0;
-    updateScrubberActive();
-  }
+        countEl.textContent = images.length + (images.length > 1 ? " photos" : " photo");
 
-  function goNext(){
-    if(current >= pages.length - 1){
-      window.location.href = '../';
-    } else {
-      showPage(current + 1);
-    }
-  }
+        const columns = [[], [], []];
+        images.forEach((img, i) => columns[i % 3].push(img));
 
-  prevBtn.addEventListener('click', () => showPage(current - 1));
-  nextBtn.addEventListener('click', goNext);
-
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('a') || e.target.closest('.arrow') || e.target.closest('.counter') || e.target.closest('.scrubber')) return;
-    const isLeft = e.clientX < window.innerWidth / 2;
-    isLeft ? showPage(current - 1) : goNext();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if(e.key === 'ArrowLeft') showPage(current - 1);
-    if(e.key === 'ArrowRight') goNext();
-  });
-
-  let touchStartX = null;
-  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend', e => {
-    if(touchStartX === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if(Math.abs(dx) > 50) dx > 0 ? showPage(current - 1) : goNext();
-    touchStartX = null;
-  }, {passive:true});
-
-  loadPages();
-
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('dragstart', e => e.preventDefault());
-
-  let scrubTimeout = null;
-  let dragging = false;
-  let dragStartX = 0;
-  let dragStartScroll = 0;
-
-  function buildScrubber(){
-    const frag = document.createDocumentFragment();
-    const padStart = document.createElement('span');
-    padStart.className = 'pad';
-    frag.appendChild(padStart);
-    pages.forEach((p, idx) => {
-      const el = document.createElement('span');
-      el.className = 'num';
-      el.textContent = idx + 1;
-      el.dataset.idx = idx;
-      frag.appendChild(el);
-    });
-    const padEnd = document.createElement('span');
-    padEnd.className = 'pad';
-    frag.appendChild(padEnd);
-    scrubber.innerHTML = '';
-    scrubber.appendChild(frag);
-  }
-
-  function updateScrubberActive(){
-    scrubber.querySelectorAll('.num').forEach(el => {
-      el.classList.toggle('active', Number(el.dataset.idx) === current);
-    });
-    if(scrubber.classList.contains('open') && !dragging) scrollActiveIntoView(false);
-  }
-
-  function scrollActiveIntoView(smooth){
-    const active = scrubber.querySelector('.num.active');
-    if(active) active.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', inline: 'center', block: 'nearest' });
-  }
-
-  counter.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openScrubber(!scrubber.classList.contains('open'));
-  });
-
-  const counterWrap = document.getElementById('counterWrap');
-  counterWrap.addEventListener('mouseenter', () => openScrubber(true));
-  counterWrap.addEventListener('mouseleave', () => { if(!dragging) openScrubber(false); });
-
-  function openScrubber(open){
-    scrubber.classList.toggle('open', open);
-    counter.classList.toggle('hidden', open);
-    if(open) scrollActiveIntoView(false);
-  }
-
-  scrubber.addEventListener('mousedown', (e) => {
-    dragging = true;
-    scrubber.classList.add('dragging');
-    dragStartX = e.clientX;
-    dragStartScroll = scrubber.scrollLeft;
-    e.preventDefault();
-  });
-  window.addEventListener('mousemove', (e) => {
-    if(!dragging) return;
-    scrubber.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
-  });
-  window.addEventListener('mouseup', () => {
-    if(!dragging) return;
-    dragging = false;
-    scrubber.classList.remove('dragging');
-  });
-
-  scrubber.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const num = e.target.closest('.num');
-    if(num) showPage(Number(num.dataset.idx));
-  });
-
-  scrubber.addEventListener('scroll', () => {
-    clearTimeout(scrubTimeout);
-    scrubTimeout = setTimeout(() => {
-      const rect = scrubber.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      let closest = null, closestDist = Infinity;
-      scrubber.querySelectorAll('.num').forEach(el => {
-        const r = el.getBoundingClientRect();
-        const dist = Math.abs((r.left + r.width/2) - centerX);
-        if(dist < closestDist){ closestDist = dist; closest = el; }
-      });
-      if(closest){
-        const idx = Number(closest.dataset.idx);
-        if(idx !== current) showPage(idx);
+        columns.forEach(colImages => {
+          const colEl = document.createElement('div');
+          colEl.className = 'col';
+          colImages.forEach(img => {
+            const fig = document.createElement('figure');
+            fig.className = 'cell';
+            const el = document.createElement('img');
+            el.src = encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
+            el.alt = '';
+            el.loading = 'lazy';
+            el.addEventListener('click', () => openLightbox(el.src));
+            fig.appendChild(el);
+            colEl.appendChild(fig);
+          });
+          gallery.appendChild(colEl);
+        });
+      } catch (err) {
+        gallery.innerHTML = '<p class="loading">Erreur de chargement de la galerie.</p>';
+        console.error(err);
       }
-    }, 120);
-  }, { passive:true });
-</script>
+    }
 
-<script src="/image-protection.js"></script>
+    loadGallery();
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add('open');
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+    }
+    lightbox.addEventListener('click', () => closeLightbox());
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+  </script>
+
+  <script src="/image-protection.js"></script>
 </body>
 </html>
