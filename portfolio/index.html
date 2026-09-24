@@ -229,8 +229,6 @@
 
   <div class="top-menu">
     <a href="../index.html" id="homeLink">← Accueil</a>
-    <a href="../photos/">Photo</a>
-    <a href="../ia/">IA</a>
   </div>
   <div class="counter-wrap" id="counterWrap">
     <div class="counter" id="counter"></div>
@@ -254,7 +252,7 @@
     const API_BASE = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo/";
     const REPO_API_DESKTOP = API_BASE + "book";
     const REPO_API_MOBILE = API_BASE + "book-mobile";
-    let IMG_FOLDER = IS_MOBILE ? "book-mobile/" : "book/";
+    let IMG_FOLDER = IS_MOBILE ? "../photo/book-mobile/" : "../photo/book/";
     const IMG_EXT = /\.(jpe?g|png|webp)$/i;
 
     let pages = [];
@@ -288,7 +286,7 @@
             if(parsePages(files).length === 0) throw new Error("dossier mobile vide");
           }catch(e){
             // Repli automatique sur le jeu desktop si le dossier mobile est vide/absent
-            IMG_FOLDER = "book/";
+            IMG_FOLDER = "../photo/book/";
             files = await fetchFolder(REPO_API_DESKTOP);
           }
         }else{
