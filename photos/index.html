@@ -154,7 +154,7 @@
 
   <div class="top-menu">
     <a href="../index.html">← Accueil</a>
-    <a href="./">Portfolio</a>
+    <a href="../portfolio/">Portfolio</a>
     <a href="../ia/">IA</a>
   </div>
 
@@ -226,7 +226,7 @@
             const fig = document.createElement('figure');
             fig.className = 'cell';
             const el = document.createElement('img');
-            el.src = encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
+            el.src = '../photo/' + encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
             el.alt = '';
             el.loading = 'lazy';
             el.addEventListener('click', () => openLightbox(el.src));
