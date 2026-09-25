@@ -142,23 +142,11 @@
       .bio-text{ font-size:0.75rem; text-align:right; }
       .epigraph{ font-size:0.75rem; max-width:90%; text-align:justify; }
       .bio-right{ padding:1rem 1.5rem 2rem; align-items:stretch; }
-      .name-hero{ padding-top:calc(8.2rem + env(safe-area-inset-top)); }
-      html, body{
-        height:100%;
-        position:fixed;
-        inset:0;
-        overflow:hidden;
-        touch-action:none;
-        overscroll-behavior:none;
+      .name-hero{ padding-top:1.6rem; }
+      .top-menu{
+        position:static;
         width:100%;
-      }
-      .page-scroll{
-        position:absolute;
-        inset:0;
-        overflow-y:auto;
-        -webkit-overflow-scrolling:touch;
-        touch-action:pan-y;
-        overscroll-behavior:contain;
+        padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0;
       }
     }
 
@@ -175,13 +163,12 @@
 </head>
 <body>
 
+  <div class="page-scroll">
   <div class="top-menu">
     <a href="../index.html">← Accueil</a>
     <a href="../ia/">IA</a>
     <a href="../portfolio/">Portfolio</a>
   </div>
-
-  <div class="page-scroll">
   <div class="name-hero">
     <div class="bio-strip">
       <div class="bio-left">
