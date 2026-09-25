@@ -37,7 +37,7 @@
     }
     .top-menu a:hover{ opacity:1; }
 
-    .name-hero{ padding:6.5rem 0 0; }
+    .name-hero{ padding:calc(6.5rem + env(safe-area-inset-top)) 0 0; }
     .bio-strip{ display:grid; grid-template-columns:52fr 48fr; align-items:start; }
     .bio-left{ padding:0 2rem 2rem; display:flex; flex-direction:column; align-items:flex-start; gap:0.6rem; }
     .bio-right{ padding-top:0; padding-right:2rem; padding-bottom:1.5rem; padding-left:2rem; display:flex; flex-direction:column; align-items:stretch; }
