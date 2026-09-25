@@ -105,6 +105,17 @@
     opacity:1;
   }
 
+  @media (max-width:899px){
+    .bg-left{ filter:brightness(0.95) saturate(1.35) contrast(1.12); }
+    .bg-right{ filter:brightness(0.62) saturate(1.35) contrast(1.12); }
+
+    body.hover-left .bg-left{ filter:brightness(1.05) saturate(1.4) contrast(1.12); }
+    body.hover-left .bg-right{ filter:brightness(0.5) saturate(1.35) contrast(1.12); }
+
+    body.hover-right .bg-right{ filter:brightness(1.05) saturate(1.4) contrast(1.12); }
+    body.hover-right .bg-left{ filter:brightness(0.5) saturate(1.35) contrast(1.12); }
+  }
+
   @media (max-width:560px){
     .signature{ top:calc(4vh + env(safe-area-inset-top)); left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
     nav.choice{

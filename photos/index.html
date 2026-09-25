@@ -139,8 +139,21 @@
       .epigraph{ font-size:0.75rem; max-width:90%; text-align:justify; }
       .bio-right{ padding:1rem 1.5rem 2rem; align-items:stretch; }
       .name-hero{ padding-top:calc(8.2rem + env(safe-area-inset-top)); }
-      html, body{ height:100%; overflow:hidden; }
-      .page-scroll{ height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+      html, body{
+        height:100%;
+        position:fixed;
+        inset:0;
+        overflow:hidden;
+        touch-action:none;
+        width:100%;
+      }
+      .page-scroll{
+        position:absolute;
+        inset:0;
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+        touch-action:pan-y;
+      }
     }
 
     @media (max-width:980px){
