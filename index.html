@@ -10,12 +10,19 @@
 <style>
   :root{ --ink:#f5f3ee; }
   *{ margin:0; padding:0; box-sizing:border-box; }
-  html,body{ height:100%; }
+  html,body{
+    height:100%;
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    touch-action:none;
+    -webkit-overflow-scrolling:auto;
+  }
   body{
+    width:100%;
     background:#0a0a0a;
     color:var(--ink);
     font-family:'Fraunces', serif;
-    overflow:hidden;
     cursor:pointer;
   }
 
@@ -95,8 +102,13 @@
   }
 
   @media (max-width:560px){
-    .signature{ top:4vh; left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
-    nav.choice{ top:1rem; right:1.25rem; gap:0.4rem; font-size:0.7rem; }
+    .signature{ top:calc(4vh + env(safe-area-inset-top)); left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
+    nav.choice{
+      top:calc(1rem + env(safe-area-inset-top));
+      right:calc(1.25rem + env(safe-area-inset-right));
+      gap:0.4rem;
+    }
+    nav.choice a{ font-size:0.7rem; }
   }
 </style>
 </head>
