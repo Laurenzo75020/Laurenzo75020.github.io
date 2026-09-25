@@ -106,14 +106,9 @@
   }
 
   @media (max-width:899px){
-    .bg-left{ filter:brightness(0.95) saturate(1.35) contrast(1.12); }
-    .bg-right{ filter:brightness(0.62) saturate(1.35) contrast(1.12); }
-
-    body.hover-left .bg-left{ filter:brightness(1.05) saturate(1.4) contrast(1.12); }
-    body.hover-left .bg-right{ filter:brightness(0.5) saturate(1.35) contrast(1.12); }
-
-    body.hover-right .bg-right{ filter:brightness(1.05) saturate(1.4) contrast(1.12); }
-    body.hover-right .bg-left{ filter:brightness(0.5) saturate(1.35) contrast(1.12); }
+    .veil{
+      background:linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.55) 100%);
+    }
   }
 
   @media (max-width:560px){
