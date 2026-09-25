@@ -14,8 +14,8 @@
 
     .top-menu{
       position:fixed;
-      top:1.4rem;
-      right:2rem;
+      top:calc(1.4rem + env(safe-area-inset-top));
+      right:calc(2rem + env(safe-area-inset-right));
       z-index:200;
       display:flex;
       flex-direction:column;
@@ -145,8 +145,6 @@
     @media (max-width:560px){
       .gallery{ gap:14px; padding:1rem 1rem 3rem; }
       .col{ gap:14px; }
-      .top-menu{ top:1rem; right:1.25rem; font-size:0.7rem; gap:0.4rem; }
-      .name-hero{ padding-top:5.5rem; }
     }
   </style>
 </head>

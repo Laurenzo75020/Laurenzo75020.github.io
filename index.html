@@ -75,8 +75,8 @@
 
   nav.choice{
     position:fixed;
-    top:1.4rem;
-    right:2rem;
+    top:calc(1.4rem + env(safe-area-inset-top));
+    right:calc(2rem + env(safe-area-inset-right));
     z-index:2;
     display:flex;
     flex-direction:column;
@@ -103,12 +103,6 @@
 
   @media (max-width:560px){
     .signature{ top:calc(4vh + env(safe-area-inset-top)); left:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
-    nav.choice{
-      top:calc(1rem + env(safe-area-inset-top));
-      right:calc(1.25rem + env(safe-area-inset-right));
-      gap:0.4rem;
-    }
-    nav.choice a{ font-size:0.7rem; }
   }
 </style>
 </head>
