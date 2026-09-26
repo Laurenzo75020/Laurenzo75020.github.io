@@ -228,20 +228,39 @@
 
         countEl.textContent = images.length + (images.length > 1 ? " photos" : " photo");
 
-        const columns = [[], [], []];
-        images.forEach((img, i) => columns[i % 3].push(img));
+        // Les 3 colonnes ont la même largeur : on répartit chaque image dans la
+        // colonne la plus courte (masonry), à égalité on privilégie toujours la
+        // colonne de gauche, pour garder un rendu "escalier descendant" gauche→droite.
+        const loaded = await Promise.all(images.map(img => new Promise(resolve => {
+          const el = document.createElement('img');
+          el.alt = '';
+          el.addEventListener('click', () => openLightbox(el.src));
+          const settle = () => {
+            const ratio = (el.naturalWidth && el.naturalHeight) ? el.naturalWidth / el.naturalHeight : 1;
+            resolve({ el, ratio });
+          };
+          el.addEventListener('load', settle);
+          el.addEventListener('error', settle);
+          el.src = '../photo/' + encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
+        })));
 
-        columns.forEach(colImages => {
+        const columns = [[], [], []];
+        const colHeights = [0, 0, 0];
+        loaded.forEach(item => {
+          let target = 0;
+          for (let c = 1; c < colHeights.length; c++) {
+            if (colHeights[c] < colHeights[target]) target = c;
+          }
+          columns[target].push(item.el);
+          colHeights[target] += 1 / item.ratio;
+        });
+
+        columns.forEach(colEls => {
           const colEl = document.createElement('div');
           colEl.className = 'col';
-          colImages.forEach(img => {
+          colEls.forEach(el => {
             const fig = document.createElement('figure');
             fig.className = 'cell';
-            const el = document.createElement('img');
-            el.src = '../photo/' + encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
-            el.alt = '';
-            el.loading = 'lazy';
-            el.addEventListener('click', () => openLightbox(el.src));
             fig.appendChild(el);
             colEl.appendChild(fig);
           });
