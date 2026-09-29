@@ -34,6 +34,8 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .grid-wrapper { padding:0 2rem; background:#ffffff; }
 .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; background:#ffffff; }
 .cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
+/* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
+.cell.cell-first { order:-1; grid-column:span 2; aspect-ratio:16/9; }
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -102,6 +104,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
   /* 1ère case : photo pleine largeur */
   .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell.cell-first { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
 
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air */
   .cell:nth-child(3),
@@ -237,7 +240,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 
 <div class="section-label reveal" id="works">
   <span>Œuvres — 2024 / 2025</span>
-  <span>39 œuvres</span>
+  <span>40 œuvres</span>
 </div>
 
 <div class="grid-wrapper"><div class="grid" id="grid"></div></div>
@@ -329,6 +332,8 @@ const CONFIG = [
   // Ligne 14 : carré + carré
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
+  // Épinglée en tête via order:-1 (cellule .cell-first) — ne pas déplacer dans le tableau
+  {type:'image', t:'Sans titre XII',    s:'Image IA · 2025', src:'../images/image_new1.jpg', pinFirst:true},
 ];
 // ============================================================
 
@@ -407,8 +412,9 @@ CONFIG.forEach((item,i)=>{
     imgIndex++;
     return;
   } else if(item.type==='image'){
-    const src=`../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
+    const src=item.src || `../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
     imgIndex++;
+    if(item.pinFirst) cell.classList.add('cell-first');
     const img=document.createElement('img');
     img.src=src;
     img.alt=item.t;
