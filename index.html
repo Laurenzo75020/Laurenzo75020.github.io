@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
 <style>
-  :root{ --ink:#ffffff; }
+  :root{ --ink:#ffffff; --split:50%; }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{
     height:100%;
@@ -23,7 +23,7 @@
     background:#0a0a0a;
     color:var(--ink);
     font-family:'Fraunces', serif;
-    cursor:pointer;
+    cursor:default;
   }
 
   .bg-half{
@@ -32,22 +32,29 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    object-position:center 38%;
-    transition:filter 0.5s ease;
+    object-position:center center;
   }
 
-  .bg-left{ clip-path:inset(0 50% 0 0); filter:brightness(1); }
-  .bg-right{ clip-path:inset(0 0 0 50%); filter:brightness(0.65); }
+  .bg-left{ clip-path:inset(0 calc(100% - var(--split)) 0 0); }
+  .bg-right{ clip-path:inset(0 0 0 var(--split)); }
 
-  body.hover-left .bg-left{ filter:brightness(1.15) saturate(1.05); }
-  body.hover-left .bg-right{ filter:brightness(0.55); }
+  body.snap-back .bg-left,
+  body.snap-back .bg-right{ transition:clip-path 0.6s ease; }
 
-  body.hover-right .bg-right{ filter:brightness(1.15) saturate(1.05); }
-  body.hover-right .bg-left{ filter:brightness(0.55); }
-
-  @media (min-width:900px) and (min-aspect-ratio:1/1){
-    .bg-half{ object-position:center center; }
+  .shutter-line{
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:var(--split);
+    width:2px;
+    margin-left:-1px;
+    background:rgba(255,255,255,0.85);
+    box-shadow:0 0 12px rgba(0,0,0,0.35);
+    z-index:1;
+    pointer-events:none;
   }
+
+  body.snap-back .shutter-line{ transition:left 0.6s ease; }
 
   .veil{
     position:fixed;
@@ -127,14 +134,9 @@
 </head>
 <body>
 
-  <picture>
-    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg?v=2">
-    <img class="bg-half bg-left" src="accueil.jpg?v=2" alt="">
-  </picture>
-  <picture>
-    <source media="(min-width:900px) and (min-aspect-ratio:1/1)" srcset="accueil_desktop.jpg?v=2">
-    <img class="bg-half bg-right" src="accueil.jpg?v=2" alt="">
-  </picture>
+  <img class="bg-half bg-left" src="hero-left.jpg" alt="">
+  <img class="bg-half bg-right" src="hero-right.jpg" alt="">
+  <div class="shutter-line"></div>
   <div class="veil"></div>
 
   <div class="signature">Laurent Bourdoiseau</div>
@@ -147,36 +149,34 @@
 
   <script>
     (function(){
+      var root = document.documentElement;
       var body = document.body;
 
-      function setSide(clientX){
-        var isLeft = clientX < window.innerWidth / 2;
-        body.classList.toggle('hover-left', isLeft);
-        body.classList.toggle('hover-right', !isLeft);
+      function setSplit(clientX){
+        var pct = Math.max(0, Math.min(100, (clientX / window.innerWidth) * 100));
+        root.style.setProperty('--split', pct + '%');
       }
 
-      function clearSide(){
-        body.classList.remove('hover-left', 'hover-right');
+      function snapToCenter(){
+        body.classList.add('snap-back');
+        root.style.setProperty('--split', '50%');
       }
 
-      // Souris (desktop)
-      window.addEventListener('mousemove', function(e){ setSide(e.clientX); });
-      window.addEventListener('mouseleave', clearSide);
-
-      // Tactile (mobile)
-      window.addEventListener('touchstart', function(e){
-        if (e.touches[0]) setSide(e.touches[0].clientX);
-      }, { passive:true });
-      window.addEventListener('touchmove', function(e){
-        if (e.touches[0]) setSide(e.touches[0].clientX);
-      }, { passive:true });
-      window.addEventListener('touchend', clearSide);
-
-      document.addEventListener('click', function(e){
-        if (e.target.closest('a')) return; // liens du menu gèrent déjà leur propre clic
-        var isLeft = e.clientX < window.innerWidth / 2;
-        window.location.href = isLeft ? 'photo/' : 'ia/';
+      // Souris (desktop) : le volet suit le curseur en continu
+      window.addEventListener('mousemove', function(e){
+        body.classList.remove('snap-back');
+        setSplit(e.clientX);
       });
+      window.addEventListener('mouseleave', snapToCenter);
+
+      // Tactile (mobile) : le volet suit le doigt
+      window.addEventListener('touchmove', function(e){
+        if (e.touches[0]){
+          body.classList.remove('snap-back');
+          setSplit(e.touches[0].clientX);
+        }
+      }, { passive:true });
+      window.addEventListener('touchend', snapToCenter);
     })();
   </script>
 
