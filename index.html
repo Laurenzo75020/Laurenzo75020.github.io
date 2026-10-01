@@ -8,15 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
 <style>
-  :root{ --ink:#ffffff; --split:50%; }
+  :root{ --ink:#ffffff; }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{
     height:100%;
     position:fixed;
     inset:0;
     overflow:hidden;
-    touch-action:none;
-    -webkit-overflow-scrolling:auto;
   }
   body{
     width:100%;
@@ -26,8 +24,28 @@
     cursor:default;
   }
 
-  .bg-half{
+  #scenes{
     position:fixed;
+    inset:0;
+    height:100%;
+    overflow-y:auto;
+    overflow-x:hidden;
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+  }
+
+  .scene{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+  }
+
+  .bg-half{
+    position:absolute;
     inset:0;
     width:100%;
     height:100%;
@@ -35,17 +53,17 @@
     object-position:center center;
   }
 
-  .bg-left{ clip-path:inset(0 calc(100% - var(--split)) 0 0); }
-  .bg-right{ clip-path:inset(0 0 0 var(--split)); }
+  .bg-l{ clip-path:inset(0 50% 0 0); }
+  .bg-r{ clip-path:inset(0 0 0 50%); }
 
-  body.snap-back .bg-left,
-  body.snap-back .bg-right{ transition:clip-path 0.6s ease; }
+  .scene.snap-back .bg-l,
+  .scene.snap-back .bg-r{ transition:clip-path 0.6s ease; }
 
   .shutter-line{
-    position:fixed;
+    position:absolute;
     top:0;
     bottom:0;
-    left:var(--split);
+    left:50%;
     width:2px;
     margin-left:-1px;
     background:rgba(255,255,255,0.85);
@@ -54,7 +72,29 @@
     pointer-events:none;
   }
 
-  body.snap-back .shutter-line{ transition:left 0.6s ease; }
+  .scene.snap-back .shutter-line{ transition:left 0.6s ease; }
+
+  .scroll-hint{
+    position:absolute;
+    left:50%;
+    bottom:calc(2.2rem + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+    z-index:2;
+    opacity:1;
+    transition:opacity 0.5s ease;
+    pointer-events:none;
+  }
+
+  .scroll-hint svg{
+    display:block;
+    animation:hint-bounce 1.6s ease-in-out infinite;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+  }
+
+  @keyframes hint-bounce{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(8px); }
+  }
 
   .signature{
     position:fixed;
@@ -62,7 +102,7 @@
     left:2.2rem;
     right:2.2rem;
     min-height:2.2rem;
-    z-index:2;
+    z-index:3;
     display:flex;
     align-items:center;
     text-align:left;
@@ -81,7 +121,7 @@
     position:fixed;
     top:calc(3.4rem + env(safe-area-inset-top));
     right:calc(2rem + env(safe-area-inset-right));
-    z-index:2;
+    z-index:3;
     display:flex;
     flex-direction:column;
     align-items:flex-end;
@@ -120,14 +160,30 @@
       font-size:0.85rem;
       padding:0.35rem 0.7rem;
     }
+    .scroll-hint{ bottom:calc(5.4rem + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
 <body>
 
-  <img class="bg-half bg-left" src="hero-right.jpg" alt="">
-  <img class="bg-half bg-right" src="hero-left.jpg" alt="">
-  <div class="shutter-line"></div>
+  <div id="scenes">
+    <section class="scene" data-scene="1">
+      <img class="bg-half bg-l" src="hero-right.jpg" alt="">
+      <img class="bg-half bg-r" src="hero-left.jpg" alt="">
+      <div class="shutter-line"></div>
+      <div class="scroll-hint" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M5 10L13 18L21 10" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="2">
+      <img class="bg-half bg-l" src="scene2-left.jpg" alt="">
+      <img class="bg-half bg-r" src="scene2-right.jpg" alt="">
+      <div class="shutter-line"></div>
+    </section>
+  </div>
 
   <div class="signature">Laurent Bourdoiseau</div>
 
@@ -139,34 +195,89 @@
 
   <script>
     (function(){
-      var root = document.documentElement;
-      var body = document.body;
+      var scenesEl = document.getElementById('scenes');
+      var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
 
-      function setSplit(clientX){
-        var pct = Math.max(0, Math.min(100, (clientX / window.innerWidth) * 100));
-        root.style.setProperty('--split', pct + '%');
-      }
+      scenes.forEach(function(scene){
+        var l = scene.querySelector('.bg-l');
+        var r = scene.querySelector('.bg-r');
+        var line = scene.querySelector('.shutter-line');
+        var demoed = false;
 
-      function snapToCenter(){
-        body.classList.add('snap-back');
-        root.style.setProperty('--split', '50%');
-      }
-
-      // Souris (desktop) : le volet suit le curseur en continu
-      window.addEventListener('mousemove', function(e){
-        body.classList.remove('snap-back');
-        setSplit(e.clientX);
-      });
-      window.addEventListener('mouseleave', snapToCenter);
-
-      // Tactile (mobile) : le volet suit le doigt
-      window.addEventListener('touchmove', function(e){
-        if (e.touches[0]){
-          body.classList.remove('snap-back');
-          setSplit(e.touches[0].clientX);
+        function setSplit(pct){
+          pct = Math.max(0, Math.min(100, pct));
+          l.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+          r.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+          line.style.left = pct + '%';
         }
-      }, { passive:true });
-      window.addEventListener('touchend', snapToCenter);
+
+        function snapToCenter(){
+          scene.classList.add('snap-back');
+          setSplit(50);
+        }
+
+        function pctFromClientX(clientX){
+          var rect = scene.getBoundingClientRect();
+          return ((clientX - rect.left) / rect.width) * 100;
+        }
+
+        scene.addEventListener('mousemove', function(e){
+          scene.classList.remove('snap-back');
+          setSplit(pctFromClientX(e.clientX));
+        });
+        scene.addEventListener('mouseleave', snapToCenter);
+
+        scene.addEventListener('touchmove', function(e){
+          if (e.touches[0]){
+            scene.classList.remove('snap-back');
+            setSplit(pctFromClientX(e.touches[0].clientX));
+          }
+        }, { passive:true });
+        scene.addEventListener('touchend', snapToCenter);
+
+        function runDemo(){
+          if (demoed) return;
+          demoed = true;
+          var t0 = performance.now();
+          function step(t){
+            var e = (t - t0) / 900;
+            if (e > 1){ setSplit(50); return; }
+            setSplit(50 - Math.sin(e * Math.PI) * 16);
+            requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+
+        new IntersectionObserver(function(entries){
+          entries.forEach(function(en){ if (en.isIntersecting) runDemo(); });
+        }, { root:scenesEl, threshold:0.6 }).observe(scene);
+      });
+
+      // Indice de scroll : visible sur la scène 1, s'efface au scroll,
+      // revient 3s après si on est toujours sur la scène 1.
+      var scene1 = scenes[0];
+      var hint = scene1.querySelector('.scroll-hint');
+      var onScene1 = true;
+      var reappearTimer = null;
+
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          onScene1 = en.isIntersecting && en.intersectionRatio > 0.6;
+          if (!onScene1){
+            hint.style.opacity = '0';
+            if (reappearTimer) clearTimeout(reappearTimer);
+          }
+        });
+      }, { root:scenesEl, threshold:[0, 0.6] }).observe(scene1);
+
+      scenesEl.addEventListener('scroll', function(){
+        if (!onScene1) return;
+        hint.style.opacity = '0';
+        if (reappearTimer) clearTimeout(reappearTimer);
+        reappearTimer = setTimeout(function(){
+          if (onScene1) hint.style.opacity = '1';
+        }, 3000);
+      });
     })();
   </script>
 
