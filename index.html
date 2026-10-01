@@ -56,6 +56,10 @@
   .bg-l{ clip-path:inset(0 50% 0 0); }
   .bg-r{ clip-path:inset(0 0 0 50%); }
 
+  @media (orientation:portrait){
+    .bg-half{ object-fit:contain; }
+  }
+
   .scene.snap-back .bg-l,
   .scene.snap-back .bg-r{ transition:clip-path 0.6s ease; }
 
