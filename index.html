@@ -83,6 +83,20 @@
     opacity:1;
     transition:opacity 0.5s ease;
     pointer-events:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.4rem;
+  }
+
+  .scroll-hint .label{
+    font-family:'Barlow', sans-serif;
+    font-weight:600;
+    font-size:0.8rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:#fff;
+    text-shadow:0 2px 6px rgba(0,0,0,0.45);
   }
 
   .scroll-hint svg{
@@ -199,6 +213,7 @@
   </div>
 
   <div class="scroll-hint" aria-hidden="true">
+    <span class="label">Scroll</span>
     <svg width="56" height="72" viewBox="0 0 56 72" fill="none">
       <path d="M8 20L28 36L48 20" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M8 40L28 56L48 40" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -271,30 +286,36 @@
         }, { root:scenesEl, threshold:0.6 }).observe(scene);
       });
 
-      // Indice de scroll : visible sur la scène 1, s'efface au scroll,
-      // revient 3s après si on est toujours sur la scène 1.
-      var scene1 = scenes[0];
+      // Indice de scroll : visible sur chaque scène (sauf la dernière),
+      // s'efface pendant le scroll, revient 3s après l'arrêt si on est
+      // toujours sur une scène qui a une suite. Réapparaît aussi en
+      // remontant vers une scène précédente.
       var hint = document.querySelector('.scroll-hint');
-      var onScene1 = true;
+      var activeIndex = 0;
       var reappearTimer = null;
 
-      new IntersectionObserver(function(entries){
-        entries.forEach(function(en){
-          onScene1 = en.isIntersecting && en.intersectionRatio > 0.6;
-          if (!onScene1){
-            hint.style.opacity = '0';
-            if (reappearTimer) clearTimeout(reappearTimer);
-          }
-        });
-      }, { root:scenesEl, threshold:[0, 0.6] }).observe(scene1);
+      function hasNext(i){ return i < scenes.length - 1; }
+
+      function applyHintVisibility(){
+        hint.style.opacity = hasNext(activeIndex) ? '1' : '0';
+      }
+
+      scenes.forEach(function(scene, i){
+        new IntersectionObserver(function(entries){
+          entries.forEach(function(en){
+            if (en.isIntersecting && en.intersectionRatio > 0.6){
+              activeIndex = i;
+              if (reappearTimer) clearTimeout(reappearTimer);
+              applyHintVisibility();
+            }
+          });
+        }, { root:scenesEl, threshold:[0, 0.6] }).observe(scene);
+      });
 
       scenesEl.addEventListener('scroll', function(){
-        if (!onScene1) return;
         hint.style.opacity = '0';
         if (reappearTimer) clearTimeout(reappearTimer);
-        reappearTimer = setTimeout(function(){
-          if (onScene1) hint.style.opacity = '1';
-        }, 3000);
+        reappearTimer = setTimeout(applyHintVisibility, 3000);
       });
     })();
   </script>
