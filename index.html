@@ -179,6 +179,14 @@
     }
     .scroll-hint{ left:1.4rem; transform:none; bottom:calc(5.6rem + env(safe-area-inset-bottom)); }
   }
+
+  @media (orientation:portrait){
+    body{ background:#ffffff; }
+    .signature{ color:#0a0a0a; }
+    .scroll-hint .label{ color:#0a0a0a; text-shadow:none; }
+    .scroll-hint svg path{ stroke:#0a0a0a; }
+    .scroll-hint svg{ filter:none; }
+  }
 </style>
 </head>
 <body>
