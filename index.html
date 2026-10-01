@@ -6,7 +6,7 @@
 <title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
 <style>
   :root{ --ink:#ffffff; }
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -76,9 +76,8 @@
 
   .scroll-hint{
     position:absolute;
-    left:50%;
+    right:2.2rem;
     bottom:calc(2.2rem + env(safe-area-inset-bottom));
-    transform:translateX(-50%);
     z-index:2;
     opacity:1;
     transition:opacity 0.5s ease;
@@ -97,20 +96,20 @@
   }
 
   .signature{
-    position:fixed;
+    position:absolute;
     top:calc(3.4rem + env(safe-area-inset-top));
     left:2.2rem;
     right:2.2rem;
     min-height:2.2rem;
-    z-index:3;
+    z-index:2;
     display:flex;
     align-items:center;
     text-align:left;
-    font-family:'Michroma', sans-serif;
-    font-weight:400;
-    font-size:clamp(1.5rem, 3.6vw, 3.4rem);
-    line-height:1.25;
-    letter-spacing:0.01em;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:900;
+    font-size:clamp(2.6rem, 5.85vw, 6.5rem);
+    line-height:0.88;
+    letter-spacing:0.04em;
     text-transform:uppercase;
     text-shadow:0 2px 14px rgba(0,0,0,0.5);
     opacity:1;
@@ -121,7 +120,7 @@
     position:fixed;
     top:calc(3.4rem + env(safe-area-inset-top));
     right:calc(2rem + env(safe-area-inset-right));
-    z-index:3;
+    z-index:4;
     display:flex;
     flex-direction:column;
     align-items:flex-end;
@@ -150,7 +149,7 @@
   }
 
   @media (max-width:560px){
-    .signature{ top:calc(4vh + env(safe-area-inset-top)); left:1.4rem; right:1.4rem; font-size:clamp(1.1rem, 5.6vw, 1.9rem); }
+    .signature{ top:calc(4vh + env(safe-area-inset-top)); left:1.4rem; right:1.4rem; font-size:clamp(1.8rem, 8vw, 3rem); }
     nav.choice{
       top:auto;
       bottom:calc(1.4rem + env(safe-area-inset-bottom));
@@ -160,7 +159,7 @@
       font-size:0.85rem;
       padding:0.35rem 0.7rem;
     }
-    .scroll-hint{ bottom:calc(5.4rem + env(safe-area-inset-bottom)); }
+    .scroll-hint{ right:auto; left:1.4rem; bottom:calc(5.6rem + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
@@ -171,9 +170,11 @@
       <img class="bg-half bg-l" src="hero-right.jpg" alt="">
       <img class="bg-half bg-r" src="hero-left.jpg" alt="">
       <div class="shutter-line"></div>
+      <div class="signature">Laurent Bourdoiseau</div>
       <div class="scroll-hint" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-          <path d="M5 10L13 18L21 10" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="40" height="52" viewBox="0 0 40 52" fill="none">
+          <path d="M6 14L20 26L34 14" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 28L20 40L34 28" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </section>
@@ -190,8 +191,6 @@
       <div class="shutter-line"></div>
     </section>
   </div>
-
-  <div class="signature">Laurent Bourdoiseau</div>
 
   <nav class="choice">
     <a class="photo" href="photos/">Photo</a>
