@@ -75,9 +75,10 @@
   .scene.snap-back .shutter-line{ transition:left 0.6s ease; }
 
   .scroll-hint{
-    position:absolute;
-    right:2.2rem;
-    bottom:calc(2.2rem + env(safe-area-inset-bottom));
+    position:fixed;
+    left:75%;
+    bottom:calc(4.6rem + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
     z-index:2;
     opacity:1;
     transition:opacity 0.5s ease;
@@ -159,7 +160,7 @@
       font-size:0.85rem;
       padding:0.35rem 0.7rem;
     }
-    .scroll-hint{ right:auto; left:1.4rem; bottom:calc(5.6rem + env(safe-area-inset-bottom)); }
+    .scroll-hint{ left:1.4rem; transform:none; bottom:calc(5.6rem + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
@@ -171,12 +172,6 @@
       <img class="bg-half bg-r" src="hero-left.jpg" alt="">
       <div class="shutter-line"></div>
       <div class="signature">Laurent Bourdoiseau</div>
-      <div class="scroll-hint" aria-hidden="true">
-        <svg width="40" height="52" viewBox="0 0 40 52" fill="none">
-          <path d="M6 14L20 26L34 14" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6 28L20 40L34 28" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
     </section>
 
     <section class="scene" data-scene="2">
@@ -190,6 +185,13 @@
       <img class="bg-half bg-r" src="scene3-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <svg width="56" height="72" viewBox="0 0 56 72" fill="none">
+      <path d="M8 20L28 36L48 20" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 40L28 56L48 40" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
   </div>
 
   <nav class="choice">
@@ -261,7 +263,7 @@
       // Indice de scroll : visible sur la scène 1, s'efface au scroll,
       // revient 3s après si on est toujours sur la scène 1.
       var scene1 = scenes[0];
-      var hint = scene1.querySelector('.scroll-hint');
+      var hint = document.querySelector('.scroll-hint');
       var onScene1 = true;
       var reappearTimer = null;
 
