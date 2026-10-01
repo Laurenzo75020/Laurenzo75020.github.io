@@ -6,7 +6,7 @@
 <title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@600&family=Barlow+Condensed:wght@300;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
 <style>
   :root{ --ink:#ffffff; --split:50%; }
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -59,7 +59,7 @@
   .veil{
     position:fixed;
     inset:0;
-    background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
+    background:linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.02) 40%, rgba(0,0,0,0.35) 100%);
     z-index:1;
     pointer-events:none;
   }
@@ -70,12 +70,13 @@
     left:2.2rem;
     z-index:2;
     text-align:left;
-    font-family:'Barlow Condensed', sans-serif;
-    font-weight:900;
+    font-family:'Anton', sans-serif;
+    font-weight:400;
     font-size:clamp(2.6rem, 5.85vw, 6.5rem);
     line-height:0.88;
-    letter-spacing:-0.02em;
+    letter-spacing:-0.01em;
     text-transform:uppercase;
+    text-shadow:0 2px 14px rgba(0,0,0,0.5);
     opacity:1;
     pointer-events:none;
   }
@@ -114,7 +115,7 @@
 
   @media (max-width:899px){
     .veil{
-      background:linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.55) 100%);
+      background:linear-gradient(to bottom, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.38) 100%);
     }
   }
 
@@ -134,8 +135,8 @@
 </head>
 <body>
 
-  <img class="bg-half bg-left" src="hero-left.jpg" alt="">
-  <img class="bg-half bg-right" src="hero-right.jpg" alt="">
+  <img class="bg-half bg-left" src="hero-right.jpg" alt="">
+  <img class="bg-half bg-right" src="hero-left.jpg" alt="">
   <div class="shutter-line"></div>
   <div class="veil"></div>
 
