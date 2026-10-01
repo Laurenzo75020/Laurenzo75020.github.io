@@ -66,10 +66,13 @@
 
   .signature{
     position:fixed;
-    top:5vh;
+    top:calc(3.4rem + env(safe-area-inset-top));
     left:2.2rem;
     right:2.2rem;
+    min-height:2.2rem;
     z-index:2;
+    display:flex;
+    align-items:center;
     text-align:left;
     font-family:'Michroma', sans-serif;
     font-weight:400;
