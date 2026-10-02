@@ -53,6 +53,9 @@
     object-position:center center;
   }
 
+  .scrub-img{ opacity:0; }
+  .scrub-img.on{ opacity:1; }
+
   .bg-l{ clip-path:inset(0 50% 0 0); }
   .bg-r{ clip-path:inset(0 0 0 50%); }
 
@@ -211,25 +214,33 @@
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="4">
+    <section class="scene scrub" data-scene="4">
+      <img class="bg-half scrub-img on" src="epoch-1.jpg" alt="">
+      <img class="bg-half scrub-img" src="epoch-2.jpg" alt="">
+      <img class="bg-half scrub-img" src="epoch-3.jpg" alt="">
+      <img class="bg-half scrub-img" src="epoch-4.jpg" alt="">
+      <img class="bg-half scrub-img" src="epoch-5.jpg" alt="">
+    </section>
+
+    <section class="scene" data-scene="5">
       <img class="bg-half bg-l" src="hero-right.jpg" alt="">
       <img class="bg-half bg-r" src="hero-left.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="5">
+    <section class="scene" data-scene="6">
       <img class="bg-half bg-l" src="scene7-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene7-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="6">
+    <section class="scene" data-scene="7">
       <img class="bg-half bg-l" src="scene2-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene2-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="7">
+    <section class="scene" data-scene="8">
       <img class="bg-half bg-l" src="scene3-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene3-right.jpg" alt="">
       <div class="shutter-line"></div>
@@ -256,6 +267,46 @@
       var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
 
       scenes.forEach(function(scene){
+        if (scene.classList.contains('scrub')){
+          var imgs = Array.prototype.slice.call(scene.querySelectorAll('.scrub-img'));
+          var current = 0;
+          var scrubDemoed = false;
+
+          function showImg(i){
+            i = Math.max(0, Math.min(imgs.length - 1, i));
+            if (i === current) return;
+            imgs[current].classList.remove('on');
+            imgs[i].classList.add('on');
+            current = i;
+          }
+
+          function idxFromClientX(clientX){
+            var rect = scene.getBoundingClientRect();
+            var pct = (clientX - rect.left) / rect.width;
+            return Math.floor(pct * imgs.length);
+          }
+
+          scene.addEventListener('mousemove', function(e){ showImg(idxFromClientX(e.clientX)); });
+          scene.addEventListener('mouseleave', function(){ showImg(0); });
+          scene.addEventListener('touchmove', function(e){
+            if (e.touches[0]) showImg(idxFromClientX(e.touches[0].clientX));
+          }, { passive:true });
+          scene.addEventListener('touchend', function(){ showImg(0); });
+
+          new IntersectionObserver(function(entries){
+            entries.forEach(function(en){
+              if (en.isIntersecting && !scrubDemoed){
+                scrubDemoed = true;
+                imgs.forEach(function(_, k){
+                  if (k > 0) setTimeout(function(){ showImg(k); }, 300 + k * 350);
+                });
+                setTimeout(function(){ showImg(0); }, 300 + imgs.length * 350 + 400);
+              }
+            });
+          }, { root:scenesEl, threshold:0.6 }).observe(scene);
+          return;
+        }
+
         var l = scene.querySelector('.bg-l');
         var r = scene.querySelector('.bg-r');
         var line = scene.querySelector('.shutter-line');
