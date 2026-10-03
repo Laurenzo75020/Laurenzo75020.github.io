@@ -180,7 +180,9 @@
       font-size:0.85rem;
       padding:0.35rem 0.7rem;
     }
-    .scroll-hint{ left:1.4rem; transform:none; bottom:calc(5.6rem + env(safe-area-inset-bottom)); }
+    .scroll-hint{ left:50%; transform:translateX(-50%); bottom:calc(3.2rem + env(safe-area-inset-bottom)); gap:0.3rem; }
+    .scroll-hint .label{ font-size:1rem; letter-spacing:0.3em; padding-left:0.3em; }
+    .scroll-hint svg{ width:38px; height:auto; }
   }
 
   @media (orientation:portrait){
