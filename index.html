@@ -56,6 +56,19 @@
   .scrub-img{ opacity:0; }
   .scrub-img.on{ opacity:1; }
 
+  .scrub-line{
+    position:absolute;
+    top:50%;
+    bottom:0;
+    left:16.67%;
+    width:2px;
+    margin-left:-1px;
+    background:rgba(255,255,255,0.85);
+    box-shadow:0 0 12px rgba(0,0,0,0.35);
+    z-index:1;
+    pointer-events:none;
+  }
+
   .bg-l{ clip-path:inset(0 50% 0 0); }
   .bg-r{ clip-path:inset(0 0 0 50%); }
 
@@ -199,43 +212,50 @@
 
   <div id="scenes">
     <section class="scene" data-scene="1">
-      <img class="bg-half bg-l" src="scene6-left.jpg" alt="">
-      <img class="bg-half bg-r" src="scene6-right.jpg" alt="">
+      <img class="bg-half bg-l" src="scene8-left.jpg" alt="">
+      <img class="bg-half bg-r" src="scene8-right.jpg" alt="">
       <div class="shutter-line"></div>
       <div class="signature">Laurent Bourdoiseau</div>
     </section>
 
     <section class="scene" data-scene="2">
-      <img class="bg-half bg-l" src="scene5-left.jpg" alt="">
-      <img class="bg-half bg-r" src="scene5-right.jpg" alt="">
-      <div class="shutter-line"></div>
-    </section>
-
-    <section class="scene" data-scene="3">
       <img class="bg-half bg-l" src="scene4-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene4-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene scrub" data-scene="4">
+    <section class="scene" data-scene="3">
+      <img class="bg-half bg-l" src="scene6-left.jpg" alt="">
+      <img class="bg-half bg-r" src="scene6-right.jpg" alt="">
+      <div class="shutter-line"></div>
+    </section>
+
+    <section class="scene" data-scene="4">
+      <img class="bg-half bg-l" src="scene5-left.jpg" alt="">
+      <img class="bg-half bg-r" src="scene5-right.jpg" alt="">
+      <div class="shutter-line"></div>
+    </section>
+
+    <section class="scene scrub" data-scene="5">
       <img class="bg-half scrub-img on" src="epoch-3.jpg" alt="">
       <img class="bg-half scrub-img" src="epoch-4.jpg" alt="">
       <img class="bg-half scrub-img" src="epoch-5.jpg" alt="">
+      <div class="scrub-line"></div>
     </section>
 
-    <section class="scene" data-scene="5">
+    <section class="scene" data-scene="6">
       <img class="bg-half bg-l" src="hero-right.jpg" alt="">
       <img class="bg-half bg-r" src="hero-left.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="6">
+    <section class="scene" data-scene="7">
       <img class="bg-half bg-l" src="scene2-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene2-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="7">
+    <section class="scene" data-scene="8">
       <img class="bg-half bg-l" src="scene3-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene3-right.jpg" alt="">
       <div class="shutter-line"></div>
@@ -267,24 +287,31 @@
           var current = 0;
           var scrubDemoed = false;
 
-          function showImg(i){
+          var scrubLine = scene.querySelector('.scrub-line');
+
+          function placeLine(pct){ scrubLine.style.left = pct + '%'; }
+          function centerOf(i){ return (i + 0.5) / imgs.length * 100; }
+
+          function showImg(i, keepLine){
             i = Math.max(0, Math.min(imgs.length - 1, i));
+            if (!keepLine) placeLine(centerOf(i));
             if (i === current) return;
             imgs[current].classList.remove('on');
             imgs[i].classList.add('on');
             current = i;
           }
 
-          function idxFromClientX(clientX){
+          function followPointer(clientX){
             var rect = scene.getBoundingClientRect();
-            var pct = (clientX - rect.left) / rect.width;
-            return Math.floor(pct * imgs.length);
+            var pct = Math.max(0, Math.min(100, (clientX - rect.left) / rect.width * 100));
+            placeLine(pct);
+            showImg(Math.floor(pct / 100 * imgs.length), true);
           }
 
-          scene.addEventListener('mousemove', function(e){ showImg(idxFromClientX(e.clientX)); });
+          scene.addEventListener('mousemove', function(e){ followPointer(e.clientX); });
           scene.addEventListener('mouseleave', function(){ showImg(0); });
           scene.addEventListener('touchmove', function(e){
-            if (e.touches[0]) showImg(idxFromClientX(e.touches[0].clientX));
+            if (e.touches[0]) followPointer(e.touches[0].clientX);
           }, { passive:true });
           scene.addEventListener('touchend', function(){ showImg(0); });
 
