@@ -56,18 +56,7 @@
   .scrub-img{ opacity:0; }
   .scrub-img.on{ opacity:1; }
 
-  .scrub-line{
-    position:absolute;
-    top:50%;
-    bottom:0;
-    left:16.67%;
-    width:2px;
-    margin-left:-1px;
-    background:rgba(255,255,255,0.85);
-    box-shadow:0 0 12px rgba(0,0,0,0.35);
-    z-index:1;
-    pointer-events:none;
-  }
+  .shutter-line.scrub-line{ left:16.67%; }
 
   .bg-l{ clip-path:inset(0 50% 0 0); }
   .bg-r{ clip-path:inset(0 0 0 50%); }
@@ -200,6 +189,7 @@
   }
 
   @media (orientation:portrait){
+    .shutter-line{ top:calc(50% - 28.125vw); bottom:auto; height:56.25vw; }
     body{ background:#ffffff; }
     .signature{ color:#0a0a0a; }
     .scroll-hint .label{ color:#0a0a0a; text-shadow:none; }
@@ -240,28 +230,34 @@
       <img class="bg-half scrub-img on" src="epoch-3.jpg" alt="">
       <img class="bg-half scrub-img" src="epoch-4.jpg" alt="">
       <img class="bg-half scrub-img" src="epoch-5.jpg" alt="">
-      <div class="scrub-line"></div>
+      <div class="shutter-line scrub-line"></div>
     </section>
 
     <section class="scene" data-scene="6">
+      <img class="bg-half bg-l" src="scene10-left.jpg" alt="">
+      <img class="bg-half bg-r" src="scene10-right.jpg" alt="">
+      <div class="shutter-line"></div>
+    </section>
+
+    <section class="scene" data-scene="7">
       <img class="bg-half bg-l" src="hero-right.jpg" alt="">
       <img class="bg-half bg-r" src="hero-left.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="7">
+    <section class="scene" data-scene="8">
       <img class="bg-half bg-l" src="scene2-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene2-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="8">
+    <section class="scene" data-scene="9">
       <img class="bg-half bg-l" src="scene3-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene3-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
 
-    <section class="scene" data-scene="9">
+    <section class="scene" data-scene="10">
       <img class="bg-half bg-l" src="scene9-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene9-right.jpg" alt="">
       <div class="shutter-line"></div>
@@ -291,7 +287,6 @@
         if (scene.classList.contains('scrub')){
           var imgs = Array.prototype.slice.call(scene.querySelectorAll('.scrub-img'));
           var current = 0;
-          var scrubDemoed = false;
 
           var scrubLine = scene.querySelector('.scrub-line');
 
@@ -321,17 +316,6 @@
           }, { passive:true });
           scene.addEventListener('touchend', function(){ showImg(0); });
 
-          new IntersectionObserver(function(entries){
-            entries.forEach(function(en){
-              if (en.isIntersecting && !scrubDemoed){
-                scrubDemoed = true;
-                imgs.forEach(function(_, k){
-                  if (k > 0) setTimeout(function(){ showImg(k); }, 300 + k * 350);
-                });
-                setTimeout(function(){ showImg(0); }, 300 + imgs.length * 350 + 400);
-              }
-            });
-          }, { root:scenesEl, threshold:0.6 }).observe(scene);
           return;
         }
 
