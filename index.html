@@ -189,7 +189,8 @@
   }
 
   @media (orientation:portrait){
-    .shutter-line{ top:calc(50% - 28.125vw); bottom:auto; height:56.25vw; }
+    .bg-half{ inset:auto; top:50%; left:0; width:100%; height:80vw; transform:translateY(-50%); object-fit:cover; }
+    .shutter-line{ top:calc(50% - 40vw); bottom:auto; height:80vw; }
     body{ background:#ffffff; }
     .signature{ color:#0a0a0a; }
     .scroll-hint .label{ color:#0a0a0a; text-shadow:none; }
