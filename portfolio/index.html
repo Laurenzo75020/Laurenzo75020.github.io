@@ -239,6 +239,9 @@
   <script>
     // Dossier contenant les pages du book (une image par page, mise en page déjà intégrée à l'image)
     const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+    // Retour en fin de book : vers la page d'où l'on vient (Photo ou IA), sinon l'accueil
+    const FROM = new URLSearchParams(window.location.search).get('from');
+    const BACK_URL = FROM === 'photos' ? '../photos/' : FROM === 'ia' ? '../ia/' : '../index.html';
     const API_BASE = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo/";
     const REPO_API_DESKTOP = API_BASE + "book";
     const REPO_API_MOBILE = API_BASE + "book-mobile";
@@ -333,7 +336,7 @@
 
     function goNext(){
       if(current >= pages.length - 1){
-        window.location.href = '../index.html';
+        window.location.href = BACK_URL;
       } else {
         showPage(current + 1);
       }
