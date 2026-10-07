@@ -40,9 +40,10 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 /* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
 .cell.cell-first { order:-1; grid-column:span 2; aspect-ratio:16/9; }
 /* Film mis en avant : pleine largeur, tout en haut (n'affecte pas le reste de la grille) */
-.cell.cell-hero { order:-3; grid-column:1 / -1; aspect-ratio:16/9; background:#0a0a0a; }
-/* Deuxième pleine largeur, juste sous le film mis en avant */
-.cell.cell-hero.cell-second { order:-2; }
+.cell.cell-hero { order:-4; grid-column:1 / -1; aspect-ratio:16/9; background:#0a0a0a; }
+/* Deuxième et troisième pleines largeurs, juste sous le film mis en avant */
+.cell.cell-hero.cell-second { order:-3; }
+.cell.cell-hero.cell-third { order:-2; }
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -346,8 +347,10 @@ const CONFIG = [
   {type:'image', t:'Sans titre XII',    s:'Image IA · 2025', src:'../images/image_new1.jpg', pinFirst:true},
   // Film mis en avant en tête, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview.mov', hero:true},
-  // Montage de la série split screen de l'accueil, pleine largeur en 2e position (hero:true + second:true)
-  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_preview.mov', hero:true, second:true},
+  // Montages de la série split screen de l'accueil, pleine largeur :
+  // 2e position (second:true) : montage court en coupe franche ; 3e ligne (third:true) : montage long avec défilement
+  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov', hero:true, second:true},
+  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_preview.mov', hero:true, third:true},
 ];
 // ============================================================
 
@@ -368,6 +371,7 @@ CONFIG.forEach((item,i)=>{
   cell.className='cell reveal';
   if(item.hero) cell.classList.add('cell-hero');
   if(item.second) cell.classList.add('cell-second');
+  if(item.third) cell.classList.add('cell-third');
 
   if(item.type==='series'){
     cell.classList.add('cell-series');
