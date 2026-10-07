@@ -290,7 +290,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 // ============================================================
 const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
-  {type:'image', t:'Sans titre I',      s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_preview.mov'},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
@@ -432,7 +432,14 @@ CONFIG.forEach((item,i)=>{
     const src=item.src || `../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
     imgIndex++;
     if(item.pinFirst) cell.classList.add('cell-first');
-    const img=document.createElement('img');
+    // video: l'image est remplacée par une vidéo muette en boucle (l'image sert d'affiche pendant le chargement)
+    const img=document.createElement(item.video?'video':'img');
+    if(item.video){
+      img.poster=src; img.src=item.video;
+      img.autoplay=true; img.loop=true; img.muted=true; img.playsInline=true;
+      img.style.pointerEvents='none';
+      cell.appendChild(img);
+    } else {
     img.src=src;
     img.alt=item.t;
     img.loading='lazy';
@@ -441,6 +448,7 @@ CONFIG.forEach((item,i)=>{
     };
     img.onclick=()=>openLb(src);
     cell.appendChild(img);
+    }
   } else if(item.type==='video'){
     // Vidéo locale en boucle, sans lien
     const wrap=document.createElement('div');
