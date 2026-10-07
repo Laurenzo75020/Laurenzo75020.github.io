@@ -53,6 +53,25 @@
     object-position:center center;
   }
 
+  /* Accueil, image seule : l'image est calée par le bas et agrandie pour que le haut des sourcils
+     tombe juste sous la ligne de base du nom, quelle que soit la taille de l'écran.
+     0.2308 = hauteur du haut des sourcils dans l'image (fraction) ; 0.84 = ligne de base du nom
+     depuis le haut de son bloc (en corps) ; 0.12 = petit espace entre la base du nom et les sourcils. */
+  @media (orientation:landscape){
+    .scene.still{
+      --fs:clamp(2.6rem, 5.85vw, 6.5rem);
+      --brow-y:calc(3.4rem + env(safe-area-inset-top) + var(--fs) * (0.84 + 0.12));
+    }
+    .scene.still .bg-half{
+      inset:auto;
+      left:0;
+      bottom:0;
+      width:100%;
+      height:calc((100vh - var(--brow-y)) / (1 - 0.2308));
+      object-position:center top;
+    }
+  }
+
   .scrub-img{ opacity:0; }
   .scrub-img.on{ opacity:1; }
 
@@ -204,7 +223,7 @@
   <div id="scenes">
     <!-- Accueil actuel : une seule image plein écran -->
     <section class="scene still">
-      <img class="bg-half" src="accueil-visage.jpg" alt="">
+      <img class="bg-half" src="accueil-visage-large.jpg" alt="">
       <div class="signature">Laurent Bourdoiseau</div>
     </section>
 
