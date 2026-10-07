@@ -39,6 +39,8 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
 /* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
 .cell.cell-first { order:-1; grid-column:span 2; aspect-ratio:16/9; }
+/* Film mis en avant : pleine largeur, tout en haut (n'affecte pas le reste de la grille) */
+.cell.cell-hero { order:-2; grid-column:1 / -1; aspect-ratio:16/9; background:#0a0a0a; }
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -108,6 +110,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   /* 1ère case : photo pleine largeur */
   .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .cell.cell-first { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell.cell-hero { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; background:#0a0a0a !important; }
 
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air */
   .cell:nth-child(3),
@@ -339,6 +342,8 @@ const CONFIG = [
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Épinglée en tête via order:-1 (cellule .cell-first) — ne pas déplacer dans le tableau
   {type:'image', t:'Sans titre XII',    s:'Image IA · 2025', src:'../images/image_new1.jpg', pinFirst:true},
+  // Film mis en avant en tête, pleine largeur (hero:true) — laisser en dernier dans le tableau
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview.mov', hero:true},
 ];
 // ============================================================
 
@@ -357,6 +362,7 @@ let imgIndex=1;
 CONFIG.forEach((item,i)=>{
   const cell=document.createElement('div');
   cell.className='cell reveal';
+  if(item.hero) cell.classList.add('cell-hero');
 
   if(item.type==='series'){
     cell.classList.add('cell-series');
