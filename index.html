@@ -202,6 +202,14 @@
 <body>
 
   <div id="scenes">
+    <!-- Accueil actuel : une seule image plein écran -->
+    <section class="scene still">
+      <img class="bg-half" src="accueil-visage.jpg" alt="">
+      <div class="signature">Laurent Bourdoiseau</div>
+    </section>
+
+    <!-- Série split screen mise de côté (non affichée, non chargée) : pour la remettre, retirer les balises <template> -->
+    <template id="splitscreen-scenes">
     <section class="scene" data-scene="1">
       <img class="bg-half bg-l" src="scene4-left.jpg" alt="">
       <img class="bg-half bg-r" src="scene4-right.jpg" alt="">
@@ -250,6 +258,7 @@
       <img class="bg-half bg-r" src="scene12-right.jpg" alt="">
       <div class="shutter-line"></div>
     </section>
+    </template>
   </div>
 
   <div class="scroll-hint" aria-hidden="true">
@@ -272,6 +281,7 @@
       var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
 
       scenes.forEach(function(scene){
+        if (scene.classList.contains('still')) return;
         if (scene.classList.contains('scrub')){
           var imgs = Array.prototype.slice.call(scene.querySelectorAll('.scrub-img'));
           var current = 0;
