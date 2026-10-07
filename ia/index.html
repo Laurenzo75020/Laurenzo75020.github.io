@@ -299,7 +299,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 // ============================================================
 const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
-  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_preview.mov'},
+  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov'},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
@@ -353,7 +353,7 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Film mis en avant en tête, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview.mov', hero:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_video.mov', hero:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true},
 ];
@@ -366,6 +366,20 @@ document.addEventListener('mousemove',e=>{
   mx=e.clientX; my=e.clientY;
   if(!rafPending){ rafPending=true; requestAnimationFrame(()=>{ c1.style.transform=`translate(${mx}px,${my}px)`; rafPending=false; }); }
 },{ passive:true });
+
+// Vidéos d'aperçu : chargées et lues seulement à l'approche de l'écran, en pause dès qu'elles en sortent
+const videoObs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    const v=en.target;
+    if(en.isIntersecting){ const p=v.play(); if(p) p.catch(()=>{}); }
+    else v.pause();
+  });
+},{rootMargin:'300px 0px'});
+function lazyVideo(vid){
+  vid.preload='none'; vid.loop=true; vid.muted=true; vid.playsInline=true;
+  vid.setAttribute('muted',''); vid.setAttribute('playsinline','');
+  videoObs.observe(vid);
+}
 
 // Build grid
 const grid=document.getElementById('grid');
@@ -443,7 +457,7 @@ CONFIG.forEach((item,i)=>{
     const img=document.createElement(item.video?'video':'img');
     if(item.video){
       img.poster=src; img.src=item.video;
-      img.autoplay=true; img.loop=true; img.muted=true; img.playsInline=true;
+      lazyVideo(img);
       img.style.pointerEvents='none';
       cell.appendChild(img);
     } else {
@@ -462,7 +476,7 @@ CONFIG.forEach((item,i)=>{
     wrap.className='vimeo-wrap';
     const vid=document.createElement('video');
     vid.src=item.src;
-    vid.autoplay=true; vid.loop=true; vid.muted=true; vid.playsInline=true;
+    lazyVideo(vid);
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     cell.appendChild(wrap);
@@ -475,7 +489,7 @@ CONFIG.forEach((item,i)=>{
       if(item.preview){
         const vid=document.createElement('video');
         vid.src=item.preview;
-        vid.autoplay=true; vid.loop=true; vid.muted=true; vid.playsInline=true;
+        lazyVideo(vid);
         vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
         if(item.previewTransform) vid.style.transform=item.previewTransform;
         wrap.appendChild(vid);
@@ -494,12 +508,6 @@ CONFIG.forEach((item,i)=>{
         wrap.appendChild(thumb);
       }
       if(!item.noLink){
-        // Iframe (cachée au départ)
-        const iframe=document.createElement('iframe');
-        iframe.src=`https://player.vimeo.com/video/${item.vimeoId}?badge=0&autopause=0&autoplay=0`;
-        iframe.allow='autoplay; fullscreen; picture-in-picture';
-        iframe.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:none;display:none;';
-        wrap.appendChild(iframe);
         // Bouton play (seulement sans preview)
         if(!item.preview){
           const btn=document.createElement('div');
