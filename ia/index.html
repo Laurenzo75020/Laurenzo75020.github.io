@@ -109,6 +109,10 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .grid .cell:nth-child(6) { order:-3; grid-column:span 1; aspect-ratio:auto; }
 .grid .cell:nth-child(4) { order:-2; grid-column:span 2; aspect-ratio:16/9; }
 .grid .cell:nth-child(3) { order:-1; }
+/* Ligne 6 : la série Fragment est partie plus bas, il reste deux cases (1 colonne + 3 colonnes) */
+.grid .cell:nth-child(7) { display:none; }
+.grid .cell:nth-child(8) { grid-column:span 1; aspect-ratio:auto; }
+.grid .cell:nth-child(9) { grid-column:span 3; aspect-ratio:16/9; }
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
@@ -124,7 +128,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .cell:nth-child(2) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .cell.cell-hero { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; background:#0a0a0a !important; }
 
-  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air */
+  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
+  .cell:nth-child(9),
   .cell:nth-child(3),
   .cell:nth-child(5),
   .cell:nth-child(10),
@@ -307,7 +312,8 @@ const CONFIG = [
   {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov'},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
-  {type:'series', t:'Fragment', s:'Série · 2024', images: ['../images/__SERIEs/serie2/serie2-1.jpg','../images/__SERIEs/serie2/serie2-2.jpg']},
+  // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
+  {type:'series', t:'', s:'', images:[]},
   {type:'image', t:'Nuit blanche',      s:'Image IA · 2024'},
   {type:'image', t:'Fragment',          s:'Image IA · 2025'},
   // Ligne 4 : Breaking-Up 16/9 + carré + carré
@@ -328,7 +334,8 @@ const CONFIG = [
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true},
   // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
-  {type:'image', t:'Sans titre III',    s:'Image IA · 2025'},
+  // Série Fragment, à la place de l'image Sans titre III (image13.jpg, retirée) ; skipImage garde la numérotation des images suivantes
+  {type:'series', t:'Fragment', s:'Série · 2024', images: ['../images/__SERIEs/serie2/serie2-1.jpg','../images/__SERIEs/serie2/serie2-2.jpg'], skipImage:true},
   {type:'image', t:'Silence',           s:'Image IA · 2025'},
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
   // Ligne 9 : carré + 16/9 + carré
@@ -393,6 +400,7 @@ CONFIG.forEach((item,i)=>{
 
   if(item.type==='series'){
     cell.classList.add('cell-series');
+    if(item.skipImage) imgIndex++;
     let idx=0;
     const imgs=item.images;
     const track=document.createElement('div');
