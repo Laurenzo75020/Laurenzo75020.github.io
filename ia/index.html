@@ -130,6 +130,11 @@ nav a:hover, .nav-right a:hover { opacity:1; }
   .grid .cell.cell-hero.cell-third { grid-column:span 2; width:auto; justify-self:stretch; }
 }
 }
+/* Au repos, seule la case regardée reste visible sur fond blanc ; tout le reste réapparaît au moindre mouvement */
+.autour, .grid .cell { transition:opacity .5s ease; }
+body.calme .autour { opacity:0 !important; pointer-events:none; }
+body.calme .grid .cell:not(.focus) { opacity:0 !important; }
+body.calme .grid .cell.focus .caption { opacity:0 !important; }
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
@@ -490,7 +495,7 @@ if(INCRUSTEE){
     if(a && new URL(a.href,location.href).pathname==='/'){ e.preventDefault(); window.parent.history.back(); }   // « Accueil » : simple retour
   });
 }
-window.entrerAvecSon=()=>{ window.__enSommeil=false; relancer(); if(window.__allerALaVideo) window.__allerALaVideo(); mesurer(); arbitrer(true); };
+window.entrerAvecSon=()=>{ window.__enSommeil=false; if(window.__reposInitial) window.__reposInitial(); relancer(); if(window.__allerALaVideo) window.__allerALaVideo(); mesurer(); arbitrer(true); };
 window.sortirEnSilence=()=>{ window.__enSommeil=true; document.querySelectorAll('video').forEach(v=>{ v.muted=true; v.pause(); }); sonores.forEach(o=>o.maj()); if(typeof closeLb==='function') closeLb(); };
 const sonObs=new IntersectionObserver(entries=>{
   mesurer();
@@ -779,6 +784,40 @@ document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').class
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// ---- Au repos : on ne voit que la case regardée ----
+// À l'arrivée, puis après 3 secondes sans mouvement, tout ce qui entoure la case la plus proche du centre de l'écran s'efface.
+// Le moindre mouvement (souris, molette, doigt, clavier) fait tout réapparaître.
+(function(){
+  const grille=document.getElementById('grid'); if(!grille) return;
+  for(let el=grille; el && el!==document.body; el=el.parentElement){
+    [...el.parentElement.children].forEach(f=>{ if(f!==el && f.id!=='lb' && f.tagName!=='SCRIPT' && f.tagName!=='STYLE') f.classList.add('autour'); });
+  }
+  const DELAI=3000; let minuterie=null;
+  function caseRegardee(){
+    const h=window.innerHeight; let choix=null, mieux=1e9;
+    grille.querySelectorAll('.cell').forEach(c=>{
+      const r=c.getBoundingClientRect(); if(!r.height || r.bottom<0 || r.top>h) return;
+      const e=Math.abs((r.top+r.bottom)/2-h/2); if(e<mieux){ mieux=e; choix=c; }
+    });
+    return choix;
+  }
+  function calmer(){
+    if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
+    grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
+    const c=caseRegardee(); if(!c) return;
+    c.classList.add('focus','on'); document.body.classList.add('calme');
+  }
+  function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
+  let agi=false;
+  function reveiller(){ agi=true; document.body.classList.remove('calme'); armer(); }
+  // défilement qui continue après le geste (élan sur téléphone, barre de défilement) : on reste éveillé
+  window.addEventListener('scroll',()=>{ if(agi){ document.body.classList.remove('calme'); armer(); } },{passive:true});
+  ['mousemove','wheel','touchstart','touchmove','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,reveiller,{passive:true}));
+  // à l'arrivée : la première vidéo seule, tout de suite
+  const premiere=grille.querySelector('.cell-top');
+  if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); }
+  window.__reposInitial=()=>{ clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
+})();
 // Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
 // La position est recalée tant que la mise en page bouge encore (polices, images, affichage par-dessus l'accueil),
 // et jusqu'au premier geste du visiteur : sans cela, la page pouvait s'ouvrir sur la 2e ou la 3e vidéo.
@@ -789,7 +828,8 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     if(visiteurAgit || location.hash || window.__enSommeil) return;
     const cible=document.querySelector('.cell-top') || document.getElementById('grid');
     if(!cible || !cible.getBoundingClientRect().width) return;
-    const y=Math.max(0, Math.round(cible.getBoundingClientRect().top+window.scrollY-8));
+    const r=cible.getBoundingClientRect(), vh=window.innerHeight;
+    const y=Math.max(0, Math.round(r.top+window.scrollY-Math.max(8,(vh-r.height)/2)));
     if(Math.abs(window.scrollY-y)>1){ window.scrollTo(0,y); if(typeof mesurer==='function') mesurer(); }
   }
   function surveiller(){
