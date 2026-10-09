@@ -387,7 +387,7 @@ document.addEventListener('mousemove',e=>{
 // Une vidéo "voulue" est une vidéo proche de l'écran. Si le navigateur refuse de la lancer (onglet ouvert en arrière-plan,
 // mode économie d'énergie, connexion lente), on réessaie dès que la page redevient visible ou que le visiteur agit.
 const videosVoulues=new Set();
-function lancer(v){ const p=v.play(); if(p) p.catch(()=>{}); }
+function lancer(v){ if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
 function relancer(){ if(document.hidden) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
 const videoObs=new IntersectionObserver(entries=>{
   entries.forEach(en=>{
@@ -509,16 +509,28 @@ CONFIG.forEach((item,i)=>{
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     if(item.sound){
-      // Le son ne peut pas démarrer seul (règle des navigateurs) : un clic sur la case ou sur le bouton l'active, sur place.
+      // Teasing avec son : on tente toujours la lecture AVEC le son. Si le navigateur la refuse (pas encore de geste du
+      // visiteur sur le site), on lance en muet et le son s'active tout seul au premier clic, appui ou touche sur la page.
       const btn=document.createElement('button');
       btn.className='sound-btn';
+      let coupeParVisiteur=false;
       const maj=()=>{ btn.textContent=vid.muted?'▶  Activer le son':'■  Couper le son'; };
+      const muet=()=>{ vid.muted=true; const p=vid.play(); if(p) p.catch(()=>{}); maj(); };
+      vid._avecSon=()=>{
+        if(coupeParVisiteur){ muet(); return; }
+        vid.muted=false; vid.removeAttribute('muted');
+        const p=vid.play();
+        if(p) p.then(maj).catch(muet); else maj();
+      };
       const bascule=()=>{
-        if(vid.muted){ vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0; lancer(vid); }
-        else { vid.muted=true; }
-        maj();
+        if(vid.muted){ coupeParVisiteur=false; vid.currentTime=0; vid._avecSon(); }
+        else { coupeParVisiteur=true; vid.muted=true; maj(); }
       };
       maj();
+      ['pointerdown','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
+        if(wrap.contains(e.target)) return;                      // un clic sur la case est géré par la bascule
+        if(vid.muted && !coupeParVisiteur && videosVoulues.has(vid)){ vid.currentTime=0; vid._avecSon(); }
+      },{passive:true}));
       wrap.style.cursor='none';
       wrap.addEventListener('click',bascule);
       btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
