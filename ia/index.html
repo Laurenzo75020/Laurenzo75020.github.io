@@ -433,12 +433,12 @@ function arbitrer(geste){
   let elue=null;
   if(!lbOuvert && !document.hidden && !window.__enSommeil) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
   sonores.forEach(o=>{
-    if(o===elue && !o.coupe){
+    if(o===elue && !o.coupe && !o.finie){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
       if(o.vid.muted || (geste && o.vid.paused)){
         const essai=++o.essai;
         o.vid.muted=false; o.vid.removeAttribute('muted');
-        if(geste) o.vid.currentTime=0;
+        o.vid.currentTime=0; o.dernier=0;                    // le passage sonore commence toujours au début
         const p=o.vid.play();
         if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
       }
@@ -479,6 +479,7 @@ function mesurer(){
     const r=o.cell.getBoundingClientRect();
     o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
     o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
+    if(o.ratio<=0) o.finie=false;                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
   });
   arbitrer(false);
 }
@@ -494,18 +495,31 @@ function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
-  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, essai:0, maj:()=>{
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, finie:false, dernier:0, essai:0, maj:()=>{
     btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
                             : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
   }};
   sonores.push(o);
   vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{ if(!vid.muted) enMuet(o); }); arbitrer(false); };
+  // Un seul passage avec le son : quand la boucle repart, les passages suivants sont muets.
+  // Le son ne revient que si la vidéo est sortie de l'écran puis y revient, ou si le visiteur le redemande avec le bouton.
+  vid.addEventListener('timeupdate',()=>{
+    const t=vid.currentTime, d=vid.duration||0;
+    // la boucle vient de repartir (le temps est revenu en arrière sans que ce soit une remise au début demandée)
+    if(d && t<o.dernier-1 && !vid.muted){ o.finie=true; vid.muted=true; o.maj(); }
+    // coupe programmée pile à la fin du passage, pour ne pas entendre le début du suivant
+    if(d && !vid.muted && d-t<0.4 && !o.minuterie){
+      const essai=o.essai;
+      o.minuterie=setTimeout(()=>{ o.minuterie=null; if(!vid.muted && o.essai===essai){ o.finie=true; vid.muted=true; o.maj(); } }, Math.max(0,(d-t)*1000-50));
+    }
+    o.dernier=t;
+  });
   // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
   vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden && !window.__enSommeil) enMuet(o); });
   const bascule=()=>{
     if(vid.muted || vid.paused){
-      o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
+      o.coupe=false; o.finie=false; o.dernier=0; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
       const essai=++o.essai; vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;
       const p=vid.play(); if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
       o.maj();
