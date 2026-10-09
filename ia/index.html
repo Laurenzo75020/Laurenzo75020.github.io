@@ -370,12 +370,12 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 // ============================================================
 const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
-  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3'},
+  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov'},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov', sound:true},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
   // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
@@ -397,7 +397,7 @@ const CONFIG = [
   {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'../images/Air_previz.mov', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
-  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true},
+  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true, noIso:true},
   // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
   // Série Fragment, à la place de l'image Sans titre III (image13.jpg, retirée) ; skipImage garde la numérotation des images suivantes
@@ -430,7 +430,7 @@ const CONFIG = [
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
-  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true},
+  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
 ];
 // ============================================================
 
@@ -500,8 +500,9 @@ function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
   if(!lbOuvert && !document.hidden && !window.__enSommeil){
-    if(!aDefile) elue=sonores.find(o=>o.cell.closest('.cell-top') && o.ratio>=o.seuil) || null;
-    if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
+    const tiers=(window.innerHeight||0)/6;                 // le centre de la vidéo doit être dans le tiers central de la fenêtre
+    if(!aDefile) elue=sonores.find(o=>o.cell.closest('.cell-top') && o.ratio>=o.seuil && o.ecart<=tiers) || null;
+    if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && o.ecart<=tiers && (!elue || o.ecart<elue.ecart)) elue=o; });
   }
   sonores.forEach(o=>{
     if(o===elue && !o.coupe && !o.finie){
@@ -613,6 +614,7 @@ CONFIG.forEach((item,i)=>{
   if(item.skipImage) imgIndex++;          // cette case occupe la place d'une image : la numérotation des suivantes ne bouge pas
   if(item.hero) cell.classList.add('cell-hero');
   if(item.third) cell.classList.add('cell-third');
+  if(item.noIso) cell.classList.add('no-iso');      // cette vidéo ne s'isole pas sur fond blanc
   if(item.top) cell.classList.add('cell-top');
 
   if(item.type==='series'){
@@ -844,7 +846,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   function calmer(){
     if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
     grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
-    const c=caseRegardee(); if(!c || !c.querySelector('video')) return;      // seulement sur les vidéos, jamais sur les photos
+    const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso')) return;      // seulement sur les vidéos, jamais sur les photos
     c.classList.add('focus','on'); document.body.classList.add('calme');
   }
   function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
