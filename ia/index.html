@@ -124,9 +124,11 @@ nav a:hover, .nav-right a:hover { opacity:1; }
   .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
   .grid .cell.cell-top { margin-bottom:10vh; }
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
-  .grid .cell:nth-child(3), .grid .cell:nth-child(1) { margin-bottom:6vh; }
-  .grid .cell.cell-third { margin-bottom:4vh; }
-  .grid .cell:nth-child(5), .grid .cell:nth-child(6) { margin-bottom:2vh; }
+  /* ligne 3 : Mirror seul, au même gabarit que les deux vidéos du dessus */
+  .grid .cell:nth-child(3) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; margin-bottom:6vh; }
+  /* ligne 4 : la structure à gauche, le montage split screen à droite ; à partir d'ici, grille et alignement habituels */
+  .grid .cell.cell-hero.cell-third { grid-column:span 2; width:auto; justify-self:stretch; }
+}
 }
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
@@ -447,21 +449,27 @@ function lazyVideo(vid){
 // Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
 // On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
 const sonores=[];
+let aDefile=false;
+['wheel','touchmove'].forEach(ev=>window.addEventListener(ev,()=>{ aDefile=true; },{passive:true}));
+window.addEventListener('keydown',e=>{ if(['ArrowDown','ArrowUp','PageDown','PageUp',' ','End','Home'].includes(e.key)) aDefile=true; });
 // Lecture muette de secours : utilisée chaque fois que le navigateur refuse ou interrompt la lecture avec le son
 function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); }
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
-  if(!lbOuvert && !document.hidden && !window.__enSommeil) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
+  if(!lbOuvert && !document.hidden && !window.__enSommeil){
+    if(!aDefile) elue=sonores.find(o=>o.cell.closest('.cell-top') && o.ratio>=o.seuil) || null;
+    if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
+  }
   sonores.forEach(o=>{
     if(o===elue && !o.coupe && !o.finie){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
-      if(o.vid.muted || (geste && o.vid.paused)){
-        const essai=++o.essai;
+      if((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused)){
+        const essai=++o.essai; o.refuse=false;
         o.vid.muted=false; o.vid.removeAttribute('muted');
         o.vid.currentTime=0; o.dernier=0;                    // le passage sonore commence toujours au début
         const p=o.vid.play();
-        if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
+        if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai){ o.refuse=true; enMuet(o); } });
       }
     } else {
       if(!o.vid.muted) o.vid.muted=true;
@@ -500,7 +508,7 @@ function mesurer(){
     const r=o.cell.getBoundingClientRect();
     o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
     o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
-    if(o.ratio<=0) o.finie=false;                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
+    if(o.ratio<=0){ o.finie=false; o.refuse=false; }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
   });
   arbitrer(false);
 }
@@ -516,7 +524,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
-  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, finie:false, dernier:0, essai:0, maj:()=>{
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, finie:false, dernier:0, essai:0, maj:()=>{
     btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
                             : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
