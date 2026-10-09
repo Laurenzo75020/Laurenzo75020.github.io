@@ -434,6 +434,41 @@
     })();
   </script>
 
+  <script>
+    // La page IA est chargée en arrière-plan, puis affichée par-dessus au clic sur « IA », sans changer de page :
+    // le teaser peut ainsi démarrer avec le son dans ce même clic (Safari l'interdit après un changement de page).
+    (function(){
+      var lien=document.querySelector('nav.choice a.ia'); if(!lien) return;
+      var cadre=null, pret=false, ouvert=false, titreAccueil=document.title;
+      function preparer(){
+        cadre=document.createElement('iframe');
+        cadre.src='ia/';
+        cadre.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+        cadre.setAttribute('allowfullscreen','');
+        cadre.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:9999;background:#fff;display:none;';
+        cadre.addEventListener('load',function(){ try{ pret=typeof cadre.contentWindow.entrerAvecSon==='function'; }catch(e){ pret=false; } });
+        document.body.appendChild(cadre);
+      }
+      function fermer(){
+        if(!ouvert) return; ouvert=false;
+        try{ cadre.contentWindow.sortirEnSilence(); }catch(e){}
+        cadre.style.display='none'; document.title=titreAccueil;
+      }
+      lien.addEventListener('click',function(e){
+        if(!pret || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;      // sinon : navigation normale
+        e.preventDefault();
+        cadre.style.display='block'; ouvert=true;
+        try{ cadre.contentWindow.entrerAvecSon(); document.title=cadre.contentDocument.title||titreAccueil; }catch(err){}
+        history.pushState({ia:true},'','ia/');
+        try{ cadre.contentWindow.focus(); }catch(err){}
+      });
+      window.addEventListener('popstate',function(){
+        if(ouvert){ fermer(); return; }
+        if(/\/ia\/?$/.test(location.pathname)) location.reload();                 // « suivant » après un retour : on charge la vraie page
+      });
+      if(document.readyState==='complete') setTimeout(preparer,1200); else window.addEventListener('load',function(){ setTimeout(preparer,1200); });
+    })();
+  </script>
   <script src="/image-protection.js"></script>
 </body>
 </html>

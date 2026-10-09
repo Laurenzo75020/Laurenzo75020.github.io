@@ -400,8 +400,8 @@ document.addEventListener('mousemove',e=>{
 // Une vidéo "voulue" est une vidéo proche de l'écran. Si le navigateur refuse de la lancer (onglet ouvert en arrière-plan,
 // mode économie d'énergie, connexion lente), on réessaie dès que la page redevient visible ou que le visiteur agit.
 const videosVoulues=new Set();
-function lancer(v){ if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
-function relancer(){ if(document.hidden) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
+function lancer(v){ if(window.__enSommeil) return; if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
+function relancer(){ if(document.hidden || window.__enSommeil) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
 const videoObs=new IntersectionObserver(entries=>{
   entries.forEach(en=>{
     const v=en.target;
@@ -431,7 +431,7 @@ function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
-  if(!lbOuvert && !document.hidden) sonores.forEach(o=>{ if(o.ratio>=0.3 && (!elue || o.ratio>elue.ratio)) elue=o; });
+  if(!lbOuvert && !document.hidden && !window.__enSommeil) sonores.forEach(o=>{ if(o.ratio>=0.3 && (!elue || o.ratio>elue.ratio)) elue=o; });
   sonores.forEach(o=>{
     if(o===elue && !o.coupe){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
@@ -442,10 +442,27 @@ function arbitrer(geste){
         const p=o.vid.play();
         if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
       }
-    } else if(!o.vid.muted){ o.vid.muted=true; }
+    } else {
+      if(!o.vid.muted) o.vid.muted=true;
+      if(geste && o.vid.paused){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }
+    }
     o.maj();
   });
 }
+// ---- Page affichée par-dessus la page d'accueil (voir index.html) ----
+// La page d'accueil charge cette page en arrière-plan ; au clic sur « IA », elle l'affiche et appelle entrerAvecSon()
+// dans le même clic : c'est ce qui permet au son de démarrer tout seul, y compris dans Safari.
+const INCRUSTEE = window.top!==window.self;
+window.__enSommeil = INCRUSTEE;      // chargée en arrière-plan : aucun son tant qu'elle n'est pas affichée
+if(INCRUSTEE){
+  const base=document.createElement('base'); base.target='_top'; document.head.appendChild(base);
+  document.addEventListener('click',e=>{
+    const a=e.target.closest && e.target.closest('a[href]');
+    if(a && new URL(a.href,location.href).pathname==='/'){ e.preventDefault(); window.parent.history.back(); }   // « Accueil » : simple retour
+  });
+}
+window.entrerAvecSon=()=>{ window.__enSommeil=false; relancer(); if(window.__allerALaVideo) window.__allerALaVideo(); mesurer(); arbitrer(true); };
+window.sortirEnSilence=()=>{ window.__enSommeil=true; document.querySelectorAll('video').forEach(v=>{ v.muted=true; v.pause(); }); sonores.forEach(o=>o.maj()); if(typeof closeLb==='function') closeLb(); };
 const sonObs=new IntersectionObserver(entries=>{
   mesurer();
 },{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
@@ -484,7 +501,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   sonores.push(o);
   vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{ if(!vid.muted) enMuet(o); }); arbitrer(false); };
   // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
-  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden) enMuet(o); });
+  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden && !window.__enSommeil) enMuet(o); });
   const bascule=()=>{
     if(vid.muted || vid.paused){
       o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
@@ -730,6 +747,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     if(y>0){ window.scrollTo(0,y); fait=true; if(typeof mesurer==='function') mesurer(); }
   }
   requestAnimationFrame(allerALaVideo);
+  window.__allerALaVideo=()=>{ fait=false; allerALaVideo(); };
   window.addEventListener('load',()=>{ fait=false; if(window.scrollY<=4 || !sessionVue) allerALaVideo(); });
   let sessionVue=false; window.addEventListener('scroll',()=>{ sessionVue=true; },{passive:true,once:true});
 })();
