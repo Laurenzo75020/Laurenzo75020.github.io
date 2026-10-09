@@ -105,16 +105,16 @@ nav a:hover, .nav-right a:hover { opacity:1; }
    ligne 2 : Sans titre II + structure ; ligne 3 : montage split screen ;
    ligne 4 : Shore Stories (3 colonnes) + Désir (1 colonne) ;
    ligne 5 : L'Absence (2 colonnes) + Mirror (2 colonnes) — coupes non alignées entre les lignes 4 et 5 */
-.grid .cell:nth-child(2) { order:-7; }
+.grid .cell:nth-child(2) { display:none; }   /* la vidéo du visage est retirée : Mirror prend sa place */
 .grid .cell:nth-child(1) { order:-6; }
 .grid .cell:nth-child(5) { order:-4; grid-column:span 3; aspect-ratio:16/9; }
 .grid .cell:nth-child(6) { order:-3; grid-column:span 1; aspect-ratio:auto; }
 .grid .cell:nth-child(4) { order:-2; grid-column:span 2; aspect-ratio:16/9; }
-.grid .cell:nth-child(3) { order:-1; }
+.grid .cell:nth-child(3) { order:-7; }
 /* Ligne 6 : la série Fragment est partie plus bas, il reste deux cases (1 colonne + 3 colonnes) */
 .grid .cell:nth-child(7) { display:none; }
-.grid .cell:nth-child(8) { grid-column:span 1; aspect-ratio:auto; }
-.grid .cell:nth-child(9) { grid-column:span 3; aspect-ratio:16/9; }
+.grid .cell:nth-child(8) { grid-column:span 2; aspect-ratio:16/9; }   /* remonte à côté de l'éventail, à la place de Mirror */
+.grid .cell:nth-child(9) { grid-column:1 / -1; aspect-ratio:21/9; }   /* seule sur sa ligne, en bandeau */
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
@@ -130,6 +130,9 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .cell:nth-child(2) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .cell.cell-hero { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; background:#0a0a0a !important; }
 
+  .grid .cell:nth-child(3) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
   .cell:nth-child(9),
   .cell:nth-child(3),
@@ -192,6 +195,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .vimeo-wrap { position:absolute; inset:0; width:100%; height:100%; background:#0a0a0a; }
 .vimeo-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
+.sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:12; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
 .play-btn:hover { background:rgba(0,0,0,.2); }
 .play-btn svg { width:48px; height:48px; fill:none; }
@@ -308,7 +312,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3'},
-  {type:'image', t:'Sans titre II',     s:'Image IA · 2025', video:'../images/visage_preview.mov'},
+  {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
@@ -505,8 +509,20 @@ CONFIG.forEach((item,i)=>{
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     if(item.sound){
+      // Le son ne peut pas démarrer seul (règle des navigateurs) : un clic sur la case ou sur le bouton l'active, sur place.
+      const btn=document.createElement('button');
+      btn.className='sound-btn';
+      const maj=()=>{ btn.textContent=vid.muted?'▶  Activer le son':'■  Couper le son'; };
+      const bascule=()=>{
+        if(vid.muted){ vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0; lancer(vid); }
+        else { vid.muted=true; }
+        maj();
+      };
+      maj();
       wrap.style.cursor='none';
-      wrap.addEventListener('click',()=>openLbLocal(item.src));
+      wrap.addEventListener('click',bascule);
+      btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
+      wrap.appendChild(btn);
     }
     cell.appendChild(wrap);
   } else {
