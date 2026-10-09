@@ -380,16 +380,27 @@ document.addEventListener('mousemove',e=>{
 },{ passive:true });
 
 // Vidéos d'aperçu : chargées et lues seulement à l'approche de l'écran, en pause dès qu'elles en sortent
+// Une vidéo "voulue" est une vidéo proche de l'écran. Si le navigateur refuse de la lancer (onglet ouvert en arrière-plan,
+// mode économie d'énergie, connexion lente), on réessaie dès que la page redevient visible ou que le visiteur agit.
+const videosVoulues=new Set();
+function lancer(v){ const p=v.play(); if(p) p.catch(()=>{}); }
+function relancer(){ if(document.hidden) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
 const videoObs=new IntersectionObserver(entries=>{
   entries.forEach(en=>{
     const v=en.target;
-    if(en.isIntersecting){ const p=v.play(); if(p) p.catch(()=>{}); }
-    else v.pause();
+    if(en.isIntersecting){ videosVoulues.add(v); lancer(v); }
+    else { videosVoulues.delete(v); v.pause(); }
   });
 },{rootMargin:'300px 0px'});
+document.addEventListener('visibilitychange',relancer);
+window.addEventListener('pageshow',relancer);
+['pointerdown','touchstart','keydown','scroll'].forEach(ev=>window.addEventListener(ev,relancer,{passive:true}));
 function lazyVideo(vid){
-  vid.preload='none'; vid.loop=true; vid.muted=true; vid.playsInline=true;
+  // preload metadata + #t : la première image s'affiche même si la lecture n'a pas encore démarré (plus de case noire)
+  vid.preload='metadata'; vid.loop=true; vid.muted=true; vid.playsInline=true;
   vid.setAttribute('muted',''); vid.setAttribute('playsinline','');
+  if(vid.getAttribute('src') && !vid.getAttribute('src').includes('#')) vid.src=vid.getAttribute('src')+'#t=0.05';
+  vid.addEventListener('canplay',()=>{ if(videosVoulues.has(vid) && vid.paused) lancer(vid); });
   videoObs.observe(vid);
 }
 
