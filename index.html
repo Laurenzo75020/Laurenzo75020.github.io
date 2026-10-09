@@ -459,6 +459,7 @@
         if(!pret || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;      // sinon : navigation normale
         e.preventDefault();
         cadre.style.display='block'; ouvert=true;
+        void cadre.getBoundingClientRect().width;      // la page IA doit connaître sa vraie taille avant de se placer sur la vidéo
         try{ cadre.contentWindow.entrerAvecSon(); document.title=cadre.contentDocument.title||titreAccueil; }catch(err){}
         history.pushState({ia:true},'','ia/');
         try{ cadre.contentWindow.focus(); }catch(err){}

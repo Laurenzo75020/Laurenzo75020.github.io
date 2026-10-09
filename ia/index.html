@@ -779,21 +779,28 @@ document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').class
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-// Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut
+// Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
+// La position est recalée tant que la mise en page bouge encore (polices, images, affichage par-dessus l'accueil),
+// et jusqu'au premier geste du visiteur : sans cela, la page pouvait s'ouvrir sur la 2e ou la 3e vidéo.
 (function(){
   if('scrollRestoration' in history) history.scrollRestoration='manual';
-  let fait=false;
-  function allerALaVideo(){
-    if(fait || location.hash || window.scrollY>4) { fait=true; return; }
+  let visiteurAgit=false, fin=0;
+  function caler(){
+    if(visiteurAgit || location.hash || window.__enSommeil) return;
     const cible=document.querySelector('.cell-top') || document.getElementById('grid');
-    if(!cible) return;
-    const y=cible.getBoundingClientRect().top+window.scrollY-8;
-    if(y>0){ window.scrollTo(0,y); fait=true; if(typeof mesurer==='function') mesurer(); }
+    if(!cible || !cible.getBoundingClientRect().width) return;
+    const y=Math.max(0, Math.round(cible.getBoundingClientRect().top+window.scrollY-8));
+    if(Math.abs(window.scrollY-y)>1){ window.scrollTo(0,y); if(typeof mesurer==='function') mesurer(); }
   }
-  requestAnimationFrame(allerALaVideo);
-  window.__allerALaVideo=()=>{ fait=false; allerALaVideo(); };
-  window.addEventListener('load',()=>{ fait=false; if(window.scrollY<=4 || !sessionVue) allerALaVideo(); });
-  let sessionVue=false; window.addEventListener('scroll',()=>{ sessionVue=true; },{passive:true,once:true});
+  function surveiller(){
+    fin=Date.now()+4000;
+    (function boucle(){ caler(); if(!visiteurAgit && Date.now()<fin) requestAnimationFrame(boucle); })();
+  }
+  ['wheel','touchstart','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,()=>{ visiteurAgit=true; },{passive:true}));
+  window.addEventListener('load',()=>{ if(!visiteurAgit) surveiller(); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!visiteurAgit) caler(); });
+  surveiller();
+  window.__allerALaVideo=()=>{ visiteurAgit=false; surveiller(); };
 })();
 
 function alignBioRight(){
