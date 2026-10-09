@@ -379,10 +379,10 @@ const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=2', sound:true},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=3', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=3', sound:true},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=4', sound:true},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
   // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
@@ -401,7 +401,7 @@ const CONFIG = [
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=2', sound:true},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true, noIso:true},
@@ -413,7 +413,7 @@ const CONFIG = [
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
   // Ligne 9 : carré + 16/9 + carré
   {type:'image', t:'Rive',              s:'Image IA · 2024'},
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov?v=2', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov?v=3', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
   {type:'image', t:'Sans titre IV',     s:'Image IA · 2025'},
   // Ligne 10 : 16/9 + 1/1 carré
   {type:'image', t:'Pulsion',           s:'Image IA · 2024'},
@@ -503,6 +503,32 @@ function glisserVersSuivante(o){
 window.addEventListener('keydown',e=>{ if(['ArrowDown','ArrowUp','PageDown','PageUp',' ','End','Home'].includes(e.key)) aDefile=true; });
 // Lecture muette de secours : utilisée chaque fois que le navigateur refuse ou interrompt la lecture avec le son
 function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); }
+// Le volume est-il réglable par la page ? (non sur iPhone)
+const VOLUME_REGLABLE=(()=>{ try{ const v=document.createElement('video'); v.volume=0.5; return v.volume===0.5; }catch(e){ return false; } })();
+// Démarre le passage sonore d'une vidéo, depuis son début, SANS laisser passer le son de l'endroit où elle se trouvait :
+// on revient d'abord au début, et le son n'est ouvert qu'une fois ce retour effectué.
+function demarrerSon(o, geste){
+  const vid=o.vid, essai=++o.essai, cible=o.passes===1?0.75:1; o.refuse=false; o.enDemarrage=true; o.dernier=0;
+  const refus=()=>{ if(o.essai===essai){ o.enDemarrage=false; o.refuse=true; try{ vid.volume=1; }catch(e){} enMuet(o); } };
+  let ouvert=false;
+  const ouvrir=()=>{ if(ouvert || o.essai!==essai) return; ouvert=true; o.enDemarrage=false;
+    if(VOLUME_REGLABLE){ if(!vid.muted) vid.volume=cible; }
+    else { vid.muted=false; vid.removeAttribute('muted'); const p=vid.play(); if(p) p.catch(refus); }
+    o.maj(); };
+  const auRetour=()=>{ vid.removeEventListener('seeked',auRetour); ouvrir(); };
+  vid.addEventListener('seeked',auRetour); setTimeout(ouvrir,600);        // filet de sécurité si l'événement ne vient pas
+  if(VOLUME_REGLABLE){
+    vid.volume=0; vid.muted=false; vid.removeAttribute('muted');           // son ouvert mais à zéro pendant le retour au début
+    vid.currentTime=0;
+    const p=vid.play(); if(p) p.catch(refus);
+  } else if(geste){
+    vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;      // iPhone : le son doit être ouvert pendant le geste lui-même
+    const p=vid.play(); if(p) p.catch(refus);
+  } else {
+    vid.currentTime=0;                                                     // iPhone, hors geste : on reste muet jusqu'au retour au début
+    const p=vid.play(); if(p) p.catch(()=>{});
+  }
+}
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
@@ -514,14 +540,7 @@ function arbitrer(geste){
   sonores.forEach(o=>{
     if(o===elue && !o.coupe && !o.finie){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
-      if((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused)){
-        const essai=++o.essai; o.refuse=false;
-        o.vid.muted=false; o.vid.removeAttribute('muted');
-        o.vid.currentTime=0; o.dernier=0;                    // le passage sonore commence toujours au début
-        try{ o.vid.volume=o.passes===1?0.75:1; }catch(e){}
-        const p=o.vid.play();
-        if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai){ o.refuse=true; enMuet(o); } });
-      }
+      if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
     } else {
       if(!o.vid.muted) o.vid.muted=true;
       if(geste && o.vid.paused){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }
@@ -575,7 +594,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
-  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, finie:false, passes:0, dernier:0, essai:0, maj:()=>{
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, enDemarrage:false, finie:false, passes:0, dernier:0, essai:0, maj:()=>{
     btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
                             : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
@@ -599,8 +618,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const bascule=()=>{
     if(vid.muted || vid.paused){
       o.coupe=false; o.finie=false; o.dernier=0; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
-      const essai=++o.essai; vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0; try{ vid.volume=1; }catch(e){}
-      const p=vid.play(); if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
+      o.passes=0; demarrerSon(o, true);
       o.maj();
     } else { o.coupe=true; vid.muted=true; o.maj(); }
   };
