@@ -367,9 +367,9 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_debut.mov', hero:true, top:true, sound:true},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_video.mov?v=7', hero:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true},
 ];
@@ -406,6 +406,53 @@ function lazyVideo(vid){
   if(vid.getAttribute('src') && !vid.getAttribute('src').includes('#')) vid.src=vid.getAttribute('src')+'#t=0.05';
   vid.addEventListener('canplay',()=>{ if(videosVoulues.has(vid) && vid.paused) lancer(vid); });
   videoObs.observe(vid);
+}
+
+// ---- Vidéos avec son ----
+// Une seule vidéo sonore à la fois : celle qui occupe le plus l'écran, et seulement si elle y est à 60 % au moins.
+// Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
+// On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
+const sonores=[];
+function arbitrer(reprendreAuDebut){
+  const lbOuvert=document.getElementById('lb').classList.contains('on');
+  let elue=null;
+  if(!lbOuvert && !document.hidden) sonores.forEach(o=>{ if(o.ratio>=0.6 && (!elue || o.ratio>elue.ratio)) elue=o; });
+  sonores.forEach(o=>{
+    if(o===elue && !o.coupe){
+      if(o.vid.muted){
+        o.vid.muted=false; o.vid.removeAttribute('muted');
+        if(reprendreAuDebut) o.vid.currentTime=0;
+        const p=o.vid.play();
+        if(p) p.then(o.maj).catch(()=>{ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); });
+      }
+    } else if(!o.vid.muted){ o.vid.muted=true; }
+    o.maj();
+  });
+}
+const sonObs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{ const o=sonores.find(x=>x.cell===en.target); if(o) o.ratio=en.intersectionRatio; });
+  arbitrer(false);
+},{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
+['pointerdown','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
+  if(e.target.closest && e.target.closest('.sound-btn')) return;
+  arbitrer(true);
+},{passive:true}));
+document.addEventListener('visibilitychange',()=>arbitrer(false));
+function avecSon(vid, wrap, clicSurLaCase){
+  const btn=document.createElement('button');
+  btn.className='sound-btn';
+  const o={vid, cell:wrap, ratio:0, coupe:false, maj:()=>{ btn.textContent=vid.muted?'▶  Activer le son':'■  Couper le son'; }};
+  sonores.push(o);
+  vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{}); arbitrer(false); };
+  const bascule=()=>{
+    if(vid.muted){ o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; }); vid.currentTime=0; o.ratio=Math.max(o.ratio,0.6); arbitrer(false); }
+    else { o.coupe=true; vid.muted=true; o.maj(); }
+  };
+  o.maj();
+  btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
+  if(clicSurLaCase){ wrap.style.cursor='none'; wrap.addEventListener('click',bascule); }
+  wrap.appendChild(btn);
+  sonObs.observe(wrap);
 }
 
 // Build grid
@@ -508,34 +555,7 @@ CONFIG.forEach((item,i)=>{
     lazyVideo(vid);
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
-    if(item.sound){
-      // Teasing avec son : on tente toujours la lecture AVEC le son. Si le navigateur la refuse (pas encore de geste du
-      // visiteur sur le site), on lance en muet et le son s'active tout seul au premier clic, appui ou touche sur la page.
-      const btn=document.createElement('button');
-      btn.className='sound-btn';
-      let coupeParVisiteur=false;
-      const maj=()=>{ btn.textContent=vid.muted?'▶  Activer le son':'■  Couper le son'; };
-      const muet=()=>{ vid.muted=true; const p=vid.play(); if(p) p.catch(()=>{}); maj(); };
-      vid._avecSon=()=>{
-        if(coupeParVisiteur){ muet(); return; }
-        vid.muted=false; vid.removeAttribute('muted');
-        const p=vid.play();
-        if(p) p.then(maj).catch(muet); else maj();
-      };
-      const bascule=()=>{
-        if(vid.muted){ coupeParVisiteur=false; vid.currentTime=0; vid._avecSon(); }
-        else { coupeParVisiteur=true; vid.muted=true; maj(); }
-      };
-      maj();
-      ['pointerdown','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
-        if(wrap.contains(e.target)) return;                      // un clic sur la case est géré par la bascule
-        if(vid.muted && !coupeParVisiteur && videosVoulues.has(vid)){ vid.currentTime=0; vid._avecSon(); }
-      },{passive:true}));
-      wrap.style.cursor='none';
-      wrap.addEventListener('click',bascule);
-      btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
-      wrap.appendChild(btn);
-    }
+    if(item.sound) avecSon(vid, wrap, true);
     cell.appendChild(wrap);
   } else {
     // Vimeo
@@ -550,6 +570,7 @@ CONFIG.forEach((item,i)=>{
         vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
         if(item.previewTransform) vid.style.transform=item.previewTransform;
         wrap.appendChild(vid);
+        if(item.sound) avecSon(vid, wrap, false);        // le clic sur la case ouvre toujours le film ; le bouton gère le son
         if(!item.noLink){
           wrap.style.cursor='none';
           wrap.addEventListener('click',()=>openLbVideo(item.vimeoId));
@@ -602,7 +623,7 @@ function openLb(src, images){
   lbCurrent = lbImages.indexOf(src);
   if(lbCurrent<0) lbCurrent=0;
   _updateLb();
-  document.getElementById('lb').classList.add('on');
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
 }
 // Vidéo locale en grand, avec le son (lancée par le clic, donc autorisée par le navigateur)
 function openLbLocal(src){
@@ -614,7 +635,7 @@ function openLbLocal(src){
   document.getElementById('lbPrev').classList.remove('visible');
   document.getElementById('lbNext').classList.remove('visible');
   document.getElementById('lbCounter').textContent='';
-  document.getElementById('lb').classList.add('on');
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
   const p=v.play(); if(p) p.catch(()=>{});
 }
 function openLbVideo(vimeoId){
@@ -627,7 +648,7 @@ function openLbVideo(vimeoId){
   document.getElementById('lbPrev').classList.remove('visible');
   document.getElementById('lbNext').classList.remove('visible');
   document.getElementById('lbCounter').textContent='';
-  document.getElementById('lb').classList.add('on');
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
 }
 function _updateLb(){
   const img=document.getElementById('lbImg');
@@ -640,7 +661,7 @@ function _updateLb(){
 }
 function lbNav(dir){ lbCurrent=(lbCurrent+dir+lbImages.length)%lbImages.length; _updateLb(); }
 function closeLb(){
-  document.getElementById('lb').classList.remove('on');
+  document.getElementById('lb').classList.remove('on'); arbitrer(false);
   const lbLocal=document.getElementById('lbLocal'); lbLocal.pause(); lbLocal.removeAttribute('src'); lbLocal.load(); lbLocal.style.display='none';
   const lbVideo=document.getElementById('lbVideo');
   lbVideo.src=''; lbVideo.style.display='none';
