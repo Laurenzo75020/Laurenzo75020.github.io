@@ -135,6 +135,11 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
   .grid .cell:nth-child(3) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* pas de case blanche : ces deux cases complètent leur ligne */
+  .grid .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(35) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* bouton de son : même taille que les légendes des vidéos */
+  .vimeo-wrap .sound-btn { font-size:.55rem !important; letter-spacing:.1em !important; padding:.25rem .45rem !important; left:.5rem !important; bottom:.5rem !important; }
   .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
@@ -413,14 +418,14 @@ function lazyVideo(vid){
 }
 
 // ---- Vidéos avec son ----
-// Une seule vidéo sonore à la fois : celle qui occupe le plus l'écran, et seulement si elle y est à 60 % au moins.
+// Une seule vidéo sonore à la fois : celle qui occupe le plus l'écran, et seulement si elle y est à 30 % au moins.
 // Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
 // On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
 const sonores=[];
 function arbitrer(reprendreAuDebut){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
-  if(!lbOuvert && !document.hidden) sonores.forEach(o=>{ if(o.ratio>=0.6 && (!elue || o.ratio>elue.ratio)) elue=o; });
+  if(!lbOuvert && !document.hidden) sonores.forEach(o=>{ if(o.ratio>=0.3 && (!elue || o.ratio>elue.ratio)) elue=o; });
   sonores.forEach(o=>{
     if(o===elue && !o.coupe){
       if(o.vid.muted){
@@ -455,6 +460,7 @@ let mesureEnAttente=false;
   if(mesureEnAttente) return; mesureEnAttente=true;
   requestAnimationFrame(()=>{ mesureEnAttente=false; mesurer(); });
 },{passive:true}));
+['load','pageshow'].forEach(ev=>window.addEventListener(ev,()=>{ mesurer(); setTimeout(mesurer,600); }));
 // En quittant la page, tout son est coupé
 window.addEventListener('pagehide',()=>sonores.forEach(o=>{ o.vid.muted=true; o.vid.pause(); }));
 function avecSon(vid, wrap, clicSurLaCase){
@@ -464,7 +470,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   sonores.push(o);
   vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{}); arbitrer(false); };
   const bascule=()=>{
-    if(vid.muted){ o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; }); vid.currentTime=0; o.ratio=Math.max(o.ratio,0.6); arbitrer(false); }
+    if(vid.muted){ o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; }); vid.currentTime=0; o.ratio=Math.max(o.ratio,0.3); arbitrer(false); }
     else { o.coupe=true; vid.muted=true; o.maj(); }
   };
   o.maj();
