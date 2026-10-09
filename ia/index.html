@@ -118,6 +118,16 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 /* Avant-dernière ligne : la première case est retirée, la seconde occupe la ligne en bandeau */
 .grid .cell:nth-child(36) { display:none; }
 .grid .cell:nth-child(37) { grid-column:1 / -1; aspect-ratio:21/9; }
+/* Ordinateur : les vidéos pleine largeur ne dépassent pas 80 % de la hauteur de l'écran (elles restent en 16:9, centrées),
+   pour que le haut de la ligne suivante se voie en bas de l'écran ; écarts plus grands en haut, normaux à partir de la ligne 6 */
+@media (min-width:769px) {
+  .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
+  .grid .cell.cell-top { margin-bottom:10vh; }
+  .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
+  .grid .cell:nth-child(3), .grid .cell:nth-child(1) { margin-bottom:6vh; }
+  .grid .cell.cell-third { margin-bottom:4vh; }
+  .grid .cell:nth-child(5), .grid .cell:nth-child(6) { margin-bottom:2vh; }
+}
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
