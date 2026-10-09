@@ -22,6 +22,8 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
 .top-nav a { color:var(--ink); text-decoration:none; opacity:.9; transition:opacity .2s; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .top-nav a:hover { opacity:1; }
+.bottom-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem; padding:3.5rem 1rem 2.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+.bottom-nav a { color:var(--ink); text-decoration:none; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .big-name { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.6rem,5.85vw,6.5rem); line-height:.88; letter-spacing:-.02em; text-transform:uppercase; display:block; margin-bottom:.6rem; white-space:nowrap; }
 .bio-strip { display:grid; grid-template-columns:52fr 48fr; align-items:start; }
 .bio-left { padding:0 2rem 2rem; display:flex; flex-direction:column; align-items:flex-start; gap:.6rem; }
@@ -242,6 +244,10 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
 .sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
 .sound-btn .sb-m { display:none; }
+.cell.cell-top { overflow:visible; }
+.cell.cell-top .vimeo-wrap { overflow:hidden; }
+.fleche-suite { position:absolute; right:2px; top:calc(100% + 12px); width:11px; height:20px; pointer-events:none; opacity:.75; }
+.fleche-suite svg { display:block; width:100%; height:100%; }
 .sound-btn { display:none !important; }   /* boutons de son masqués : un seul passage sonore par vidéo */
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
 .play-btn:hover { background:rgba(0,0,0,.2); }
@@ -341,6 +347,12 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   </div>
 </div>
 
+<div class="bottom-nav">
+  <a href="../index.html" data-en="← Home">← Accueil</a>
+  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
+  <a href="../photos/">Photo</a>
+  <a href="../portfolio/?from=ia">Portfolio</a>
+</div>
 <footer>
   <span>© 2026 Laurent Bourdoiseau</span>
   <span data-en="AI Creation — Paris">Création IA — Paris</span>
@@ -414,7 +426,7 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=4', hero:true, top:true, sound:true},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=5', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
@@ -460,8 +472,27 @@ function lazyVideo(vid){
 // Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
 // On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
 const sonores=[];
-let aDefile=false;
-['wheel','touchmove'].forEach(ev=>window.addEventListener(ev,()=>{ aDefile=true; },{passive:true}));
+let aDefile=false, aTouche=false;
+['wheel','touchmove'].forEach(ev=>window.addEventListener(ev,()=>{ aDefile=true; aTouche=true; },{passive:true}));
+// Sur mobile, à la fin du premier passage d'une vidéo sonore, la page glisse doucement vers la suivante
+// (tant que le visiteur n'a pas pris la main : on touche peu l'écran sur un téléphone).
+function glisserVersSuivante(o){
+  if(aTouche || !window.matchMedia('(max-width:768px)').matches || window.__enSommeil) return;
+  const y0=o.cell.getBoundingClientRect().top;
+  const suivante=sonores.filter(x=>x!==o && x.cell.getBoundingClientRect().top>y0+10).sort((a,b)=>a.cell.getBoundingClientRect().top-b.cell.getBoundingClientRect().top)[0];
+  if(!suivante) return;
+  const r=suivante.cell.getBoundingClientRect(), vh=window.innerHeight;
+  aDefile=true; window.__glisse=true;      // le calage d'arrivée ne doit plus ramener la page sur la première vidéo
+  if(window.__focusSur) window.__focusSur(suivante.cell.closest('.cell'));
+  // glissement fait à la main (1,2 s, départ et arrivée en douceur) : identique sur tous les navigateurs
+  const de=window.scrollY, vers=Math.max(0,r.top+de-(vh-r.height)/2), t0=performance.now(), duree=1200;
+  (function pas(t){
+    if(aTouche) return;
+    const u=Math.min(1,(t-t0)/duree), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    window.scrollTo(0,de+(vers-de)*e);
+    if(u<1) requestAnimationFrame(pas); else mesurer();
+  })(t0);
+}
 window.addEventListener('keydown',e=>{ if(['ArrowDown','ArrowUp','PageDown','PageUp',' ','End','Home'].includes(e.key)) aDefile=true; });
 // Lecture muette de secours : utilisée chaque fois que le navigateur refuse ou interrompt la lecture avec le son
 function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); }
@@ -473,13 +504,13 @@ function arbitrer(geste){
     if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
   }
   sonores.forEach(o=>{
-    if(o===elue && !o.coupe){
+    if(o===elue && !o.coupe && !o.finie){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
       if((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused)){
         const essai=++o.essai; o.refuse=false;
         o.vid.muted=false; o.vid.removeAttribute('muted');
         o.vid.currentTime=0; o.dernier=0;                    // le passage sonore commence toujours au début
-        try{ o.vid.volume=o.finie?0.75:1; }catch(e){}
+        try{ o.vid.volume=o.passes===1?0.75:1; }catch(e){}
         const p=o.vid.play();
         if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai){ o.refuse=true; enMuet(o); } });
       }
@@ -520,7 +551,7 @@ function mesurer(){
     const r=o.cell.getBoundingClientRect();
     o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
     o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
-    if(o.ratio<=0){ o.finie=false; o.refuse=false; try{ o.vid.volume=1; }catch(e){} }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
+    if(o.ratio<=0){ o.finie=false; o.passes=0; o.refuse=false; try{ o.vid.volume=1; }catch(e){} }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
   });
   arbitrer(false);
 }
@@ -536,7 +567,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
-  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, finie:false, dernier:0, essai:0, maj:()=>{
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, finie:false, passes:0, dernier:0, essai:0, maj:()=>{
     btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
                             : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
@@ -548,7 +579,11 @@ function avecSon(vid, wrap, clicSurLaCase){
   vid.addEventListener('timeupdate',()=>{
     const t=vid.currentTime, d=vid.duration||0;
     // la boucle vient de repartir : les passages suivants jouent un quart moins fort
-    if(d && t<o.dernier-1 && !vid.muted){ o.finie=true; vid.volume=0.75; }
+    if(d && t<o.dernier-1 && !vid.muted){
+      o.passes++;
+      if(o.passes===1){ try{ vid.volume=0.75; }catch(e){} glisserVersSuivante(o); }
+      else { o.finie=true; vid.muted=true; }
+    }
     o.dernier=t;
   });
   // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
@@ -669,6 +704,9 @@ CONFIG.forEach((item,i)=>{
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     if(item.sound) avecSon(vid, wrap, true);
+    if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
+      fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
+      cell.appendChild(fl); }
     cell.appendChild(wrap);
   } else {
     // Vimeo
@@ -818,6 +856,11 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   // à l'arrivée : la première vidéo seule, tout de suite
   const premiere=grille.querySelector('.cell-top');
   if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); }
+  window.__focusSur=(c)=>{
+    if(!c) return; const avant=[...grille.querySelectorAll('.cell.focus')];
+    c.classList.add('focus','on');
+    setTimeout(()=>avant.forEach(a=>{ if(a!==c) a.classList.remove('focus'); }),900);
+  };
   window.__reposInitial=()=>{ clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
 })();
 // Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
@@ -827,7 +870,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   if('scrollRestoration' in history) history.scrollRestoration='manual';
   let visiteurAgit=false, fin=0;
   function caler(){
-    if(visiteurAgit || location.hash || window.__enSommeil) return;
+    if(visiteurAgit || window.__glisse || location.hash || window.__enSommeil) return;
     const cible=document.querySelector('.cell-top') || document.getElementById('grid');
     if(!cible || !cible.getBoundingClientRect().width) return;
     const r=cible.getBoundingClientRect(), vh=window.innerHeight;

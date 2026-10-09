@@ -43,6 +43,9 @@
       box-shadow:0 1px 4px rgba(0,0,0,0.12);
     }
     .top-menu a:hover{ opacity:1; }
+    /* les mêmes onglets en bas de page, en ligne, pour ne pas avoir à remonter */
+    .top-menu.bottom-menu{ position:static !important; width:auto !important; flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center; gap:0.6rem; padding:3.5rem 1rem 2.5rem !important; transform:none; will-change:auto; }
+    .top-menu.bottom-menu a{ pointer-events:auto; }
 
     .name-hero{ padding:calc(9rem + env(safe-area-inset-top)) 0 0; }
     .bio-strip{ display:grid; grid-template-columns:52fr 48fr; align-items:start; }
@@ -201,6 +204,12 @@
     <p class="loading" data-en="Loading…">Chargement…</p>
   </main>
 
+  <div class="top-menu bottom-menu">
+    <a href="../index.html" data-en="← Home">← Accueil</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="#" onclick="(document.querySelector('.page-scroll')||window).scrollTo({top:0,behavior:'smooth'});window.scrollTo({top:0,behavior:'smooth'});return false;">Photo</a>
+    <a href="../portfolio/?from=photos">Portfolio</a>
+  </div>
   <footer>© 2026 Laurent Bourdoiseau</footer>
   </div>
 
