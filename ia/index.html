@@ -515,7 +515,8 @@ function demarrerSon(o, geste){
   let ouvert=false;
   const ouvrir=()=>{ if(ouvert || o.essai!==essai) return; ouvert=true; o.enDemarrage=false;
     if(VOLUME_REGLABLE){ if(!vid.muted) vid.volume=cible; }
-    else { vid.muted=false; vid.removeAttribute('muted'); const p=vid.play(); if(p) p.catch(refus); }
+    else { setTimeout(()=>{ if(o.essai!==essai) return; vid.muted=false; vid.removeAttribute('muted');
+             const p=vid.play(); if(p) p.catch(()=>{ o.direct=true; refus(); }); o.maj(); },80); }
     o.maj(); };
   const auRetour=()=>{ vid.removeEventListener('seeked',auRetour); ouvrir(); };
   vid.addEventListener('seeked',auRetour); setTimeout(ouvrir,600);        // filet de sécurité si l'événement ne vient pas
@@ -523,12 +524,15 @@ function demarrerSon(o, geste){
     vid.volume=0; vid.muted=false; vid.removeAttribute('muted');           // son ouvert mais à zéro pendant le retour au début
     vid.currentTime=0;
     const p=vid.play(); if(p) p.catch(refus);
-  } else if(geste){
-    vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;      // iPhone : le son doit être ouvert pendant le geste lui-même
+  } else if(geste && o.direct){
+    // iPhone, dernier recours : le son est ouvert pendant le geste lui-même (un bref accroc est alors possible)
+    vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;
     const p=vid.play(); if(p) p.catch(refus);
   } else {
-    vid.currentTime=0;                                                     // iPhone, hors geste : on reste muet jusqu'au retour au début
+    // iPhone : la vidéo reste muette pendant son retour au début, le son n'est ouvert qu'ensuite (pas d'accroc).
+    // Le play() lancé pendant le geste « déverrouille » la vidéo : iOS accepte ensuite que son son s'ouvre un instant plus tard.
     const p=vid.play(); if(p) p.catch(()=>{});
+    vid.currentTime=0;
   }
 }
 function arbitrer(geste){
@@ -545,7 +549,7 @@ function arbitrer(geste){
       if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
     } else {
       if(!o.vid.muted) o.vid.muted=true;
-      if(geste && o.vid.paused){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }
+      if(geste){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }   // déverrouille toutes les vidéos sonores
     }
     o.maj();
   });
@@ -616,7 +620,7 @@ function avecSon(vid, wrap, clicSurLaCase){
     o.dernier=t;
   });
   // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
-  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden && !window.__enSommeil) enMuet(o); });
+  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden && !window.__enSommeil){ if(!VOLUME_REGLABLE) o.direct=true; enMuet(o); } });
   const bascule=()=>{
     if(vid.muted || vid.paused){
       o.coupe=false; o.finie=false; o.dernier=0; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
