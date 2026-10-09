@@ -35,7 +35,7 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .section-label { padding:.8rem 2rem; display:flex; justify-content:space-between; align-items:center; }
 .section-label span { font-family:'Barlow',sans-serif; font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); }
 .grid-wrapper { padding:0 2rem; background:#ffffff; }
-.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; background:#ffffff; }
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; row-gap:26px; background:#ffffff; }   /* 20 px de plus entre les lignes */
 .cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
 /* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
 .cell.cell-first { order:-3; grid-column:span 2; aspect-ratio:16/9; }
@@ -126,6 +126,10 @@ nav a:hover, .nav-right a:hover { opacity:1; }
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
   /* ligne 3 : Mirror seul, au même gabarit que les deux vidéos du dessus */
   .grid .cell:nth-child(3) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; margin-bottom:6vh; }
+  /* le clip Air et le film L'Oréal : seuls sur leur ligne, au même gabarit que les trois premières vidéos */
+  .grid { grid-auto-flow:row dense; }
+  .grid .cell:nth-child(18), .grid .cell:nth-child(26) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; aspect-ratio:16/9; }
+  .grid .cell:nth-child(16), .grid .cell:nth-child(17), .grid .cell:nth-child(25), .grid .cell:nth-child(27) { grid-column:span 2; aspect-ratio:16/9; }
   /* ligne 4 : la structure à gauche, le montage split screen à droite ; à partir d'ici, grille et alignement habituels */
   .grid .cell.cell-hero.cell-third { grid-column:span 2; width:auto; justify-self:stretch; }
 }
@@ -157,7 +161,9 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(35) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   /* les vidéos sont toujours en 16:9 : Human Bomb et L'Oréal ne sont plus en case carrée ; L'Oréal, seule sur sa ligne, est 4 lignes sous le clip Air */
   .grid .cell:nth-child(20) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
-  .grid .cell:nth-child(25) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(25) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(18) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }   /* le clip Air en pleine largeur */
+  .grid .cell:nth-child(21) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(26) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* plus d'air entre les premières lignes : une demi-hauteur de vidéo sous la première, puis de moins en moins, normal à la ligne 6 */
   .grid .cell.cell-top { margin-bottom:calc(38vh - 28%); }   /* la première vidéo est au milieu de l'écran : la deuxième commence tout en bas de l'écran */
