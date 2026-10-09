@@ -159,6 +159,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
   .grid .cell:nth-child(3) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* dans une ligne qui mêle une case large (16:9) et une case carrée, la carrée prend la même hauteur : bords alignés */
+  .grid .cell { align-self:stretch; width:100%; }
   /* pas de case blanche : ces deux cases complètent leur ligne */
   .grid .cell:nth-child(35) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   /* les vidéos sont toujours en 16:9 : Human Bomb et L'Oréal ne sont plus en case carrée ; L'Oréal, seule sur sa ligne, est 4 lignes sous le clip Air */
