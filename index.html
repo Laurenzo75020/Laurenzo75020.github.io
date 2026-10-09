@@ -464,6 +464,9 @@
         history.pushState({ia:true},'','ia/');
         try{ cadre.contentWindow.focus(); }catch(err){}
       });
+      // un clic sur la photo mène aussi à la page IA (par le même chemin, donc avec le son)
+      var photo=document.querySelector('.scene.still');
+      if(photo){ photo.style.cursor='pointer'; photo.addEventListener('click',function(e){ if(e.target.closest('a')) return; lien.click(); }); }
       window.addEventListener('popstate',function(){
         if(ouvert){ fermer(); return; }
         if(/\/ia\/?$/.test(location.pathname)) location.reload();                 // « suivant » après un retour : on charge la vraie page

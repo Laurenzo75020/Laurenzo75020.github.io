@@ -35,7 +35,7 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .section-label { padding:.8rem 2rem; display:flex; justify-content:space-between; align-items:center; }
 .section-label span { font-family:'Barlow',sans-serif; font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); }
 .grid-wrapper { padding:0 2rem; background:#ffffff; }
-.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; row-gap:26px; grid-auto-flow:row dense; background:#ffffff; }   /* 20 px de plus entre les lignes */
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; row-gap:36px; grid-auto-flow:row dense; background:#ffffff; }   /* 20 px de plus entre les lignes */
 .cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
 /* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
 .cell.cell-first { order:-3; grid-column:span 2; aspect-ratio:16/9; }
@@ -121,6 +121,7 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 /* Ordinateur : les vidéos pleine largeur ne dépassent pas 80 % de la hauteur de l'écran (elles restent en 16:9, centrées),
    pour que le haut de la ligne suivante se voie en bas de l'écran ; écarts plus grands en haut, normaux à partir de la ligne 6 */
 @media (min-width:769px) {
+  .grid { max-width:calc(80vh * 16 / 9); margin-left:auto; margin-right:auto; }      /* images et vidéos alignées sur les mêmes bords */
   .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
   .grid .cell.cell-top { margin-bottom:10vh; }
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
@@ -472,12 +473,13 @@ function arbitrer(geste){
     if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
   }
   sonores.forEach(o=>{
-    if(o===elue && !o.coupe && !o.finie){
+    if(o===elue && !o.coupe){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
       if((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused)){
         const essai=++o.essai; o.refuse=false;
         o.vid.muted=false; o.vid.removeAttribute('muted');
         o.vid.currentTime=0; o.dernier=0;                    // le passage sonore commence toujours au début
+        try{ o.vid.volume=o.finie?0.75:1; }catch(e){}
         const p=o.vid.play();
         if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai){ o.refuse=true; enMuet(o); } });
       }
@@ -518,7 +520,7 @@ function mesurer(){
     const r=o.cell.getBoundingClientRect();
     o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
     o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
-    if(o.ratio<=0){ o.finie=false; o.refuse=false; }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
+    if(o.ratio<=0){ o.finie=false; o.refuse=false; try{ o.vid.volume=1; }catch(e){} }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
   });
   arbitrer(false);
 }
@@ -545,13 +547,8 @@ function avecSon(vid, wrap, clicSurLaCase){
   // Le son ne revient que si la vidéo est sortie de l'écran puis y revient, ou si le visiteur le redemande avec le bouton.
   vid.addEventListener('timeupdate',()=>{
     const t=vid.currentTime, d=vid.duration||0;
-    // la boucle vient de repartir (le temps est revenu en arrière sans que ce soit une remise au début demandée)
-    if(d && t<o.dernier-1 && !vid.muted){ o.finie=true; vid.muted=true; o.maj(); }
-    // coupe programmée pile à la fin du passage, pour ne pas entendre le début du suivant
-    if(d && !vid.muted && d-t<0.4 && !o.minuterie){
-      const essai=o.essai;
-      o.minuterie=setTimeout(()=>{ o.minuterie=null; if(!vid.muted && o.essai===essai){ o.finie=true; vid.muted=true; o.maj(); } }, Math.max(0,(d-t)*1000-50));
-    }
+    // la boucle vient de repartir : les passages suivants jouent un quart moins fort
+    if(d && t<o.dernier-1 && !vid.muted){ o.finie=true; vid.volume=0.75; }
     o.dernier=t;
   });
   // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
@@ -559,7 +556,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const bascule=()=>{
     if(vid.muted || vid.paused){
       o.coupe=false; o.finie=false; o.dernier=0; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
-      const essai=++o.essai; vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;
+      const essai=++o.essai; vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0; try{ vid.volume=1; }catch(e){}
       const p=vid.play(); if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
       o.maj();
     } else { o.coupe=true; vid.muted=true; o.maj(); }
@@ -797,7 +794,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   for(let el=grille; el && el!==document.body; el=el.parentElement){
     [...el.parentElement.children].forEach(f=>{ if(f!==el && f.id!=='lb' && f.tagName!=='SCRIPT' && f.tagName!=='STYLE') f.classList.add('autour'); });
   }
-  const DELAI=3000; let minuterie=null;
+  const DELAI=500; let minuterie=null;
   function caseRegardee(){
     const h=window.innerHeight; let choix=null, mieux=1e9;
     grille.querySelectorAll('.cell').forEach(c=>{
@@ -809,7 +806,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   function calmer(){
     if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
     grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
-    const c=caseRegardee(); if(!c) return;
+    const c=caseRegardee(); if(!c || !c.querySelector('video')) return;      // seulement sur les vidéos, jamais sur les photos
     c.classList.add('focus','on'); document.body.classList.add('calme');
   }
   function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
