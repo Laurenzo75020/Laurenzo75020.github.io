@@ -348,9 +348,9 @@ const CONFIG = [
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'../images/Air_previz.mov'},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'../images/Air_previz.mov', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'../images/Gold.mov'},
+  {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true},
   // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
@@ -360,7 +360,7 @@ const CONFIG = [
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
   // Ligne 9 : carré + 16/9 + carré
   {type:'image', t:'Rive',              s:'Image IA · 2024'},
-  {type:'image', t:'Spectre',           s:'Image IA · 2025'},
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'../images/Gold.mov', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
   {type:'image', t:'Sans titre IV',     s:'Image IA · 2025'},
   // Ligne 10 : 16/9 + 1/1 carré
   {type:'image', t:'Pulsion',           s:'Image IA · 2024'},
@@ -431,7 +431,7 @@ function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
-  if(!lbOuvert && !document.hidden && !window.__enSommeil) sonores.forEach(o=>{ if(o.ratio>=0.3 && (!elue || o.ratio>elue.ratio)) elue=o; });
+  if(!lbOuvert && !document.hidden && !window.__enSommeil) sonores.forEach(o=>{ if(o.ratio>=o.seuil && (!elue || o.ecart<elue.ecart)) elue=o; });
   sonores.forEach(o=>{
     if(o===elue && !o.coupe){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
@@ -478,6 +478,7 @@ function mesurer(){
   sonores.forEach(o=>{
     const r=o.cell.getBoundingClientRect();
     o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
+    o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
   });
   arbitrer(false);
 }
@@ -493,7 +494,7 @@ function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
-  const o={vid, cell:wrap, ratio:0, coupe:false, essai:0, maj:()=>{
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, essai:0, maj:()=>{
     btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
                             : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
@@ -524,13 +525,13 @@ let imgIndex=1;
 CONFIG.forEach((item,i)=>{
   const cell=document.createElement('div');
   cell.className='cell reveal';
+  if(item.skipImage) imgIndex++;          // cette case occupe la place d'une image : la numérotation des suivantes ne bouge pas
   if(item.hero) cell.classList.add('cell-hero');
   if(item.third) cell.classList.add('cell-third');
   if(item.top) cell.classList.add('cell-top');
 
   if(item.type==='series'){
     cell.classList.add('cell-series');
-    if(item.skipImage) imgIndex++;
     let idx=0;
     const imgs=item.images;
     const track=document.createElement('div');
@@ -589,7 +590,7 @@ CONFIG.forEach((item,i)=>{
     return;
   } else if(item.type==='image'){
     const src=item.src || `../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
-    imgIndex++;
+    if(!item.horsCompte) imgIndex++;
     if(item.pinFirst) cell.classList.add('cell-first');
     // video: l'image est remplacée par une vidéo muette en boucle (l'image sert d'affiche pendant le chargement)
     const img=document.createElement(item.video?'video':'img');
