@@ -109,14 +109,14 @@ nav a:hover, .nav-right a:hover { opacity:1; }
    ligne 5 : L'Absence (2 colonnes) + Mirror (2 colonnes) — coupes non alignées entre les lignes 4 et 5 */
 .grid .cell:nth-child(2) { display:none; }   /* la vidéo du visage est retirée : Mirror prend sa place */
 .grid .cell:nth-child(1) { order:-6; }
-.grid .cell:nth-child(5) { order:-4; grid-column:span 3; aspect-ratio:16/9; }
-.grid .cell:nth-child(6) { order:-3; grid-column:span 1; aspect-ratio:auto; }
+.grid .cell:nth-child(5) { order:-4; grid-column:1 / -1; aspect-ratio:16/9; }   /* Shore Stories seule sur sa ligne */
+.grid .cell:nth-child(6) { order:-3; grid-column:span 2; aspect-ratio:16/9; }
 .grid .cell:nth-child(4) { order:-2; grid-column:span 2; aspect-ratio:16/9; }
 .grid .cell:nth-child(3) { order:-7; }
 /* Ligne 6 : la série Fragment est partie plus bas, il reste deux cases (1 colonne + 3 colonnes) */
 .grid .cell:nth-child(7) { display:none; }
 .grid .cell:nth-child(8) { grid-column:span 2; aspect-ratio:16/9; }   /* remonte à côté de l'éventail, à la place de Mirror */
-.grid .cell:nth-child(9) { grid-column:1 / -1; aspect-ratio:21/9; }   /* seule sur sa ligne, en bandeau */
+.grid .cell:nth-child(9) { grid-column:span 2; aspect-ratio:16/9; }   /* seule sur sa ligne, en bandeau */
 /* Avant-dernière ligne : la première case est retirée, la seconde occupe la ligne en bandeau */
 .grid .cell:nth-child(36) { display:none; }
 .grid .cell:nth-child(37) { grid-column:span 2; aspect-ratio:16/9; }
@@ -174,11 +174,13 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(1) { margin-bottom:9%; }
   .grid .cell.cell-third { margin-bottom:4.5%; }
   /* bouton de son : même taille que les légendes des vidéos */
+  .voir-film { font-size:.5rem; top:calc(100% + 7px); }
   /* mobile : le même rectangle blanc que sur ordinateur, en plus petit — "Sound off" coupe le son, "Sound on" le remet */
   .vimeo-wrap .sound-btn { font-size:.5rem !important; letter-spacing:.1em !important; padding:.3rem .5rem !important; left:.5rem !important; bottom:.5rem !important; }
   .vimeo-wrap .sound-btn .sb-d { display:none !important; }
   .vimeo-wrap .sound-btn .sb-m { display:inline !important; }
-  .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(5) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }   /* Shore Stories seule sur sa ligne */
+  .grid .cell:nth-child(8) { grid-column:span 1 !important; aspect-ratio:1/1 !important; }
   .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
   .cell:nth-child(9),
@@ -245,6 +247,10 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
 .sound-btn .sb-m { display:none; }
 .cell.cell-top { overflow:visible; }
+.cell.avec-mention { overflow:visible; }
+.cell.avec-mention .vimeo-wrap { overflow:hidden; }
+.voir-film { position:absolute; left:1px; top:calc(100% + 10px); font-family:'Barlow',sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:#0a0a0a; text-decoration:none; white-space:nowrap; opacity:.8; cursor:none; }
+.voir-film:hover { opacity:1; }
 .cell.cell-top .vimeo-wrap { overflow:hidden; }
 .fleche-suite { position:absolute; right:2px; top:calc(100% + 12px); width:11px; height:20px; pointer-events:none; opacity:.75; }
 .fleche-suite svg { display:block; width:100%; height:100%; }
@@ -372,10 +378,10 @@ const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov', sound:true},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov', sound:true},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov', sound:true},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
   // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
@@ -383,7 +389,7 @@ const CONFIG = [
   {type:'image', t:'Nuit blanche',      s:'Image IA · 2024'},
   {type:'image', t:'Fragment',          s:'Image IA · 2025'},
   // Ligne 4 : Breaking-Up 16/9 + carré + carré
-  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', preview:'../images/break_up.mov'},
+  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', duree:'0:38', preview:'../images/break_up.mov'},
   {type:'image', t:"L'Ombre",           s:'Image IA · 2025'},
   {type:'hidden', t:'Mémoire',          s:'Image IA · 2024'},
   // Ligne 4b : Le Réel série (span2) + carré + carré
@@ -394,7 +400,7 @@ const CONFIG = [
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', preview:'../images/Air_previz.mov', sound:true},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true, noIso:true},
@@ -406,7 +412,7 @@ const CONFIG = [
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
   // Ligne 9 : carré + 16/9 + carré
   {type:'image', t:'Rive',              s:'Image IA · 2024'},
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', preview:'../images/Gold.mov', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
   {type:'image', t:'Sans titre IV',     s:'Image IA · 2025'},
   // Ligne 10 : 16/9 + 1/1 carré
   {type:'image', t:'Pulsion',           s:'Image IA · 2024'},
@@ -428,7 +434,7 @@ const CONFIG = [
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
   {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=5', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
 ];
@@ -724,6 +730,13 @@ CONFIG.forEach((item,i)=>{
         if(item.previewTransform) vid.style.transform=item.previewTransform;
         wrap.appendChild(vid);
         if(item.sound) avecSon(vid, wrap, false);        // le clic sur la case ouvre toujours le film ; le bouton gère le son
+        if(!item.noLink && item.duree){
+          // mention discrète sous le cadre, à gauche : il existe une version longue (reste visible au blanc)
+          const m=document.createElement('a'); m.className='voir-film'; m.href='#';
+          m.textContent='Voir le film · '+item.duree+' →'; m.setAttribute('data-en','Watch the film · '+item.duree+' →');
+          m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+          cell.classList.add('avec-mention'); cell.appendChild(m);
+        }
         if(!item.noLink){
           wrap.style.cursor='none';
           wrap.addEventListener('click',()=>openLbVideo(item.vimeoId));
