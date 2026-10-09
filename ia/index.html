@@ -139,8 +139,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(35) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* bouton de son : même taille que les légendes des vidéos */
-  /* mobile : simple mention dans la typo des légendes, sans cadre */
-  .vimeo-wrap .sound-btn { background:none !important; color:#fff !important; padding:0 !important; left:.6rem !important; bottom:.5rem !important; font-size:.6rem !important; letter-spacing:.1em !important; text-shadow:0 1px 3px rgba(0,0,0,.6); }
+  /* mobile : le même rectangle blanc que sur ordinateur, en plus petit — "Sound off" coupe le son, "Sound on" le remet */
+  .vimeo-wrap .sound-btn { font-size:.5rem !important; letter-spacing:.1em !important; padding:.3rem .5rem !important; left:.5rem !important; bottom:.5rem !important; }
   .vimeo-wrap .sound-btn .sb-d { display:none !important; }
   .vimeo-wrap .sound-btn .sb-m { display:inline !important; }
   .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
@@ -477,8 +477,8 @@ function avecSon(vid, wrap, clicSurLaCase){
   btn.className='sound-btn';
   // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
   const o={vid, cell:wrap, ratio:0, coupe:false, essai:0, maj:()=>{
-    btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">○ Son</span>'
-                            : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">● Son</span>';
+    btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
+                            : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
     btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
   }};
   sonores.push(o);
@@ -718,6 +718,21 @@ document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').class
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut
+(function(){
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  let fait=false;
+  function allerALaVideo(){
+    if(fait || location.hash || window.scrollY>4) { fait=true; return; }
+    const cible=document.querySelector('.cell-top') || document.getElementById('grid');
+    if(!cible) return;
+    const y=cible.getBoundingClientRect().top+window.scrollY-8;
+    if(y>0){ window.scrollTo(0,y); fait=true; if(typeof mesurer==='function') mesurer(); }
+  }
+  requestAnimationFrame(allerALaVideo);
+  window.addEventListener('load',()=>{ fait=false; if(window.scrollY<=4 || !sessionVue) allerALaVideo(); });
+  let sessionVue=false; window.addEventListener('scroll',()=>{ sessionVue=true; },{passive:true,once:true});
+})();
 
 function alignBioRight(){
   const left=document.querySelector('.bio-left');

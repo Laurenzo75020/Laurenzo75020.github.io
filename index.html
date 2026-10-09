@@ -102,7 +102,9 @@
 
   .scene.snap-back .shutter-line{ transition:left 0.6s ease; }
 
-  .scroll-hint{
+  /* indice de scroll masqué tant que l'accueil n'a qu'une seule image (à retirer si la série revient) */
+  .scroll-hint{ display:none !important; }
+  .scroll-hint-ancien{
     position:fixed;
     left:75%;
     bottom:calc(4.6rem + env(safe-area-inset-bottom));
