@@ -115,6 +115,9 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .grid .cell:nth-child(7) { display:none; }
 .grid .cell:nth-child(8) { grid-column:span 2; aspect-ratio:16/9; }   /* remonte à côté de l'éventail, à la place de Mirror */
 .grid .cell:nth-child(9) { grid-column:1 / -1; aspect-ratio:21/9; }   /* seule sur sa ligne, en bandeau */
+/* Avant-dernière ligne : la première case est retirée, la seconde occupe la ligne en bandeau */
+.grid .cell:nth-child(36) { display:none; }
+.grid .cell:nth-child(37) { grid-column:1 / -1; aspect-ratio:21/9; }
 /* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
 html, body { overflow-x: hidden; max-width: 100%; }
 
@@ -131,6 +134,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .cell.cell-hero { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; background:#0a0a0a !important; }
 
   .grid .cell:nth-child(3) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
@@ -369,7 +373,7 @@ const CONFIG = [
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
   {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov', hero:true, sound:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=2', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true},
 ];
