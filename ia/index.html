@@ -137,7 +137,17 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* pas de case blanche : ces deux cases complètent leur ligne */
   .grid .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
-  .grid .cell:nth-child(35) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(35) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  /* les vidéos sont toujours en 16:9 : Human Bomb et L'Oréal ne sont plus en case carrée ; L'Oréal, seule sur sa ligne, est 4 lignes sous le clip Air */
+  .grid .cell:nth-child(20) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(25) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(26) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* plus d'air entre les premières lignes : une demi-hauteur de vidéo sous la première, puis de moins en moins, normal à la ligne 6 */
+  .grid .cell.cell-top { margin-bottom:28%; }
+  .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:21%; }
+  .grid .cell:nth-child(3) { margin-bottom:15%; }
+  .grid .cell:nth-child(1) { margin-bottom:9%; }
+  .grid .cell.cell-third { margin-bottom:4.5%; }
   /* bouton de son : même taille que les légendes des vidéos */
   /* mobile : le même rectangle blanc que sur ordinateur, en plus petit — "Sound off" coupe le son, "Sound on" le remet */
   .vimeo-wrap .sound-btn { font-size:.5rem !important; letter-spacing:.1em !important; padding:.3rem .5rem !important; left:.5rem !important; bottom:.5rem !important; }
@@ -209,6 +219,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
 .sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
 .sound-btn .sb-m { display:none; }
+.sound-btn { display:none !important; }   /* boutons de son masqués : un seul passage sonore par vidéo */
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
 .play-btn:hover { background:rgba(0,0,0,.2); }
 .play-btn svg { width:48px; height:48px; fill:none; }
@@ -326,7 +337,7 @@ const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3'},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov'},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', preview:'../images/mirror.mov', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
   {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', preview:'../images/Shore_story.mov'},
