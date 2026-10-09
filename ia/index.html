@@ -22,7 +22,7 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
 .top-nav a { color:var(--ink); text-decoration:none; opacity:.9; transition:opacity .2s; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .top-nav a:hover { opacity:1; }
-.bottom-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:.6rem; padding:3.5rem 1rem 2.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+.bottom-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:16px 0 3.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
 .bottom-nav a { color:var(--ink); text-decoration:none; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .big-name { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.6rem,5.85vw,6.5rem); line-height:.88; letter-spacing:-.02em; text-transform:uppercase; display:block; margin-bottom:.6rem; white-space:nowrap; }
 .bio-strip { display:grid; grid-template-columns:52fr 48fr; align-items:start; }
@@ -123,7 +123,7 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 /* Ordinateur : les vidéos pleine largeur ne dépassent pas 80 % de la hauteur de l'écran (elles restent en 16:9, centrées),
    pour que le haut de la ligne suivante se voie en bas de l'écran ; écarts plus grands en haut, normaux à partir de la ligne 6 */
 @media (min-width:769px) {
-  .grid { max-width:calc(80vh * 16 / 9); margin-left:auto; margin-right:auto; }      /* images et vidéos alignées sur les mêmes bords */
+  .grid, .bottom-nav { max-width:calc(80vh * 16 / 9); margin-left:auto; margin-right:auto; }      /* images et vidéos alignées sur les mêmes bords */
   .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
   .grid .cell.cell-top { margin-bottom:10vh; }
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
@@ -334,7 +334,14 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   <span data-en="40 works">40 œuvres</span>
 </div>
 
-<div class="grid-wrapper"><div class="grid" id="grid"></div></div>
+<div class="grid-wrapper"><div class="grid" id="grid"></div>
+<div class="bottom-nav">
+  <a href="../index.html" data-en="← Home">← Accueil</a>
+  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
+  <a href="../photos/">Photo</a>
+  <a href="../portfolio/?from=ia">Portfolio</a>
+</div>
+</div>
 
 <div class="section-label reveal" id="contact">
   <span>Contact</span>
@@ -353,12 +360,6 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   </div>
 </div>
 
-<div class="bottom-nav">
-  <a href="../index.html" data-en="← Home">← Accueil</a>
-  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
-  <a href="../photos/">Photo</a>
-  <a href="../portfolio/?from=ia">Portfolio</a>
-</div>
 <footer>
   <span>© 2026 Laurent Bourdoiseau</span>
   <span data-en="AI Creation — Paris">Création IA — Paris</span>
@@ -378,10 +379,10 @@ const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov', sound:true},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=2', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov', sound:true},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=2', sound:true},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
   // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
@@ -400,7 +401,7 @@ const CONFIG = [
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov', sound:true},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=2', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true, noIso:true},
@@ -412,7 +413,7 @@ const CONFIG = [
   {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
   // Ligne 9 : carré + 16/9 + carré
   {type:'image', t:'Rive',              s:'Image IA · 2024'},
-  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov?v=2', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
   {type:'image', t:'Sans titre IV',     s:'Image IA · 2025'},
   // Ligne 10 : 16/9 + 1/1 carré
   {type:'image', t:'Pulsion',           s:'Image IA · 2024'},
@@ -432,9 +433,9 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=5', hero:true, top:true, sound:true},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=6', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
 ];
