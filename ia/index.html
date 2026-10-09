@@ -139,7 +139,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(35) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* bouton de son : même taille que les légendes des vidéos */
-  .vimeo-wrap .sound-btn { font-size:.55rem !important; letter-spacing:.1em !important; padding:.25rem .45rem !important; left:.5rem !important; bottom:.5rem !important; }
+  .vimeo-wrap .sound-btn { width:1rem !important; height:1rem !important; left:.5rem !important; bottom:.5rem !important; }
   .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
@@ -204,7 +204,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .vimeo-wrap { position:absolute; inset:0; width:100%; height:100%; background:#0a0a0a; }
 .vimeo-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
-.sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
+.sound-btn { position:absolute; left:1.2rem; bottom:1.1rem; z-index:30; pointer-events:auto; width:1.5rem; height:1.5rem; padding:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.9); border:none; cursor:none; }
+.sound-btn svg { width:62%; height:62%; display:block; }
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
 .play-btn:hover { background:rgba(0,0,0,.2); }
 .play-btn svg { width:48px; height:48px; fill:none; }
@@ -378,7 +379,7 @@ const CONFIG = [
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
   {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov', hero:true, top:true, sound:true},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
-  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=2', hero:true, sound:true},
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', preview:'../images/montage_def_preview_son.mov?v=3', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true},
 ];
@@ -422,6 +423,8 @@ function lazyVideo(vid){
 // Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
 // On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
 const sonores=[];
+const ICONE_SON='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="#0a0a0a"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const ICONE_MUET='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="#0a0a0a"/><line x1="17" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="17" y2="15"/></svg>';
 function arbitrer(reprendreAuDebut){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
@@ -441,9 +444,9 @@ function arbitrer(reprendreAuDebut){
 const sonObs=new IntersectionObserver(entries=>{
   mesurer();
 },{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
-['pointerdown','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
-  if(e.target.closest && e.target.closest('.sound-btn')) return;
-  arbitrer(true);
+['pointerdown','mousedown','mouseup','click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
+  if(e.target.closest && (e.target.closest('.sound-btn') || e.target.closest('.cell-top'))) return;
+  if(sonores.some(o=>o.vid.muted && !o.coupe)) arbitrer(true);
 },{passive:true}));
 document.addEventListener('visibilitychange',()=>arbitrer(false));
 // Mesure directe de la part de chaque vidéo sonore visible à l'écran, à chaque défilement (en plus de l'observateur)
@@ -466,7 +469,7 @@ window.addEventListener('pagehide',()=>sonores.forEach(o=>{ o.vid.muted=true; o.
 function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
-  const o={vid, cell:wrap, ratio:0, coupe:false, maj:()=>{ btn.textContent=vid.muted?'▶  Activer le son':'■  Couper le son'; }};
+  const o={vid, cell:wrap, ratio:0, coupe:false, maj:()=>{ btn.innerHTML=vid.muted?ICONE_MUET:ICONE_SON; btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son'); btn.title=vid.muted?'Activer le son':'Couper le son'; }};
   sonores.push(o);
   vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{}); arbitrer(false); };
   const bascule=()=>{
