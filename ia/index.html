@@ -139,7 +139,10 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(17) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(35) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* bouton de son : même taille que les légendes des vidéos */
-  .vimeo-wrap .sound-btn { width:1rem !important; height:1rem !important; left:.5rem !important; bottom:.5rem !important; }
+  /* mobile : simple mention dans la typo des légendes, sans cadre */
+  .vimeo-wrap .sound-btn { background:none !important; color:#fff !important; padding:0 !important; left:.6rem !important; bottom:.5rem !important; font-size:.6rem !important; letter-spacing:.1em !important; text-shadow:0 1px 3px rgba(0,0,0,.6); }
+  .vimeo-wrap .sound-btn .sb-d { display:none !important; }
+  .vimeo-wrap .sound-btn .sb-m { display:inline !important; }
   .grid .cell:nth-child(8) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
@@ -204,8 +207,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .vimeo-wrap { position:absolute; inset:0; width:100%; height:100%; background:#0a0a0a; }
 .vimeo-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
-.sound-btn { position:absolute; left:1.2rem; bottom:1.1rem; z-index:30; pointer-events:auto; width:1.5rem; height:1.5rem; padding:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.9); border:none; cursor:none; }
-.sound-btn svg { width:62%; height:62%; display:block; }
+.sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
+.sound-btn .sb-m { display:none; }
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
 .play-btn:hover { background:rgba(0,0,0,.2); }
 .play-btn svg { width:48px; height:48px; fill:none; }
@@ -423,19 +426,21 @@ function lazyVideo(vid){
 // Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
 // On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
 const sonores=[];
-const ICONE_SON='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="#0a0a0a"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19.5 5.5a9 9 0 0 1 0 13"/></svg>';
-const ICONE_MUET='<svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="3,9 8,9 13,4 13,20 8,15 3,15" fill="#0a0a0a"/><line x1="17" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="17" y2="15"/></svg>';
-function arbitrer(reprendreAuDebut){
+// Lecture muette de secours : utilisée chaque fois que le navigateur refuse ou interrompt la lecture avec le son
+function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); }
+function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
   if(!lbOuvert && !document.hidden) sonores.forEach(o=>{ if(o.ratio>=0.3 && (!elue || o.ratio>elue.ratio)) elue=o; });
   sonores.forEach(o=>{
     if(o===elue && !o.coupe){
-      if(o.vid.muted){
+      // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
+      if(o.vid.muted || (geste && o.vid.paused)){
+        const essai=++o.essai;
         o.vid.muted=false; o.vid.removeAttribute('muted');
-        if(reprendreAuDebut) o.vid.currentTime=0;
+        if(geste) o.vid.currentTime=0;
         const p=o.vid.play();
-        if(p) p.then(o.maj).catch(()=>{ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); });
+        if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
       }
     } else if(!o.vid.muted){ o.vid.muted=true; }
     o.maj();
@@ -444,10 +449,11 @@ function arbitrer(reprendreAuDebut){
 const sonObs=new IntersectionObserver(entries=>{
   mesurer();
 },{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
-['pointerdown','mousedown','mouseup','click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
+// Seuls ces gestes sont reconnus par tous les navigateurs, Safari compris, pour autoriser le son
+['click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
   if(e.target.closest && (e.target.closest('.sound-btn') || e.target.closest('.cell-top'))) return;
-  if(sonores.some(o=>o.vid.muted && !o.coupe)) arbitrer(true);
-},{passive:true}));
+  arbitrer(true);
+}));
 document.addEventListener('visibilitychange',()=>arbitrer(false));
 // Mesure directe de la part de chaque vidéo sonore visible à l'écran, à chaque défilement (en plus de l'observateur)
 function mesurer(){
@@ -469,12 +475,23 @@ window.addEventListener('pagehide',()=>sonores.forEach(o=>{ o.vid.muted=true; o.
 function avecSon(vid, wrap, clicSurLaCase){
   const btn=document.createElement('button');
   btn.className='sound-btn';
-  const o={vid, cell:wrap, ratio:0, coupe:false, maj:()=>{ btn.innerHTML=vid.muted?ICONE_MUET:ICONE_SON; btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son'); btn.title=vid.muted?'Activer le son':'Couper le son'; }};
+  // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
+  const o={vid, cell:wrap, ratio:0, coupe:false, essai:0, maj:()=>{
+    btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">○ Son</span>'
+                            : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">● Son</span>';
+    btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
+  }};
   sonores.push(o);
-  vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{}); arbitrer(false); };
+  vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{ if(!vid.muted) enMuet(o); }); arbitrer(false); };
+  // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
+  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden) enMuet(o); });
   const bascule=()=>{
-    if(vid.muted){ o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; }); vid.currentTime=0; o.ratio=Math.max(o.ratio,0.3); arbitrer(false); }
-    else { o.coupe=true; vid.muted=true; o.maj(); }
+    if(vid.muted || vid.paused){
+      o.coupe=false; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
+      const essai=++o.essai; vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;
+      const p=vid.play(); if(p) p.then(o.maj).catch(()=>{ if(o.essai===essai) enMuet(o); });
+      o.maj();
+    } else { o.coupe=true; vid.muted=true; o.maj(); }
   };
   o.maj();
   btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
