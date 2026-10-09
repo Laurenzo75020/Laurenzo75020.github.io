@@ -160,7 +160,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(25) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
   .grid .cell:nth-child(26) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* plus d'air entre les premières lignes : une demi-hauteur de vidéo sous la première, puis de moins en moins, normal à la ligne 6 */
-  .grid .cell.cell-top { margin-bottom:28%; }
+  .grid .cell.cell-top { margin-bottom:calc(38vh - 28%); }   /* la première vidéo est au milieu de l'écran : la deuxième commence tout en bas de l'écran */
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:21%; }
   .grid .cell:nth-child(3) { margin-bottom:15%; }
   .grid .cell:nth-child(1) { margin-bottom:9%; }
