@@ -435,7 +435,7 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=6', hero:true, top:true, sound:true},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=6', hero:true, top:true, sound:true, vimeoId:'1235006673', duree:'0:51'},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
@@ -740,6 +740,13 @@ CONFIG.forEach((item,i)=>{
     if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
       fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
       cell.appendChild(fl); }
+    if(item.vimeoId && item.duree){
+      // même mention que sous les autres films : le teaser a sa version longue sur Vimeo
+      const m=document.createElement('a'); m.className='voir-film'; m.href='#';
+      m.textContent='Voir le film · '+item.duree+' →'; m.setAttribute('data-en','Watch the film · '+item.duree+' →');
+      m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+      cell.classList.add('avec-mention'); cell.appendChild(m);
+    }
     cell.appendChild(wrap);
   } else {
     // Vimeo
