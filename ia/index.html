@@ -302,7 +302,6 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   <img id="lbImg" src="" alt="" style="max-width:90vw;max-height:90vh;object-fit:contain;transition:opacity .2s;">
   <video id="lbLocal" controls playsinline style="display:none;max-width:90vw;max-height:90vh;background:#000;"></video>
   <iframe id="lbVideo" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:none;width:90vw;height:50.625vw;max-height:90vh;border:none;"></iframe>
-  <div id="lbVoile" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90vw;height:50.625vw;max-height:90vh;"></div>
   <button class="lb-nav lb-next" id="lbNext" onclick="lbNav(1)"><svg width="36" height="36" viewBox="0 0 36 36"><polyline points="12,6 24,18 12,30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
   <div class="lb-counter" id="lbCounter"></div>
 </div>
@@ -438,7 +437,7 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=6', hero:true, top:true, sound:true, vimeoId:'1235006673', duree:'0:51'},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_boucle.mov?v=6', hero:true, top:true, sound:true, vimeoId:'1235006673', duree:'0:51', imageFixe:1.0},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
@@ -458,7 +457,7 @@ document.addEventListener('mousemove',e=>{
 // Une vidéo "voulue" est une vidéo proche de l'écran. Si le navigateur refuse de la lancer (onglet ouvert en arrière-plan,
 // mode économie d'énergie, connexion lente), on réessaie dès que la page redevient visible ou que le visiteur agit.
 const videosVoulues=new Set();
-function lancer(v){ if(window.__enSommeil) return; if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
+function lancer(v){ if(window.__enSommeil || v._fige) return; if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
 function relancer(){ if(document.hidden || window.__enSommeil) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
 const videoObs=new IntersectionObserver(entries=>{
   entries.forEach(en=>{
@@ -563,7 +562,7 @@ function arbitrer(geste){
       if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
     } else {
       if(!o.vid.muted) o.vid.muted=true;
-      if(geste){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }   // déverrouille toutes les vidéos sonores
+      if(geste && !o.vid._fige){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }   // déverrouille toutes les vidéos sonores
     }
     o.maj();
   });
@@ -751,6 +750,7 @@ CONFIG.forEach((item,i)=>{
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     if(item.sound) avecSon(vid, wrap, !item.vimeoId);     // sans version longue : le clic sur la case gère le son
+    if(item.imageFixe!=null){ vid._imageFixe=item.imageFixe; vid._film=item.vimeoId; }
     if(item.vimeoId){ wrap.style.cursor='none'; wrap.addEventListener('click',()=>openLbVideo(item.vimeoId)); auToucher(wrap,()=>openLbVideo(item.vimeoId)); }   // le clic sur le teaser ouvre le film
     if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
       fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
@@ -855,37 +855,45 @@ function openLbLocal(src){
   const p=v.play(); if(p) p.catch(()=>{});
 }
 // ---- Film Vimeo sans habillage ----
-// Ni titre, ni nom, ni portrait. Un voile transparent couvre le lecteur : la barre de commandes de Vimeo ne réapparaît
-// plus (elle masquait les sous-titres) ; un clic ou un toucher sur l'image met en pause ou relance.
+// Ni titre, ni nom, ni portrait. Le lecteur est plus haut que l'image : la barre de commandes de Vimeo se pose dans la
+// bande noire sous l'image et ne couvre donc jamais les sous-titres, sur ordinateur comme sur téléphone. Elle vient avec
+// la souris (pour se déplacer dans le film) et repart quand la souris quitte l'image.
 // À la fin du film, la visionneuse se referme : pas de propositions d'autres vidéos, on retrouve la page.
-// sansBarre : on demande aussi à Vimeo de ne pas afficher sa barre (accepté selon la formule du compte). Sur téléphone on
-// la laisse pour le premier démarrage, que le navigateur n'accepte que d'un toucher direct dans le lecteur.
-const TACTILE=window.matchMedia('(hover:none)').matches;
-let lecteur=null, lbJeton=0;
-function lireVimeo(vimeoId, sansBarre){
-  const cadre=document.getElementById('lbVideo'), voile=document.getElementById('lbVoile'), jeton=++lbJeton;
-  cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`+(sansBarre?'&controls=0':'');
-  voile.style.display=sansBarre?'block':'none';          // téléphone : le voile ne vient qu'une fois le film lancé
-  lecteur=null;
+const BANDE=64;                                           // hauteur de la bande, au-dessus et au-dessous de l'image
+let lbJeton=0, lbFilm=null;
+function taillerLecteur(){
+  const cadre=document.getElementById('lbVideo');
+  const l=Math.min(window.innerWidth*0.9, (window.innerHeight*0.9-2*BANDE)*16/9);
+  cadre.style.width=l+'px'; cadre.style.height=(l*9/16+2*BANDE)+'px'; cadre.style.maxHeight='none';
+}
+window.addEventListener('resize',taillerLecteur);
+function lireVimeo(vimeoId){
+  const cadre=document.getElementById('lbVideo'), jeton=++lbJeton;
+  taillerLecteur(); lbFilm=vimeoId;
+  cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
   if(!window.Vimeo) return;                              // bibliothèque Vimeo absente : lecteur ordinaire
-  const l=new Vimeo.Player(cadre); lecteur=l;
-  l.on('play',()=>{ if(jeton===lbJeton) voile.style.display='block'; });
-  l.on('ended',()=>{ if(jeton===lbJeton) closeLb(); });
-  voile.onclick=()=>{
-    if(jeton!==lbJeton) return;
-    l.getPaused().then(enPause=>{
-      if(!enPause) return l.pause();
-      // le navigateur refuse la relance depuis la page : on rend la main au lecteur Vimeo, avec sa barre
-      return l.play().catch(()=>{ if(jeton===lbJeton) lireVimeo(vimeoId, false); });
-    }).catch(()=>{});
-  };
+  new Vimeo.Player(cadre).on('ended',()=>{ if(jeton===lbJeton) closeLb(); });
+}
+// Au retour du film Faces : le teaser ne rejoue pas (la même bande-son une seconde fois pèse) ; il reste sur une image
+// fixe, sans son, et la page descend un peu pour montrer le film suivant.
+function apresLeFilm(vimeoId){
+  const vid=[...document.querySelectorAll('.cell-top video')].find(v=>v._film===vimeoId); if(!vid) return;
+  const o=sonores.find(x=>x.vid===vid);
+  vid._fige=true; vid.muted=true; vid.pause(); try{ vid.currentTime=vid._imageFixe; }catch(e){}
+  if(o){ o.coupe=true; o.finie=true; o.maj(); }
+  document.body.classList.remove('calme');
+  const cell=vid.closest('.cell'), suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
+    .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
+  if(!suivante) return;
+  const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;      // le haut du film suivant monte aux deux tiers de l'écran
+  if(dy>0) setTimeout(()=>window.scrollBy({top:dy,behavior:'smooth'}),350);
 }
 function openLbVideo(vimeoId){
   const lbImg=document.getElementById('lbImg');
   const lbVideo=document.getElementById('lbVideo');
   lbImg.style.display='none';
   lbVideo.style.display='block';
-  lireVimeo(vimeoId, !TACTILE);
+  lireVimeo(vimeoId);
   lbImages=[]; lbCurrent=0;
   document.getElementById('lbPrev').classList.remove('visible');
   document.getElementById('lbNext').classList.remove('visible');
@@ -903,10 +911,12 @@ function _updateLb(){
 }
 function lbNav(dir){ lbCurrent=(lbCurrent+dir+lbImages.length)%lbImages.length; _updateLb(); }
 function closeLb(){
+  const film=lbFilm; lbFilm=null;
+  if(film) apresLeFilm(film);          // avant de rendre le son à la page : le teaser de ce film ne doit pas repartir
   document.getElementById('lb').classList.remove('on'); arbitrer(false);
   const lbLocal=document.getElementById('lbLocal'); lbLocal.pause(); lbLocal.removeAttribute('src'); lbLocal.load(); lbLocal.style.display='none';
   const lbVideo=document.getElementById('lbVideo');
-  lbVideo.src=''; lbVideo.style.display='none'; lbJeton++; lecteur=null; document.getElementById('lbVoile').style.display='none';
+  lbVideo.src=''; lbVideo.style.display='none'; lbJeton++;
   document.getElementById('lbImg').style.display='block';
 }
 document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
@@ -935,7 +945,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   function calmer(){
     if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
     grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
-    const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso')) return;      // seulement sur les vidéos, jamais sur les photos
+    const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso') || c.querySelector('video')._fige) return;      // seulement sur les vidéos, jamais sur les photos
     c.classList.add('focus','on'); document.body.classList.add('calme');
   }
   function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
