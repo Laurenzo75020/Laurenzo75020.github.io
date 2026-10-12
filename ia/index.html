@@ -748,7 +748,8 @@ CONFIG.forEach((item,i)=>{
     lazyVideo(vid);
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
-    if(item.sound) avecSon(vid, wrap, true);
+    if(item.sound) avecSon(vid, wrap, !item.vimeoId);     // sans version longue : le clic sur la case gère le son
+    if(item.vimeoId){ wrap.style.cursor='none'; wrap.addEventListener('click',()=>openLbVideo(item.vimeoId)); auToucher(wrap,()=>openLbVideo(item.vimeoId)); }   // le clic sur le teaser ouvre le film
     if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
       fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
       cell.appendChild(fl); }
@@ -786,6 +787,7 @@ CONFIG.forEach((item,i)=>{
         if(!item.noLink){
           wrap.style.cursor='none';
           wrap.addEventListener('click',()=>openLbVideo(item.vimeoId));
+          auToucher(wrap,()=>openLbVideo(item.vimeoId));
         }
       } else {
         const thumb=document.createElement('img');
