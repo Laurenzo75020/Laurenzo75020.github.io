@@ -254,6 +254,9 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .cell.avec-mention .vimeo-wrap { overflow:hidden; }
 .voir-film { position:absolute; left:1px; top:calc(100% + 10px); font-family:'Barlow',sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:#0a0a0a; text-decoration:none; white-space:nowrap; opacity:.8; cursor:none; }
 .voir-film:hover { opacity:1; }
+/* pendant la lecture, quand tout s'efface autour de la vidéo, la mention sous le cadre s'efface aussi */
+.voir-film { transition:opacity .6s; }
+body.calme .voir-film { opacity:0 !important; pointer-events:none; }
 /* sur l'image figée d'un aperçu : l'invitation à voir le film, dans la typo du nom, en bas au centre */
 .vimeo-wrap { container-type:inline-size; }
 .regarder { position:absolute; left:0; right:0; top:70%; transform:translateY(-50%); z-index:5; text-align:center; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:4.6vw; font-size:5.6cqw; line-height:1; letter-spacing:.035em; text-transform:uppercase; white-space:nowrap; color:#fff; text-shadow:0 0 14px rgba(0,0,0,.16); opacity:0; transition:opacity .7s; pointer-events:none; }
