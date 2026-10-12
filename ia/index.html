@@ -176,7 +176,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid .cell:nth-child(1) { margin-bottom:9%; }
   .grid .cell.cell-third { margin-bottom:4.5%; }
   /* bouton de son : même taille que les légendes des vidéos */
-  .voir-film { font-size:.5rem; top:calc(100% + 7px); }
+  /* zone de toucher élargie autour de la mention (le texte ne bouge pas) : 8 px de haut étaient trop fins pour le doigt */
+  .voir-film { font-size:.5rem; top:calc(100% + 7px - 14px); padding:14px 28px 14px 0; z-index:6; }
   /* mobile : le même rectangle blanc que sur ordinateur, en plus petit — "Sound off" coupe le son, "Sound on" le remet */
   .vimeo-wrap .sound-btn { font-size:.5rem !important; letter-spacing:.1em !important; padding:.3rem .5rem !important; left:.5rem !important; bottom:.5rem !important; }
   .vimeo-wrap .sound-btn .sb-d { display:none !important; }
@@ -392,7 +393,7 @@ const CONFIG = [
   {type:'image', t:'Nuit blanche',      s:'Image IA · 2024'},
   {type:'image', t:'Fragment',          s:'Image IA · 2025'},
   // Ligne 4 : Breaking-Up 16/9 + carré + carré
-  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', duree:'0:38', preview:'../images/break_up.mov'},
+  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', duree:'0:38', preview:'../images/break_up.mov?v=2'},
   {type:'image', t:"L'Ombre",           s:'Image IA · 2025'},
   {type:'hidden', t:'Mémoire',          s:'Image IA · 2024'},
   // Ligne 4b : Le Réel série (span2) + carré + carré
@@ -402,11 +403,11 @@ const CONFIG = [
   // Ligne 5 : carré + série Le Réel span2 + carré
   {type:'image', t:'Corps',             s:'Image IA · 2024'},
   {type:'image', t:'Latence',           s:'Image IA · 2025'},
-  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov', noLink:true},
+  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov?v=2', noLink:true},
   {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true},
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
-  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov', noLink:true, noIso:true},
+  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov?v=2', noLink:true, noIso:true},
   // Ligne 8 : 4 carrés
   {type:'image', t:'Regard',            s:'Image IA · 2025'},
   // Série Fragment, à la place de l'image Sans titre III (image13.jpg, retirée) ; skipImage garde la numérotation des images suivantes
