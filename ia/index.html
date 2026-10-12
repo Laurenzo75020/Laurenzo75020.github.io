@@ -863,7 +863,9 @@ const BANDE=64;                                           // hauteur de la bande
 let lbJeton=0, lbFilm=null;
 function taillerLecteur(){
   const cadre=document.getElementById('lbVideo');
-  const l=Math.min(window.innerWidth*0.9, (window.innerHeight*0.9-2*BANDE)*16/9);
+  const W=window.innerWidth||document.documentElement.clientWidth, H=window.innerHeight||document.documentElement.clientHeight;
+  const l=Math.min(W*0.9, (H*0.9-2*BANDE)*16/9);
+  if(!(l>0)) return;                                      // fenêtre pas encore mesurable : on garde la taille par défaut
   cadre.style.width=l+'px'; cadre.style.height=(l*9/16+2*BANDE)+'px'; cadre.style.maxHeight='none';
 }
 window.addEventListener('resize',taillerLecteur);
