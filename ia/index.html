@@ -289,6 +289,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 .reveal.on { opacity:1; }
 </style>
 <script src="../lang.js?v=2"></script>
+<script src="https://player.vimeo.com/api/player.js" defer></script>
 </head>
 <body>
 
@@ -301,6 +302,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   <img id="lbImg" src="" alt="" style="max-width:90vw;max-height:90vh;object-fit:contain;transition:opacity .2s;">
   <video id="lbLocal" controls playsinline style="display:none;max-width:90vw;max-height:90vh;background:#000;"></video>
   <iframe id="lbVideo" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:none;width:90vw;height:50.625vw;max-height:90vh;border:none;"></iframe>
+  <div id="lbVoile" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90vw;height:50.625vw;max-height:90vh;"></div>
   <button class="lb-nav lb-next" id="lbNext" onclick="lbNav(1)"><svg width="36" height="36" viewBox="0 0 36 36"><polyline points="12,6 24,18 12,30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
   <div class="lb-counter" id="lbCounter"></div>
 </div>
@@ -852,12 +854,38 @@ function openLbLocal(src){
   document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
   const p=v.play(); if(p) p.catch(()=>{});
 }
+// ---- Film Vimeo sans habillage ----
+// Ni titre, ni nom, ni portrait. Un voile transparent couvre le lecteur : la barre de commandes de Vimeo ne réapparaît
+// plus (elle masquait les sous-titres) ; un clic ou un toucher sur l'image met en pause ou relance.
+// À la fin du film, la visionneuse se referme : pas de propositions d'autres vidéos, on retrouve la page.
+// sansBarre : on demande aussi à Vimeo de ne pas afficher sa barre (accepté selon la formule du compte). Sur téléphone on
+// la laisse pour le premier démarrage, que le navigateur n'accepte que d'un toucher direct dans le lecteur.
+const TACTILE=window.matchMedia('(hover:none)').matches;
+let lecteur=null, lbJeton=0;
+function lireVimeo(vimeoId, sansBarre){
+  const cadre=document.getElementById('lbVideo'), voile=document.getElementById('lbVoile'), jeton=++lbJeton;
+  cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`+(sansBarre?'&controls=0':'');
+  voile.style.display=sansBarre?'block':'none';          // téléphone : le voile ne vient qu'une fois le film lancé
+  lecteur=null;
+  if(!window.Vimeo) return;                              // bibliothèque Vimeo absente : lecteur ordinaire
+  const l=new Vimeo.Player(cadre); lecteur=l;
+  l.on('play',()=>{ if(jeton===lbJeton) voile.style.display='block'; });
+  l.on('ended',()=>{ if(jeton===lbJeton) closeLb(); });
+  voile.onclick=()=>{
+    if(jeton!==lbJeton) return;
+    l.getPaused().then(enPause=>{
+      if(!enPause) return l.pause();
+      // le navigateur refuse la relance depuis la page : on rend la main au lecteur Vimeo, avec sa barre
+      return l.play().catch(()=>{ if(jeton===lbJeton) lireVimeo(vimeoId, false); });
+    }).catch(()=>{});
+  };
+}
 function openLbVideo(vimeoId){
   const lbImg=document.getElementById('lbImg');
   const lbVideo=document.getElementById('lbVideo');
   lbImg.style.display='none';
-  lbVideo.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0`;
   lbVideo.style.display='block';
+  lireVimeo(vimeoId, !TACTILE);
   lbImages=[]; lbCurrent=0;
   document.getElementById('lbPrev').classList.remove('visible');
   document.getElementById('lbNext').classList.remove('visible');
@@ -878,7 +906,7 @@ function closeLb(){
   document.getElementById('lb').classList.remove('on'); arbitrer(false);
   const lbLocal=document.getElementById('lbLocal'); lbLocal.pause(); lbLocal.removeAttribute('src'); lbLocal.load(); lbLocal.style.display='none';
   const lbVideo=document.getElementById('lbVideo');
-  lbVideo.src=''; lbVideo.style.display='none';
+  lbVideo.src=''; lbVideo.style.display='none'; lbJeton++; lecteur=null; document.getElementById('lbVoile').style.display='none';
   document.getElementById('lbImg').style.display='block';
 }
 document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
