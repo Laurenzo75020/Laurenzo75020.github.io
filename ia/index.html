@@ -468,6 +468,17 @@ const videoObs=new IntersectionObserver(entries=>{
 document.addEventListener('visibilitychange',relancer);
 window.addEventListener('pageshow',relancer);
 ['pointerdown','touchstart','keydown','scroll'].forEach(ev=>window.addEventListener(ev,relancer,{passive:true}));
+// Téléphone : Safari n'envoie pas toujours le « clic » après un toucher quand la page change au même instant
+// (ici, le blanc qui se retire). On ouvre donc dès la fin du toucher, si le doigt n'a pas glissé.
+function auToucher(el, action){
+  let x=0, y=0, t=0;
+  el.addEventListener('touchstart',e=>{ const p=e.touches[0]; x=p.clientX; y=p.clientY; t=Date.now(); },{passive:true});
+  el.addEventListener('touchend',e=>{
+    const p=e.changedTouches[0];
+    if(Math.abs(p.clientX-x)>10 || Math.abs(p.clientY-y)>10 || Date.now()-t>700) return;
+    e.preventDefault(); e.stopPropagation(); action();      // preventDefault : pas de second « clic » fantôme derrière
+  },{passive:false});
+}
 function lazyVideo(vid){
   // preload metadata + #t : la première image s'affiche même si la lecture n'a pas encore démarré (plus de case noire)
   vid.preload='metadata'; vid.loop=true; vid.muted=true; vid.playsInline=true;
@@ -746,6 +757,7 @@ CONFIG.forEach((item,i)=>{
       const m=document.createElement('a'); m.className='voir-film'; m.href='#';
       m.textContent='Voir le film · '+item.duree+' →'; m.setAttribute('data-en','Watch the film · '+item.duree+' →');
       m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+      auToucher(m,()=>openLbVideo(item.vimeoId));
       cell.classList.add('avec-mention'); cell.appendChild(m);
     }
     cell.appendChild(wrap);
@@ -768,6 +780,7 @@ CONFIG.forEach((item,i)=>{
           const m=document.createElement('a'); m.className='voir-film'; m.href='#';
           m.textContent='Voir le film · '+item.duree+' →'; m.setAttribute('data-en','Watch the film · '+item.duree+' →');
           m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+      auToucher(m,()=>openLbVideo(item.vimeoId));
           cell.classList.add('avec-mention'); cell.appendChild(m);
         }
         if(!item.noLink){
