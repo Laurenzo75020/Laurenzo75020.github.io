@@ -487,7 +487,11 @@ function auToucher(el, action){
 // Tant qu'il n'est pas regardé il tourne en boucle, muet, sans que cela compte.
 function figer(vid){
   if(vid._fige) return; vid._fige=true; vid.loop=false; vid.muted=true; vid.pause();
-  if(vid._imageFixe!=null){ try{ vid.currentTime=vid._imageFixe; }catch(e){} }       // sinon : l'image sur laquelle il s'est arrêté
+  // l'image figée : celle prévue pour ce film, sinon la dernière de l'aperçu ; on la repose si autre chose l'a déplacée
+  const cible=vid._imageFixe!=null ? vid._imageFixe : Math.max(0,(vid.duration||0)-0.05);
+  const poser=()=>{ if(Math.abs(vid.currentTime-cible)>0.08){ try{ vid.currentTime=cible; }catch(e){} } if(!vid.paused) vid.pause(); };
+  poser(); [150,500,1200].forEach(ms=>setTimeout(poser,ms));
+  vid.addEventListener('play',()=>{ vid.pause(); });
   const o=sonores.find(x=>x.vid===vid); if(o){ o.coupe=true; o.finie=true; o.maj(); }
 }
 function enApercu(vid, film, imageFixe){
