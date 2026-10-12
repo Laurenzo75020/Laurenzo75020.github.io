@@ -275,6 +275,7 @@ footer { padding:.9rem 2rem; display:flex; justify-content:space-between; border
 footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); }
 .lb { position:fixed; inset:0; background:rgba(10,10,10,.96); z-index:1000; display:none; align-items:center; justify-content:center; cursor:none; }
 .lb.on { display:flex; }
+.lb.film { background:#000; }   /* film : fond noir plein, rien de la page ne transparaît et les bandes du lecteur ne se voient pas */
 .lb img { max-width:90vw; max-height:90vh; object-fit:contain; }
 .lb-x { position:absolute; top:1.5rem; right:2rem; background:none; border:none; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.3rem; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.8); cursor:none; transition:color .2s; }
 .lb-x:hover { color:#fff; }
@@ -383,7 +384,7 @@ const CONFIG = [
   // Ligne 1 : nouvelle image 16/9 + ancienne première
   {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
   {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
-  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=3', sound:true},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=4', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
   {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=4', sound:true},
@@ -480,6 +481,24 @@ function auToucher(el, action){
     e.preventDefault(); e.stopPropagation(); action();      // preventDefault : pas de second « clic » fantôme derrière
   },{passive:false});
 }
+// ---- Aperçus des films : une seule lecture, puis image figée ----
+// L'aperçu d'un film qui a une version longue ne se lit qu'une fois, quand il est regardé (au centre de l'écran) ; il
+// s'arrête ensuite sur une image de la vidéo et ne repart plus, même si on revient dessus : la suite est la version longue.
+// Tant qu'il n'est pas regardé il tourne en boucle, muet, sans que cela compte.
+function figer(vid){
+  if(vid._fige) return; vid._fige=true; vid.loop=false; vid.muted=true; vid.pause();
+  if(vid._imageFixe!=null){ try{ vid.currentTime=vid._imageFixe; }catch(e){} }       // sinon : l'image sur laquelle il s'est arrêté
+  const o=sonores.find(x=>x.vid===vid); if(o){ o.coupe=true; o.finie=true; o.maj(); }
+}
+function enApercu(vid, film, imageFixe){
+  vid._apercu=true; vid._film=film; vid._imageFixe=imageFixe==null?null:imageFixe;
+  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) glisserVersSuivante(o); });
+}
+// aperçu sans son : sa lecture unique part quand il occupe l'écran à 60 %
+const apercuObs=new IntersectionObserver(es=>es.forEach(en=>{
+  const v=en.target; if(v._fige) return;
+  if(en.intersectionRatio>=0.6){ if(v.loop){ v.loop=false; try{ v.currentTime=0; }catch(e){} } } else v.loop=true;
+}),{threshold:[0,.6]});
 function lazyVideo(vid){
   // preload metadata + #t : la première image s'affiche même si la lecture n'a pas encore démarré (plus de case noire)
   vid.preload='metadata'; vid.loop=true; vid.muted=true; vid.playsInline=true;
@@ -557,6 +576,7 @@ function arbitrer(geste){
     if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && o.ecart<=tiers && (!elue || o.ecart<elue.ecart)) elue=o; });
   }
   sonores.forEach(o=>{
+    if(o.vid._apercu && !o.vid._fige) o.vid.loop=(o!==elue);          // aperçu regardé : sa lecture unique est en cours
     if(o===elue && !o.coupe && !o.finie){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
       if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
@@ -750,7 +770,7 @@ CONFIG.forEach((item,i)=>{
     vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
     wrap.appendChild(vid);
     if(item.sound) avecSon(vid, wrap, !item.vimeoId);     // sans version longue : le clic sur la case gère le son
-    if(item.imageFixe!=null){ vid._imageFixe=item.imageFixe; vid._film=item.vimeoId; }
+    if(item.vimeoId) enApercu(vid, item.vimeoId, item.imageFixe);
     if(item.vimeoId){ wrap.style.cursor='none'; wrap.addEventListener('click',()=>openLbVideo(item.vimeoId)); auToucher(wrap,()=>openLbVideo(item.vimeoId)); }   // le clic sur le teaser ouvre le film
     if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
       fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
@@ -778,6 +798,7 @@ CONFIG.forEach((item,i)=>{
         if(item.previewTransform) vid.style.transform=item.previewTransform;
         wrap.appendChild(vid);
         if(item.sound) avecSon(vid, wrap, false);        // le clic sur la case ouvre toujours le film ; le bouton gère le son
+        if(!item.noLink && item.duree){ enApercu(vid, item.vimeoId, item.imageFixe); if(!item.sound) apercuObs.observe(vid); }
         if(!item.noLink && item.duree){
           // mention discrète sous le cadre, à gauche : il existe une version longue (reste visible au blanc)
           const m=document.createElement('a'); m.className='voir-film'; m.href='#';
@@ -879,12 +900,11 @@ function lireVimeo(vimeoId){
 // Au retour du film Faces : le teaser ne rejoue pas (la même bande-son une seconde fois pèse) ; il reste sur une image
 // fixe, sans son, et la page descend un peu pour montrer le film suivant.
 function apresLeFilm(vimeoId){
-  const vid=[...document.querySelectorAll('.cell-top video')].find(v=>v._film===vimeoId); if(!vid) return;
-  const o=sonores.find(x=>x.vid===vid);
-  vid._fige=true; vid.muted=true; vid.pause(); try{ vid.currentTime=vid._imageFixe; }catch(e){}
-  if(o){ o.coupe=true; o.finie=true; o.maj(); }
+  const vid=[...document.querySelectorAll('#grid video')].find(v=>v._film===vimeoId); if(!vid) return;
+  figer(vid);
+  const cell=vid.closest('.cell'); if(!cell.classList.contains('cell-top')) return;      // la descente : seulement après le premier film
   document.body.classList.remove('calme');
-  const cell=vid.closest('.cell'), suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
+  const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
     .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
   if(!suivante) return;
   const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;      // le haut du film suivant monte aux deux tiers de l'écran
@@ -895,6 +915,8 @@ function openLbVideo(vimeoId){
   const lbVideo=document.getElementById('lbVideo');
   lbImg.style.display='none';
   lbVideo.style.display='block';
+  document.getElementById('lb').classList.add('film');
+  document.querySelectorAll('#grid video').forEach(v=>v.pause());      // rien ne bouge derrière le film
   lireVimeo(vimeoId);
   lbImages=[]; lbCurrent=0;
   document.getElementById('lbPrev').classList.remove('visible');
@@ -915,7 +937,7 @@ function lbNav(dir){ lbCurrent=(lbCurrent+dir+lbImages.length)%lbImages.length; 
 function closeLb(){
   const film=lbFilm; lbFilm=null;
   if(film) apresLeFilm(film);          // avant de rendre le son à la page : le teaser de ce film ne doit pas repartir
-  document.getElementById('lb').classList.remove('on'); arbitrer(false);
+  document.getElementById('lb').classList.remove('on','film'); arbitrer(false); relancer();
   const lbLocal=document.getElementById('lbLocal'); lbLocal.pause(); lbLocal.removeAttribute('src'); lbLocal.load(); lbLocal.style.display='none';
   const lbVideo=document.getElementById('lbVideo');
   lbVideo.src=''; lbVideo.style.display='none'; lbJeton++;
