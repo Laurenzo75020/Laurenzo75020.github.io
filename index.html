@@ -72,6 +72,11 @@
     }
   }
 
+  /* Accueil, photo plein écran (la colonne et le génie) : elle remplit toute la fenêtre, sur ordinateur comme sur
+     téléphone, centrée sur le génie ; le nom est en blanc sur le ciel. */
+  .scene.still.plein .bg-half{ inset:0; top:0; left:0; bottom:auto; width:100%; height:100%; transform:none; object-fit:cover; object-position:44% 45%; }
+  .scene.still.plein .signature{ color:#fff; }
+
   .scrub-img{ opacity:0; }
   .scrub-img.on{ opacity:1; }
 
@@ -224,8 +229,8 @@
 
   <div id="scenes">
     <!-- Accueil actuel : une seule image plein écran -->
-    <section class="scene still">
-      <img class="bg-half" src="accueil-visage-large.jpg" alt="">
+    <section class="scene still plein">
+      <img class="bg-half" src="accueil-colonne.jpg" alt="">
       <div class="signature">Laurent Bourdoiseau</div>
     </section>
 
