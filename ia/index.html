@@ -1057,11 +1057,14 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
   ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
   const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav'));
-  const sortir=e=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme'); if(e.cancelable) e.preventDefault(); e.stopPropagation(); };
+  // avaler=true (clic de souris) : le clic ne doit pas ouvrir l'image qui se trouve dessous. Au toucher on n'avale rien :
+  // sur téléphone, c'est ce même toucher qui autorise le son et lance les vidéos, il doit continuer son chemin.
+  const sortir=(e, avaler)=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
+    if(avaler){ if(e.cancelable) e.preventDefault(); e.stopPropagation(); if(typeof relancer==='function') relancer(); if(typeof arbitrer==='function') arbitrer(true); } };
   // ordinateur : le clic
   document.addEventListener('click',e=>{
     if(arret || Date.now()-tBlanc>3000 || document.getElementById('lb').classList.contains('on')) return;
-    if(horsVideo(e.target)) sortir(e);
+    if(horsVideo(e.target)) sortir(e, true);
   },true);
   // téléphone : le toucher lui-même (Safari n'envoie pas de « clic » pour un toucher sur une zone vide) ; un doigt qui
   // glisse pour faire défiler la page ne compte pas
@@ -1070,8 +1073,8 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   document.addEventListener('touchend',e=>{
     if(arret || !surBlanc || document.getElementById('lb').classList.contains('on')) return;
     const p=e.changedTouches[0]; if(Math.abs(p.clientX-tx)>10 || Math.abs(p.clientY-ty)>10 || Date.now()-tt>700) return;
-    if(horsVideo(e.target)) sortir(e);
-  },{capture:true,passive:false});
+    if(horsVideo(e.target)) sortir(e, false);
+  },{capture:true,passive:true});
   let agi=false;
   function reveiller(){ agi=true; document.body.classList.remove('calme'); armer(); }
   // défilement qui continue après le geste (élan sur téléphone, barre de défilement) : on reste éveillé
