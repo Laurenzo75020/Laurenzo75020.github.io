@@ -1056,12 +1056,22 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   let arret=false, tBlanc=0;
   const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
   ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
+  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav'));
+  const sortir=e=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme'); if(e.cancelable) e.preventDefault(); e.stopPropagation(); };
+  // ordinateur : le clic
   document.addEventListener('click',e=>{
-    if(arret || Date.now()-tBlanc>1500 || document.getElementById('lb').classList.contains('on')) return;
-    if(e.target.closest && e.target.closest('.cell.focus, a, button, nav')) return;
-    arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
-    e.preventDefault(); e.stopPropagation();
+    if(arret || Date.now()-tBlanc>3000 || document.getElementById('lb').classList.contains('on')) return;
+    if(horsVideo(e.target)) sortir(e);
   },true);
+  // téléphone : le toucher lui-même (Safari n'envoie pas de « clic » pour un toucher sur une zone vide) ; un doigt qui
+  // glisse pour faire défiler la page ne compte pas
+  let tx=0, ty=0, tt=0, surBlanc=false;
+  document.addEventListener('touchstart',e=>{ const p=e.touches[0]; tx=p.clientX; ty=p.clientY; tt=Date.now(); surBlanc=document.body.classList.contains('calme') || Date.now()-tBlanc<3000; },{capture:true,passive:true});
+  document.addEventListener('touchend',e=>{
+    if(arret || !surBlanc || document.getElementById('lb').classList.contains('on')) return;
+    const p=e.changedTouches[0]; if(Math.abs(p.clientX-tx)>10 || Math.abs(p.clientY-ty)>10 || Date.now()-tt>700) return;
+    if(horsVideo(e.target)) sortir(e);
+  },{capture:true,passive:false});
   let agi=false;
   function reveiller(){ agi=true; document.body.classList.remove('calme'); armer(); }
   // défilement qui continue après le geste (élan sur téléphone, barre de défilement) : on reste éveillé
