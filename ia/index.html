@@ -445,7 +445,7 @@ const CONFIG = [
   {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
   {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
   // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
-  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_v7.mov?v=1', hero:true, top:true, sound:true, vimeoId:'1235091825', duree:'0:51', imageFixe:19.2},
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_v8.mov?v=1', hero:true, top:true, sound:true, vimeoId:'1235091825', duree:'0:51', imageFixe:18.63},
   // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
@@ -510,7 +510,7 @@ function figer(vid){
 }
 function enApercu(vid, film, imageFixe){
   vid._apercu=true; vid._film=film; vid._imageFixe=imageFixe==null?null:imageFixe;
-  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) glisserVersSuivante(o); });
+  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) glisserVersSuivante(o); petitPas(); });
 }
 // aperçu sans son : sa lecture unique part quand il occupe l'écran à 60 %
 const apercuObs=new IntersectionObserver(es=>es.forEach(en=>{
@@ -535,6 +535,21 @@ let aDefile=false, aTouche=false;
 ['wheel','touchmove'].forEach(ev=>window.addEventListener(ev,()=>{ aDefile=true; aTouche=true; },{passive:true}));
 // Sur mobile, à la fin du premier passage d'une vidéo sonore, la page glisse doucement vers la suivante
 // (tant que le visiteur n'a pas pris la main : on touche peu l'écran sur un téléphone).
+// Défilement fait à la main (départ et arrivée en douceur), identique sur tous les navigateurs
+function glisserJusqua(vers, duree, fin){
+  const de=window.scrollY, t0=performance.now();
+  (function pas(t){
+    const u=Math.min(1,(t-t0)/duree), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    window.scrollTo(0,de+(vers-de)*e);
+    if(u<1) requestAnimationFrame(pas); else if(fin) fin();
+  })(t0);
+}
+const SUR_TEL=()=>window.matchMedia('(max-width:768px)').matches;
+// Ordinateur : quand un aperçu vient de se figer, la page descend tout doucement de 30 px (une invitation à continuer)
+function petitPas(){
+  if(SUR_TEL() || window.__enSommeil || document.getElementById('lb').classList.contains('on')) return;
+  window.__glisse=true; glisserJusqua(window.scrollY+30, 1800, ()=>{ if(typeof mesurer==='function') mesurer(); });
+}
 function glisserVersSuivante(o){
   if(aTouche || !window.matchMedia('(max-width:768px)').matches || window.__enSommeil) return;
   const y0=o.cell.getBoundingClientRect().top;
@@ -935,8 +950,17 @@ function apresLeFilm(vimeoId){
   const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
     .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
   if(!suivante) return;
-  const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;      // le haut du film suivant monte aux deux tiers de l'écran
-  if(dy>0) setTimeout(()=>window.scrollBy({top:dy,behavior:'smooth'}),350);
+  if(SUR_TEL()){
+    const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;    // téléphone : le haut du film suivant monte aux deux tiers de l'écran
+    if(dy>0) setTimeout(()=>window.scrollBy({top:dy,behavior:'smooth'}),350);
+    return;
+  }
+  // ordinateur : la page descend entièrement jusqu'au film suivant, qui se retrouve au milieu de l'écran
+  setTimeout(()=>{
+    const r=suivante.getBoundingClientRect(); aDefile=true; window.__glisse=true;
+    if(window.__focusSur) window.__focusSur(suivante);
+    glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1400, ()=>{ mesurer(); arbitrer(false); });
+  },350);
 }
 function openLbVideo(vimeoId){
   const lbImg=document.getElementById('lbImg');
