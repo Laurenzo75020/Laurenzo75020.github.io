@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- barre du navigateur (téléphone) : blanche, et non teintée par le bleu du haut de la photo -->
+<meta name="theme-color" content="#ffffff">
 <title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,18 +79,20 @@
      Elle est agrandie au besoin pour couvrir toute la fenêtre jusqu'en bas. 0.8381 = hauteur / largeur de l'image. */
   .scene.still.plein{
     --fs:clamp(2.6rem, 5.85vw, 6.5rem);
-    --gy:calc(3.4rem + env(safe-area-inset-top) + var(--fs) * (0.84 + 0.12) + 20px);       /* ordinateur : sous la ligne de base du nom */
-    --iw:max(100vw, calc((100vh - var(--gy)) / 0.655 * 1.1932));
+    --gy:calc(3.4rem + env(safe-area-inset-top) + var(--fs) * (0.84 + 0.12) + 42px);       /* ordinateur : sous la ligne de base du nom */
+    --gx:38vw;                                                                               /* place du génie dans la largeur */
+    /* assez large pour couvrir la fenêtre à gauche, à droite et jusqu'en bas */
+    --iw:max(calc(var(--gx) / 0.447), calc((100vw - var(--gx)) / 0.553), calc((100vh - var(--gy)) / 0.655 * 1.1932));
   }
   @media (orientation:portrait){
     /* téléphone : sous les deux lignes du nom et le menu */
-    .scene.still.plein{ --gy:calc(1.6rem + env(safe-area-inset-top) + 2.3 * clamp(1.8rem, 8vw, 3rem) + 3.2rem); }
+    .scene.still.plein{ --gy:calc(1.6rem + env(safe-area-inset-top) + 2.3 * clamp(1.8rem, 8vw, 3rem) + 2.1rem); --gx:39vw; }
   }
   .scene.still.plein .bg-half{
     inset:auto; bottom:auto; transform:none; object-fit:fill; max-width:none;
     width:var(--iw); height:calc(var(--iw) * 0.8381);
     top:calc(var(--gy) - var(--iw) * 0.8381 * 0.345);
-    left:min(0px, calc(50vw - var(--iw) * 0.447));
+    left:calc(var(--gx) - var(--iw) * 0.447);
   }
   .scene.still.plein .signature{ color:#fff; }
 
