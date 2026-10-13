@@ -394,7 +394,7 @@ const CONFIG = [
   {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=4', sound:true},
   // Ligne 2 : carré + Shore Stories 16/9 + carré
   {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
-  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=4', sound:true},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=5', sound:true},
   {type:'image', t:'Désir',             s:'Image IA · 2025'},
   // Ligne 3 : carré + carré + carré (8/9)
   // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
@@ -516,9 +516,9 @@ function figer(vid){
 }
 function enApercu(vid, film, imageFixe){
   vid._apercu=true; vid._film=film; vid._imageFixe=imageFixe==null?null:imageFixe;
-  // fin de l'aperçu : l'image figée et sa mention restent une seconde, puis la page glisse vers la vidéo suivante
+  // fin de l'aperçu : l'image figée et sa mention restent une seconde (trois pour la première vidéo), puis la page glisse vers la vidéo suivante
   // (ordinateur et téléphone), tant que le visiteur n'a pas pris la main
-  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) setTimeout(()=>glisserVersSuivante(o),1000); });
+  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) setTimeout(()=>glisserVersSuivante(o), vid.closest('.cell-top') ? 3000 : 1000); });      // la première vidéo reste 3 s
 }
 // aperçu sans son : sa lecture unique part quand il occupe l'écran à 60 %
 const apercuObs=new IntersectionObserver(es=>es.forEach(en=>{
