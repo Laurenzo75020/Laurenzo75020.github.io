@@ -978,12 +978,7 @@ function apresLeFilm(vimeoId){
   const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
     .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
   if(!suivante) return;
-  if(SUR_TEL()){
-    const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;    // téléphone : le haut du film suivant monte aux deux tiers de l'écran
-    if(dy>0) setTimeout(()=>window.scrollBy({top:dy,behavior:'smooth'}),350);
-    return;
-  }
-  // ordinateur : la page descend entièrement jusqu'au film suivant, qui se retrouve au milieu de l'écran
+  // ordinateur et téléphone : la page descend entièrement jusqu'au film suivant, qui se retrouve au milieu de l'écran
   setTimeout(()=>{
     const r=suivante.getBoundingClientRect(); aDefile=true; window.__glisse=true;
     if(window.__focusSur) window.__focusSur(suivante);
