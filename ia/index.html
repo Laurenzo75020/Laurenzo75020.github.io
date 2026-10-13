@@ -508,8 +508,8 @@ function figer(vid){
   }
   if(wrap && !wrap.querySelector('.regarder')){
     const r=document.createElement('div'); r.className='regarder';
-    r.setAttribute('data-fr','Voir la version complète'); r.setAttribute('data-en','Watch the full version');
-    r.textContent=(typeof window.t==='function') ? window.t('Voir la version complète','Watch the full version') : 'Voir la version complète';
+    r.setAttribute('data-fr','Voir la version complète ?'); r.setAttribute('data-en','Watch the full video?');
+    r.textContent=(typeof window.t==='function') ? window.t('Voir la version complète ?','Watch the full video?') : 'Voir la version complète ?';
     wrap.appendChild(r); setTimeout(()=>r.classList.add('on'),500);        // vient en fondu, une demi-seconde après l'arrêt
   }
   const o=sonores.find(x=>x.vid===vid); if(o){ o.coupe=true; o.finie=true; o.maj(); }
@@ -816,7 +816,7 @@ CONFIG.forEach((item,i)=>{
     if(item.vimeoId && item.duree){
       // même mention que sous les autres films : le teaser a sa version longue sur Vimeo
       const m=document.createElement('a'); m.className='voir-film'; m.href='#';
-      m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full version · '+item.duree+' →');
+      m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full video · '+item.duree+' →');
       m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
       auToucher(m,()=>openLbVideo(item.vimeoId));
       cell.classList.add('avec-mention'); cell.appendChild(m);
@@ -849,7 +849,7 @@ CONFIG.forEach((item,i)=>{
         if(!item.noLink && item.duree){
           // mention discrète sous le cadre, à gauche : il existe une version longue (reste visible au blanc)
           const m=document.createElement('a'); m.className='voir-film'; m.href='#';
-          m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full version · '+item.duree+' →');
+          m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full video · '+item.duree+' →');
           m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
       auToucher(m,()=>openLbVideo(item.vimeoId));
           if(cell._bordGauche) m.style.left=(cell._bordGauche*100).toFixed(2)+'%';
