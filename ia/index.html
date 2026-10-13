@@ -933,7 +933,8 @@ let lbJeton=0, lbFilm=null;
 function taillerLecteur(){
   const cadre=document.getElementById('lbVideo');
   const W=window.innerWidth||document.documentElement.clientWidth, H=window.innerHeight||document.documentElement.clientHeight;
-  const B=SUR_TEL() ? BANDE_TEL : BANDE;                 // téléphone : la barre de Vimeo est plus haute, il lui faut plus de place sous l'image
+  // téléphone, premier film seulement : la barre de Vimeo y couvrait le sous-titre du début ; elle a plus de place sous l'image
+  const premier=document.querySelector('.cell-top video'), B=(SUR_TEL() && premier && premier._film===lbFilm) ? BANDE_TEL : BANDE;
   const l=Math.min(W*0.9, (H*0.9-2*B)*16/9);
   if(!(l>0)) return;                                      // fenêtre pas encore mesurable : on garde la taille par défaut
   cadre.style.width=l+'px'; cadre.style.height=(l*9/16+2*B)+'px'; cadre.style.maxHeight='none';
@@ -944,7 +945,7 @@ function lireVimeo(vimeoId){
   const ancien=document.getElementById('lbVideo'), cadre=ancien.cloneNode(false), jeton=++lbJeton;
   cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
   ancien.replaceWith(cadre);
-  taillerLecteur(); lbFilm=vimeoId;
+  lbFilm=vimeoId; taillerLecteur();
   // À la fin du film la visionneuse se referme, toujours. On la referme un quart de seconde avant la dernière image :
   // Vimeo n'a pas le temps d'afficher ses vignettes d'autres films.
   const fermer=()=>{ if(jeton===lbJeton) closeLb(); };
