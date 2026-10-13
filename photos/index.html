@@ -319,27 +319,26 @@
             }
             return null;
           };
+          // une simple rangée d'au moins « mini » images : la plus courte où aucun petit fichier ne dépasse 350 px
+          const enRangee = mini => { const rest = loaded.length - i, haut = Math.min(rest, 7); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
           while (i < loaded.length) {
             const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
             const j = loaded.slice(i, i + envie).findIndex(large_);
             let bande = null;
             if (j >= 0 && j < 3) {
               // un paysage arrive : téléphone, il occupe seul la largeur ; ordinateur, une rangée où il prend sa largeur
-              let k = tel ? (j === 0 ? 1 : j) : Math.min(envie, 4);
-              // rangée avec paysage : si un petit fichier y dépasse 350 px de large, on ajoute une image (la rangée baisse)
-              const tropGrand = n => { const lot = loaded.slice(i, i + n), h = (W - (n - 1) * g) / lot.reduce((s, it) => s + it.ratio, 0); return lot.some(it => petit_(it) && it.ratio * h > 350); };
-              while (!tel && k < 6 && i + k < loaded.length && tropGrand(k)) k++;
+              const k = tel ? (j === 0 ? 1 : j) : enRangee(Math.max(Math.min(envie, 4), j + 1));
               bande = (tel && j > 0) ? essayer(k) : { arbre: rangee(k), images: loaded.slice(i, i + k) };
             } else {
               const limite = j >= 3 ? j : rest;                                    // les portraits d'avant le paysage forment leur bande
-              const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= 1 && k <= Math.min(limite, max) && t.indexOf(k) === n);
+              const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= (tel ? 1 : 3) && k <= Math.min(limite, max) && t.indexOf(k) === n);
               for (const k of tailles) {
                 const apres = rest - k;
                 if (apres === 1 && !large_(loaded[i + k])) continue;               // jamais un portrait seul à la fin
                 if (loaded.slice(i, i + k).some(large_)) continue;
                 bande = essayer(k); if (bande) break;
               }
-              if (!bande) { const k = Math.min(limite, 6); bande = { arbre: rangee(k), images: loaded.slice(i, i + k) }; }
+              if (!bande) { const k = tel ? Math.min(limite, 2) : enRangee(3); bande = { arbre: rangee(k), images: loaded.slice(i, i + k) }; }   // aucune composition ne convient : une rangée, quitte à y inclure le paysage qui suit
             }
             bandes.push(bande); i += bande.images.length;
           }
