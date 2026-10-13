@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laurent Bourdoiseau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --bg:#ffffff; --ink:#0a0a0a; --grey:#888; --line:rgba(0,0,0,0.08); }
+html { scroll-behavior:auto; }
+* { cursor:none !important; }
+#c1 { position:fixed; pointer-events:none; z-index:10000; width:24px; height:36px; top:0; left:0; will-change:transform; }
+#c2 { display:none; }
+header { position:fixed; top:0; left:0; right:0; z-index:100; display:grid; grid-template-columns:auto 1fr auto; align-items:center; padding:0 2rem; height:52px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.logo-mark { border:none; display:flex; align-items:center; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1rem; letter-spacing:.05em; text-transform:uppercase; margin-right:1.5rem; text-decoration:none; color:var(--ink); }
+nav { display:flex; }
+nav a, .nav-right a { font-family:'Barlow',sans-serif; font-weight:400; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; color:var(--ink); padding:.4rem 1.2rem; opacity:.5; transition:opacity .2s; }
+nav a:hover, .nav-right a:hover { opacity:1; }
+.name-hero { padding:5.4rem 0 0; }
+.top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
+.top-nav a { color:var(--ink); text-decoration:none; opacity:.9; transition:opacity .2s; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
+.top-nav a:hover { opacity:1; }
+.bottom-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:16px 0 3.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+.bottom-nav a { color:var(--ink); text-decoration:none; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
+.big-name { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.6rem,5.85vw,6.5rem); line-height:.88; letter-spacing:-.02em; text-transform:uppercase; display:block; margin-bottom:.6rem; white-space:nowrap; }
+.bio-strip { display:grid; grid-template-columns:52fr 48fr; align-items:start; }
+.bio-left { padding:0 2rem 2rem; display:flex; flex-direction:column; align-items:flex-start; gap:.6rem; }
+.lang-toggle{ display:inline-flex; align-items:center; align-self:flex-end; gap:.55rem; margin:0 0 1.1rem; font-family:'Barlow',sans-serif; font-weight:400; font-size:.82rem; letter-spacing:.06em; text-transform:none; color:var(--ink); text-decoration:none; cursor:pointer; transition:opacity .2s; background:none; border:0; padding:0; -webkit-appearance:none; appearance:none; text-align:right; }
+.lang-toggle:hover{ opacity:.6; }
+.lang-toggle svg{ display:block; width:24px; height:16px; flex:none; box-shadow:0 0 0 1px rgba(0,0,0,.2); }
+.tag { font-family:'Barlow',sans-serif; font-weight:400; font-size:.88rem; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--ink); padding:.32rem .9rem; }
+.bio-right { padding-top:0; padding-right:2rem; padding-bottom:1.5rem; padding-left:2rem; display:flex; flex-direction:column; align-items:stretch; }
+.bio-text { font-family:'Barlow',sans-serif; font-weight:400; font-size:.9rem; line-height:1.8; letter-spacing:.05em; text-transform:uppercase; text-align:right; }
+.darwin-loop { display:block; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1rem; letter-spacing:.1em; text-transform:uppercase; text-align:center; padding:.5rem 0; }
+.section-label { padding:.8rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+.section-label span { font-family:'Barlow',sans-serif; font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); }
+.grid-wrapper { padding:0 2rem; background:#ffffff; }
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; row-gap:36px; grid-auto-flow:row dense; background:#ffffff; }   /* 20 px de plus entre les lignes */
+.cell { position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a; }
+/* Cellule "épinglée" en tête de grille, quelle que soit sa position dans le HTML */
+.cell.cell-first { order:-3; grid-column:span 2; aspect-ratio:16/9; }
+/* Film mis en avant : pleine largeur, tout en haut (n'affecte pas le reste de la grille) */
+.cell.cell-hero { order:-8; grid-column:1 / -1; aspect-ratio:16/9; background:#0a0a0a; }
+/* Montage split screen : pleine largeur en ligne 3, sous le film (ligne 1) et les deux cases de la ligne 2 */
+.cell.cell-hero.cell-third { order:-5; }
+/* Teasing avec son : tout en haut, avant le film mis en avant */
+.cell.cell-hero.cell-top { order:-9; }
+/* Rangée 1: nouvelle image 16/9 en tête */
+.cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
+.cell:nth-child(2)  { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(3)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 2 : carré + Shore Stories 16/9 + carré */
+.cell:nth-child(4)  { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(5)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(6)  { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 3 : Fragment carré + carré + carré */
+.cell:nth-child(7)  { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(8)  { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(9)  { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 4 : Sans titre II 16/9 + carré + Le Réel 16/9 */
+.cell:nth-child(10)  { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(11) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(12) { display:none; }
+/* Ligne 4b : Le Réel 16/9 pleine largeur */
+/* → Le Réel sera seul sur sa ligne */
+/* Ligne 5 : Breaking-Up 16/9 + carré + carré */
+.cell:nth-child(13) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(14) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(15) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 6 : carré + Moon carré + Air 16/9 */
+.cell:nth-child(16) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(17) { grid-column:span 1; aspect-ratio:8/9; background:#0a0a0a; }
+.cell:nth-child(18) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9 */
+.cell:nth-child(19) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+.cell:nth-child(20) { grid-column:span 2; aspect-ratio:16/9; background:#0a0a0a; }
+/* Ligne 8 : 4 carrés */
+.cell:nth-child(21) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(22) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(23) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(24) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 9 : carré + 16/9 + carré */
+.cell:nth-child(25) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(26) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(27) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 10 : 16/9 + 16/9 */
+.cell:nth-child(28) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(29) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 11 : 16/9 + 16/9 + carré */
+.cell:nth-child(30) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(31) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(32) { grid-column:span 1; aspect-ratio:8/9; }
+/* Ligne 12 : carré + 16/9 + 16/9 */
+.cell:nth-child(33) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(34) { grid-column:span 1; aspect-ratio:8/9; }
+.cell:nth-child(35) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 13 : 16/9 + 16/9 */
+.cell:nth-child(36) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(37) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ligne 14 : 16/9 + 16/9 */
+.cell:nth-child(38) { grid-column:span 2; aspect-ratio:16/9; }
+.cell:nth-child(39) { grid-column:span 2; aspect-ratio:16/9; }
+/* Haut de grille réordonné (order) sans toucher au tableau CONFIG :
+   ligne 2 : Sans titre II + structure ; ligne 3 : montage split screen ;
+   ligne 4 : Shore Stories (3 colonnes) + Désir (1 colonne) ;
+   ligne 5 : L'Absence (2 colonnes) + Mirror (2 colonnes) — coupes non alignées entre les lignes 4 et 5 */
+.grid .cell:nth-child(2) { display:none; }   /* la vidéo du visage est retirée : Mirror prend sa place */
+.grid .cell:nth-child(1) { order:-6; }
+.grid .cell:nth-child(5) { order:-4; grid-column:1 / -1; aspect-ratio:16/9; }   /* Shore Stories seule sur sa ligne */
+.grid .cell:nth-child(6) { order:-3; grid-column:span 2; aspect-ratio:16/9; }
+.grid .cell:nth-child(4) { order:-2; grid-column:span 2; aspect-ratio:16/9; }
+.grid .cell:nth-child(3) { order:-7; }
+/* Ligne 6 : la série Fragment est partie plus bas, il reste deux cases (1 colonne + 3 colonnes) */
+.grid .cell:nth-child(7) { display:none; }
+.grid .cell:nth-child(8) { grid-column:span 2; aspect-ratio:16/9; }   /* remonte à côté de l'éventail, à la place de Mirror */
+.grid .cell:nth-child(9) { grid-column:span 2; aspect-ratio:16/9; }   /* seule sur sa ligne, en bandeau */
+/* Avant-dernière ligne : la première case est retirée, la seconde occupe la ligne en bandeau */
+.grid .cell:nth-child(36) { display:none; }
+.grid .cell:nth-child(37) { grid-column:span 2; aspect-ratio:16/9; }
+/* Ordinateur : les vidéos pleine largeur ne dépassent pas 80 % de la hauteur de l'écran (elles restent en 16:9, centrées),
+   pour que le haut de la ligne suivante se voie en bas de l'écran ; écarts plus grands en haut, normaux à partir de la ligne 6 */
+@media (min-width:769px) {
+  .grid, .bottom-nav { max-width:calc(80vh * 16 / 9); margin-left:auto; margin-right:auto; }      /* images et vidéos alignées sur les mêmes bords */
+  .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
+  .grid .cell.cell-top { margin-bottom:10vh; }
+  .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
+  /* ligne 3 : Mirror seul, au même gabarit que les deux vidéos du dessus */
+  .grid .cell:nth-child(3) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; margin-bottom:6vh; }
+  /* le clip Air et le film L'Oréal : seuls sur leur ligne, au même gabarit que les trois premières vidéos */
+  .grid .cell:nth-child(18), .grid .cell:nth-child(26) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; aspect-ratio:16/9; }
+  /* Moon (case 17) reste carrée, à sa place ; l'image voisine du clip Air vient compléter sa ligne */
+  .grid .cell:nth-child(25), .grid .cell:nth-child(27) { grid-column:span 2; aspect-ratio:16/9; }
+  /* ligne 4 : la structure à gauche, le montage split screen à droite ; à partir d'ici, grille et alignement habituels */
+  .grid .cell.cell-hero.cell-third { grid-column:span 2; width:auto; justify-self:stretch; }
+}
+}
+/* Au repos, seule la case regardée reste visible sur fond blanc ; tout le reste réapparaît au moindre mouvement */
+.autour, .grid .cell { transition:opacity .5s ease; }
+body.calme .autour { opacity:0 !important; pointer-events:none; }
+body.calme .grid .cell:not(.focus) { opacity:0 !important; }
+body.calme .grid .cell.focus .caption { opacity:0 !important; }
+/* SCROLL HORIZONTAL BLOQUÉ — DÉFINITIF */
+html, body { overflow-x: hidden; max-width: 100%; }
+
+/* Mobile — panoramique puis 3 carrés en alternance */
+@media (max-width:768px) {
+  .grid { grid-template-columns:repeat(3,1fr); }
+
+  /* Toutes les cases en carré 1/1 par défaut */
+  .cell:nth-child(n) { grid-column:span 1 !important; aspect-ratio:1/1 !important; background:#0a0a0a; }
+
+  /* 1ère case : photo pleine largeur */
+  .cell:nth-child(1) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(2) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell.cell-hero { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; background:#0a0a0a !important; }
+
+  .grid .cell:nth-child(3) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(37) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* dans une ligne qui mêle une case large (16:9) et une case carrée, la carrée prend la même hauteur : bords alignés */
+  .grid .cell { align-self:stretch; width:100%; }
+  /* pas de case blanche : ces deux cases complètent leur ligne */
+  .grid .cell:nth-child(35) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  /* les vidéos sont toujours en 16:9 : Human Bomb et L'Oréal ne sont plus en case carrée ; L'Oréal, seule sur sa ligne, est 4 lignes sous le clip Air */
+  .grid .cell:nth-child(20) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(25) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+  .grid .cell:nth-child(18) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }   /* le clip Air en pleine largeur */
+
+  .grid .cell:nth-child(26) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* plus d'air entre les premières lignes : une demi-hauteur de vidéo sous la première, puis de moins en moins, normal à la ligne 6 */
+  .grid .cell.cell-top { margin-bottom:calc(38vh - 28%); }   /* la première vidéo est au milieu de l'écran : la deuxième commence tout en bas de l'écran */
+  .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:21%; }
+  .grid .cell:nth-child(3) { margin-bottom:15%; }
+  .grid .cell:nth-child(1) { margin-bottom:9%; }
+  .grid .cell.cell-third { margin-bottom:4.5%; }
+  /* bouton de son : même taille que les légendes des vidéos */
+  /* zone de toucher élargie autour de la mention (le texte ne bouge pas) : 8 px de haut étaient trop fins pour le doigt */
+  .voir-film { font-size:.5rem; top:calc(100% + 7px - 14px); padding:14px 28px 14px 0; z-index:6; }
+  /* mobile : le même rectangle blanc que sur ordinateur, en plus petit — "Sound off" coupe le son, "Sound on" le remet */
+  .vimeo-wrap .sound-btn { font-size:.5rem !important; letter-spacing:.1em !important; padding:.3rem .5rem !important; left:.5rem !important; bottom:.5rem !important; }
+  .vimeo-wrap .sound-btn .sb-d { display:none !important; }
+  .vimeo-wrap .sound-btn .sb-m { display:inline !important; }
+  .grid .cell:nth-child(5) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }   /* Shore Stories seule sur sa ligne */
+  .grid .cell:nth-child(8) { grid-column:span 1 !important; aspect-ratio:1/1 !important; }
+  .grid .cell:nth-child(9) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  /* Films en span2 : Mirror, Shore Stories, Breaking-Up, Air (+ case 9, qui complète la ligne à deux cases) */
+  .cell:nth-child(9),
+  .cell:nth-child(3),
+  .cell:nth-child(5),
+  .cell:nth-child(10),
+  .cell:nth-child(18) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+
+  /* Photos alternées en span2 */
+  .cell:nth-child(23),
+  .cell:nth-child(28),
+  .cell:nth-child(33) { grid-column:span 2 !important; aspect-ratio:16/9 !important; }
+
+  /* Films → fond noir */
+  .cell:nth-child(3)  { background:#0a0a0a !important; }  /* Mirror */
+  .cell:nth-child(5)  { background:#0a0a0a !important; }  /* Shore Stories */
+  /* case 12 : Corps */
+  .cell:nth-child(17) { background:#0a0a0a !important; }  /* Moon */
+  .cell:nth-child(18) { background:#0a0a0a !important; }  /* Air */
+  .cell:nth-child(23) { background:#0a0a0a !important; }  /* L'Oréal */
+  .cell:nth-child(24) { background:#0a0a0a !important; }  /* Human Bomb */
+
+  .play-btn svg { width:24px; height:24px; }
+  /* Cells 38-39 en panoramique sur mobile */
+  .cell:nth-child(38) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .cell:nth-child(39) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
+  .big-name { font-size:clamp(1.8rem,8vw,3rem); margin-bottom:.45rem; }
+  .bio-strip { grid-template-columns:1fr; }
+  .bio-left { border-right:none; border-bottom:none; padding:1.5rem 1.5rem .8rem; gap:.5rem; }
+  .bio-text { font-size:.75rem; text-align:right; }
+  .bio-right { padding:1rem 1.5rem 2rem; }
+  .contact { display:block !important; width:100% !important; min-height:0 !important; }
+  .contact-left { border-right:none !important; border-bottom:1px solid var(--line); padding:2rem; width:100%; }
+  .contact-right { padding:2rem; width:100%; overflow:visible; }
+  .contact-right a { word-break:break-word; font-size:.7rem; }
+  nav a { padding:.4rem .6rem; font-size:.6rem; }
+  .name-hero { padding-top:1.6rem; }
+  .top-nav {
+    position:static;
+    width:100%;
+    padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0;
+  }
+}
+.cell img, .cell video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s cubic-bezier(.25,.46,.45,.94); }
+.cell:hover img, .cell:hover video { transform:scale(1.04); }
+/* Series: caption sans titre, icône toujours visible */
+.cell .series-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:10; opacity:1; pointer-events:none; }
+.cell .series-dots { display:none; }
+.cell .series-dots span { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.4); transition:background .2s; }
+.cell .series-dots span.active { background:#fff; }
+.series-arrow { display:none !important; }
+/* Masque le h3 (titre) dans la caption des cases série */
+.cell-series .caption h3 { display:none !important; }
+.caption { position:absolute; bottom:0; left:0; right:0; padding:1rem 1.2rem; background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 100%); opacity:0; transition:opacity .3s; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none; }
+.cell:hover .caption { opacity:1; }
+.caption h3 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1rem; letter-spacing:.04em; text-transform:uppercase; color:#fff; }
+.caption span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+.placeholder span { font-family:'Barlow Condensed',sans-serif; font-size:1.4rem; font-weight:700; color:#ccc; letter-spacing:.1em; }
+.placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.placeholder-dark { background:#0a0a0a; }
+.vimeo-wrap { position:absolute; inset:0; width:100%; height:100%; background:#0a0a0a; }
+.vimeo-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.vimeo-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; display:none; }
+.sound-btn { position:absolute; left:1.2rem; bottom:1.2rem; z-index:30; pointer-events:auto; font-family:'Barlow',sans-serif; font-weight:600; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:#0a0a0a; background:rgba(255,255,255,.92); border:none; padding:.55rem .9rem; cursor:none; }
+.sound-btn .sb-m { display:none; }
+.cell.cell-top { overflow:visible; }
+.cell.avec-mention { overflow:visible; }
+.cell.avec-mention .vimeo-wrap { overflow:hidden; }
+.voir-film { position:absolute; left:1px; top:calc(100% + 10px); font-family:'Barlow',sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:#0a0a0a; text-decoration:none; white-space:nowrap; opacity:.8; cursor:none; }
+.voir-film:hover { opacity:1; }
+/* pendant la lecture, quand tout s'efface autour de la vidéo, la mention sous le cadre s'efface aussi */
+.voir-film { transition:opacity .6s; }
+body.calme .voir-film { opacity:0 !important; pointer-events:none; }
+/* sur l'image figée d'un aperçu : l'invitation à voir le film, dans la typo du nom, en bas au centre */
+.vimeo-wrap { container-type:inline-size; }
+.regarder { position:absolute; left:0; right:0; top:70%; transform:translateY(-50%); z-index:5; text-align:center; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:4.6vw; font-size:5.6cqw; line-height:1; letter-spacing:.035em; text-transform:uppercase; white-space:nowrap; color:#fff; text-shadow:0 0 14px rgba(0,0,0,.16); opacity:0; transition:opacity .7s; pointer-events:none; }
+.regarder.on { opacity:1; }
+.cell.cell-top .vimeo-wrap { overflow:hidden; }
+.fleche-suite { position:absolute; right:2px; top:calc(100% + 12px); width:11px; height:20px; pointer-events:none; opacity:.75; }
+.fleche-suite svg { display:block; width:100%; height:100%; }
+.sound-btn { display:none !important; }   /* boutons de son masqués : un seul passage sonore par vidéo */
+.play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
+.play-btn:hover { background:rgba(0,0,0,.2); }
+.play-btn svg { width:48px; height:48px; fill:none; }
+.play-btn circle { fill:rgba(255,255,255,.85); }
+.play-btn polygon { fill:#0a0a0a; }
+/* Contact */
+.contact { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--line); min-height:260px; }
+.contact-left { padding:4rem 2rem; border-right:1px solid var(--line); display:flex; align-items:flex-end; }
+.contact-left h2 { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.5rem,6vw,7rem); line-height:.92; text-transform:uppercase; }
+.contact-right { padding:4rem 2.5rem; display:flex; flex-direction:column; justify-content:flex-end; gap:1.5rem; }
+.contact-label { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); margin-bottom:.3rem; }
+.contact-right a { font-family:'Barlow',sans-serif; font-weight:400; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:.4rem; transition:border-color .2s; }
+.contact-right a:hover { border-color:var(--ink); }
+footer { padding:.9rem 2rem; display:flex; justify-content:space-between; border-top:1px solid var(--line); }
+footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); }
+.lb { position:fixed; inset:0; background:rgba(10,10,10,.96); z-index:1000; display:none; align-items:center; justify-content:center; cursor:none; }
+.lb.on { display:flex; }
+.lb.film { background:#000; }   /* film : fond noir plein, rien de la page ne transparaît et les bandes du lecteur ne se voient pas */
+.lb img { max-width:90vw; max-height:90vh; object-fit:contain; }
+.lb-x { position:absolute; top:1.5rem; right:2rem; background:none; border:none; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.3rem; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.8); cursor:none; transition:color .2s; }
+.lb-x:hover { color:#fff; }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; cursor:none; padding:20px; opacity:.35; transition:opacity .2s; display:none; }
+.lb-nav:hover { opacity:1; }
+.lb-nav.lb-prev { left:1rem; }
+.lb-nav.lb-next { right:1rem; }
+.lb-nav.visible { display:block; }
+.lb-counter { position:absolute; bottom:1.2rem; left:50%; transform:translateX(-50%); font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.35); }
+@media (max-width:768px) { #c1 { display:none !important; } * { cursor:auto !important; } }
+.reveal { opacity:0; transition:opacity .7s; }
+.reveal.on { opacity:1; }
+</style>
+<script src="../lang.js?v=2"></script>
+<script src="https://player.vimeo.com/api/player.js" defer></script>
+</head>
+<body>
+
+<div id="c1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="0 0 12 18" shape-rendering="crispEdges"><polygon points="0,0 0,14 3,11 5,16 7,15 5,10 8,10" fill="white"/><polygon points="0,0 0,14 3,11 5,16 7,15 5,10 8,10" fill="none" stroke="black" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+<div id="c2"></div>
+
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLb()" data-en="Close ×">Fermer ×</button>
+  <button class="lb-nav lb-prev" id="lbPrev" onclick="lbNav(-1)"><svg width="36" height="36" viewBox="0 0 36 36"><polyline points="24,6 12,18 24,30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
+  <img id="lbImg" src="" alt="" style="max-width:90vw;max-height:90vh;object-fit:contain;transition:opacity .2s;">
+  <video id="lbLocal" controls playsinline style="display:none;max-width:90vw;max-height:90vh;background:#000;"></video>
+  <iframe id="lbVideo" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:none;width:90vw;height:50.625vw;max-height:90vh;border:none;"></iframe>
+  <button class="lb-nav lb-next" id="lbNext" onclick="lbNav(1)"><svg width="36" height="36" viewBox="0 0 36 36"><polyline points="12,6 24,18 12,30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+
+<div class="page-scroll">
+<div class="top-nav">
+  <a href="../index.html" data-en="← Home">← Accueil</a>
+  <a href="../photos/">Photo</a>
+  <a href="../portfolio/?from=ia">Portfolio</a>
+</div>
+<div class="name-hero">
+  <div class="bio-strip">
+    <div class="bio-left">
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <span class="tag" data-en="AI Creation">Création IA</span>
+        <span class="tag">Film</span>
+        <span class="tag" data-en="Biology">Biologie</span>
+        <span class="tag" data-en="Beauty">Beauté</span>
+        <span class="tag">Paris</span>
+      </div>
+    </div>
+    <div class="bio-right">
+      <button type="button" class="lang-toggle"><svg width="24" height="16" viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40M60,0 0,40" stroke="#fff" stroke-width="8"/><path d="M0,0 60,40M60,0 0,40" stroke="#C8102E" stroke-width="3"/><path d="M30,0V40M0,20H60" stroke="#fff" stroke-width="13"/><path d="M30,0V40M0,20H60" stroke="#C8102E" stroke-width="8"/></svg><span>(English version)</span></button>
+      <p class="bio-text" data-en="Laurent Bourdoiseau is an artist and director. He blends photography, cinema and images generated by artificial intelligence. He created Darwin, a program that applies to images principles of variation inspired by Darwin's theory of evolution and by computational iteration. His projects explore the transformations of the body, the mechanisms of desire and the fictions of the unconscious.">
+        Laurent Bourdoiseau est artiste et réalisateur. Il mêle photographie, cinéma et images générées par intelligence artificielle. Il a créé Darwin, un programme qui applique aux images des principes de variation inspirés de la théorie de l'évolution de Darwin et de l'itération informatique. Ses projets explorent les transformations du corps, les mécanismes du désir et fictions de l'inconscient.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="section-label reveal" id="works">
+  <span data-en="Works — 2024 / 2025">Œuvres — 2024 / 2025</span>
+  <span data-en="40 works">40 œuvres</span>
+</div>
+
+<div class="grid-wrapper"><div class="grid" id="grid"></div>
+<div class="bottom-nav">
+  <a href="../index.html" data-en="← Home">← Accueil</a>
+  <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
+  <a href="../photos/">Photo</a>
+  <a href="../portfolio/?from=ia">Portfolio</a>
+</div>
+</div>
+
+<div class="section-label reveal" id="contact">
+  <span>Contact</span>
+</div>
+<div class="contact reveal">
+  <div class="contact-left"><h2 data-en="Let's work<br>together">Travaillons<br>ensemble</h2></div>
+  <div class="contact-right">
+    <div>
+      <div class="contact-label">Email</div>
+      <a href="mailto:lbourdoiseau@gmail.com">lbourdoiseau@gmail.com</a>
+    </div>
+    <div>
+      <div class="contact-label">Instagram</div>
+      <a href="https://www.instagram.com" target="_blank">@laurentbourdoiseau</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Laurent Bourdoiseau</span>
+  <span data-en="AI Creation — Paris">Création IA — Paris</span>
+</footer>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — modifiez uniquement cette section
+// type: 'image' ou 'vimeo'
+// t: titre affiché au survol
+// s: sous-titre affiché au survol
+// vimeoId: ID Vimeo (uniquement pour type 'vimeo')
+// Les images sont automatiquement : ../images/image1.jpg, image2.jpg...
+// ============================================================
+const CONFIG = [
+  // Ligne 1 : nouvelle image 16/9 + ancienne première
+  {type:'image', t:'Sans titre I',      s:'Image IA · 2025', video:'../images/structure_loop.mov?v=3', noIso:true},
+  {type:'image', t:'Sans titre II',     s:'Image IA · 2025'},
+  {type:'vimeo', t:'Mirror',            s:'Film IA · 2025', vimeoId:'1189011702', duree:'1:03', preview:'../images/mirror.mov?v=4', sound:true},
+  // Ligne 2 : carré + Shore Stories 16/9 + carré
+  {type:'image', t:"L'Absence",         s:'Image IA · 2025'},
+  {type:'vimeo', t:'Shore Stories',     s:'Film IA · 2025', vimeoId:'1136094996', duree:'2:11', preview:'../images/Shore_story.mov?v=5', sound:true},
+  {type:'image', t:'Désir',             s:'Image IA · 2025'},
+  // Ligne 3 : carré + carré + carré (8/9)
+  // Case vide (masquée en CSS) : la série Fragment qui était ici est déplacée plus bas, à la place de Sans titre III
+  {type:'series', t:'', s:'', images:[]},
+  {type:'image', t:'Nuit blanche',      s:'Image IA · 2024'},
+  {type:'image', t:'Fragment',          s:'Image IA · 2025'},
+  // Ligne 4 : Breaking-Up 16/9 + carré + carré
+  {type:'vimeo', t:'Breaking-Up',       s:'Film IA · 2025', vimeoId:'1189011706', duree:'0:38', preview:'../images/break_up.mov?v=2'},
+  {type:'image', t:"L'Ombre",           s:'Image IA · 2025'},
+  {type:'hidden', t:'Mémoire',          s:'Image IA · 2024'},
+  // Ligne 4b : Le Réel série (span2) + carré + carré
+  {type:'series', t:'', s:'', images:[]},
+  {type:'image', t:'Traversée',         s:'Image IA · 2025'},
+  {type:'series', t:'Le Réel', s:'Série · 2024', images: Array.from({length:9},(_,i)=>`../images/__SERIEs/serie1/${i+1}.jpg`)},
+  // Ligne 5 : carré + série Le Réel span2 + carré
+  {type:'image', t:'Corps',             s:'Image IA · 2024'},
+  {type:'image', t:'Latence',           s:'Image IA · 2025'},
+  {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov?v=2', noLink:true},
+  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true, natif:[676,540,668]},   // natif : largeur, hauteur du fichier, largeur utile (8 colonnes noires à droite)
+  // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
+  {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
+  {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov?v=2', noLink:true, noIso:true},
+  // Ligne 8 : 4 carrés
+  {type:'image', t:'Regard',            s:'Image IA · 2025'},
+  // Série Fragment, à la place de l'image Sans titre III (image13.jpg, retirée) ; skipImage garde la numérotation des images suivantes
+  {type:'series', t:'Fragment', s:'Série · 2024', images: ['../images/__SERIEs/serie2/serie2-1.jpg','../images/__SERIEs/serie2/serie2-2.jpg'], skipImage:true},
+  {type:'image', t:'Silence',           s:'Image IA · 2025'},
+  {type:'image', t:"L'Autre",           s:'Image IA · 2025'},
+  // Ligne 9 : carré + 16/9 + carré
+  {type:'image', t:'Rive',              s:'Image IA · 2024'},
+  {type:'vimeo', t:"L'Oréal Gold",      s:'Film · 2018', vimeoId:'248889179', duree:'1:15', preview:'../images/Gold.mov?v=3', sound:true, skipImage:true},   // éloignée du clip Air (était juste après lui)
+  {type:'image', t:'Sans titre IV',     s:'Image IA · 2025'},
+  // Ligne 10 : 16/9 + 1/1 carré
+  {type:'image', t:'Pulsion',           s:'Image IA · 2024'},
+  {type:'image', t:'Blanc',             s:'Image IA · 2025'},
+  // Ligne 11 : 16/9 + carré + carré
+  {type:'image', t:'Nuit II',           s:'Image IA · 2025'},
+  {type:'image', t:'Horizon',           s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre V',      s:'Image IA · 2024'},
+  // Ligne 12 : carré + carré + 16/9
+  {type:'image', t:'Origine',           s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre VI',     s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre VII',    s:'Image IA · 2025'},
+  // Ligne 13 : 16/9 + 16/9
+  {type:'image', t:'Sans titre VIII',   s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre IX',     s:'Image IA · 2025'},
+  // Ligne 14 : carré + carré
+  {type:'image', t:'Sans titre X',      s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre XI',     s:'Image IA · 2025'},
+  // Teasing du film Faces, tout en haut (hero:true + top:true) : aperçu muet en boucle, le clic l'ouvre en grand avec le son (sound:true)
+  {type:'video', t:'Faces',             s:'Teasing · 2026', src:'../images/teasing_faces_v12.mov?v=1', hero:true, top:true, sound:true, vimeoId:'1235091825', duree:'0:51', local:'../images/faces_film.mov?v=1', imageFixe:0.1, affiche:'../images/teasing_faces_debut.jpg', fige:'../images/teasing_faces_fige.jpg?v=2'},
+  // Film mis en avant, pleine largeur (hero:true) — laisser en dernier dans le tableau
+  {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
+  // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
+  {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
+];
+// ============================================================
+
+// Cursor
+const c1=document.getElementById('c1');
+let mx=0,my=0,rafPending=false;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  if(!rafPending){ rafPending=true; requestAnimationFrame(()=>{ c1.style.transform=`translate(${mx}px,${my}px)`; rafPending=false; }); }
+},{ passive:true });
+
+// Vidéos d'aperçu : chargées et lues seulement à l'approche de l'écran, en pause dès qu'elles en sortent
+// Une vidéo "voulue" est une vidéo proche de l'écran. Si le navigateur refuse de la lancer (onglet ouvert en arrière-plan,
+// mode économie d'énergie, connexion lente), on réessaie dès que la page redevient visible ou que le visiteur agit.
+const videosVoulues=new Set();
+function lancer(v){ if(window.__enSommeil || v._fige) return; if(v._avecSon){ v._avecSon(); return; } const p=v.play(); if(p) p.catch(()=>{}); }
+function relancer(){ if(document.hidden || window.__enSommeil) return; videosVoulues.forEach(v=>{ if(v.paused) lancer(v); }); }
+const videoObs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    const v=en.target;
+    if(en.isIntersecting){ videosVoulues.add(v); lancer(v); }
+    else { videosVoulues.delete(v); v.pause(); }
+  });
+},{rootMargin:'300px 0px'});
+document.addEventListener('visibilitychange',relancer);
+window.addEventListener('pageshow',relancer);
+['pointerdown','touchstart','keydown','scroll'].forEach(ev=>window.addEventListener(ev,relancer,{passive:true}));
+// Téléphone : Safari n'envoie pas toujours le « clic » après un toucher quand la page change au même instant
+// (ici, le blanc qui se retire). On ouvre donc dès la fin du toucher, si le doigt n'a pas glissé.
+function auToucher(el, action){
+  let x=0, y=0, t=0;
+  el.addEventListener('touchstart',e=>{ const p=e.touches[0]; x=p.clientX; y=p.clientY; t=Date.now(); },{passive:true});
+  el.addEventListener('touchend',e=>{
+    const p=e.changedTouches[0];
+    if(Math.abs(p.clientX-x)>10 || Math.abs(p.clientY-y)>10 || Date.now()-t>700) return;
+    e.preventDefault(); e.stopPropagation(); action();      // preventDefault : pas de second « clic » fantôme derrière
+  },{passive:false});
+}
+// ---- Aperçus des films : une seule lecture, puis image figée ----
+// L'aperçu d'un film qui a une version longue ne se lit qu'une fois, quand il est regardé (au centre de l'écran) ; il
+// s'arrête ensuite sur une image de la vidéo et ne repart plus, même si on revient dessus : la suite est la version longue.
+// Tant qu'il n'est pas regardé il tourne en boucle, muet, sans que cela compte.
+function figer(vid){
+  if(vid._fige) return; vid._fige=true; vid.loop=false; vid.muted=true; vid.pause();
+  // l'image figée : celle prévue pour ce film, sinon la dernière de l'aperçu ; on la repose si autre chose l'a déplacée
+  const cible=vid._imageFixe!=null ? vid._imageFixe : Math.max(0,(vid.duration||0)-0.05);
+  const poser=()=>{ if(Math.abs(vid.currentTime-cible)>0.08){ try{ vid.currentTime=cible; }catch(e){} } if(!vid.paused) vid.pause(); };
+  poser(); [150,500,1200].forEach(ms=>setTimeout(poser,ms));
+  vid.addEventListener('play',()=>{ vid.pause(); });
+  const wrap=vid.closest('.vimeo-wrap');
+  if(wrap && vid._imageFigee && !wrap.querySelector('.image-figee')){
+    // l'image figée est une vraie image posée sur la vidéo : elle ne dépend pas du retour en arrière de la vidéo
+    const im=document.createElement('img'); im.className='image-figee'; im.alt=''; im.src=vid._imageFigee;
+    im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;z-index:3;';
+    wrap.appendChild(im);
+  }
+  if(wrap && !wrap.querySelector('.regarder')){
+    const r=document.createElement('div'); r.className='regarder';
+    r.setAttribute('data-fr','Voir la version complète ?'); r.setAttribute('data-en','Watch the full video?');
+    r.textContent=(typeof window.t==='function') ? window.t('Voir la version complète ?','Watch the full video?') : 'Voir la version complète ?';
+    wrap.appendChild(r); setTimeout(()=>r.classList.add('on'),500);        // vient en fondu, une demi-seconde après l'arrêt
+  }
+  const o=sonores.find(x=>x.vid===vid); if(o){ o.coupe=true; o.finie=true; o.maj(); }
+}
+function enApercu(vid, film, imageFixe){
+  vid._apercu=true; vid._film=film; vid._imageFixe=imageFixe==null?null:imageFixe;
+  // fin de l'aperçu : l'image figée et sa mention restent une seconde (trois pour la première vidéo), puis la page glisse vers la vidéo suivante
+  // (ordinateur et téléphone), tant que le visiteur n'a pas pris la main
+  vid.addEventListener('ended',()=>{ const o=sonores.find(x=>x.vid===vid); figer(vid); if(o) setTimeout(()=>glisserVersSuivante(o), vid.closest('.cell-top') ? 3000 : 1000); });      // la première vidéo reste 3 s
+}
+// aperçu sans son : sa lecture unique part quand il occupe l'écran à 60 %
+const apercuObs=new IntersectionObserver(es=>es.forEach(en=>{
+  const v=en.target; if(v._fige) return;
+  if(en.intersectionRatio>=0.6){ if(v.loop){ v.loop=false; try{ v.currentTime=0; }catch(e){} } } else v.loop=true;
+}),{threshold:[0,.6]});
+function lazyVideo(vid){
+  // preload metadata + #t : la première image s'affiche même si la lecture n'a pas encore démarré (plus de case noire)
+  vid.preload='metadata'; vid.loop=true; vid.muted=true; vid.playsInline=true;
+  vid.setAttribute('muted',''); vid.setAttribute('playsinline','');
+  if(vid.getAttribute('src') && !vid.getAttribute('src').includes('#')) vid.src=vid.getAttribute('src')+'#t=0.05';
+  vid.addEventListener('canplay',()=>{ if(videosVoulues.has(vid) && vid.paused) lancer(vid); });
+  videoObs.observe(vid);
+}
+
+// ---- Vidéos avec son ----
+// Une seule vidéo sonore à la fois : celle qui occupe le plus l'écran, et seulement si elle y est à 30 % au moins.
+// Dès qu'on la fait défiler hors de l'écran, ou qu'un film s'ouvre en grand, son son se coupe.
+// On tente toujours le son d'office ; si le navigateur le refuse, il s'active au premier clic, appui ou touche sur la page.
+const sonores=[];
+let aDefile=false, aTouche=false;
+['wheel','touchmove'].forEach(ev=>window.addEventListener(ev,()=>{ aDefile=true; aTouche=true; },{passive:true}));
+// Sur mobile, à la fin du premier passage d'une vidéo sonore, la page glisse doucement vers la suivante
+// (tant que le visiteur n'a pas pris la main : on touche peu l'écran sur un téléphone).
+// Défilement fait à la main (départ et arrivée en douceur), identique sur tous les navigateurs
+function glisserJusqua(vers, duree, fin){
+  const de=window.scrollY, t0=performance.now();
+  (function pas(t){
+    const u=Math.min(1,(t-t0)/duree), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    window.scrollTo(0,de+(vers-de)*e);
+    if(u<1) requestAnimationFrame(pas); else if(fin) fin();
+  })(t0);
+}
+const SUR_TEL=()=>window.matchMedia('(max-width:768px)').matches;
+function glisserVersSuivante(o){
+  if(aTouche || window.__enSommeil || document.getElementById('lb').classList.contains('on')) return;
+  const y0=o.cell.getBoundingClientRect().top;
+  const suivante=sonores.filter(x=>x!==o && x.cell.getBoundingClientRect().top>y0+10).sort((a,b)=>a.cell.getBoundingClientRect().top-b.cell.getBoundingClientRect().top)[0];
+  if(!suivante) return;
+  const r=suivante.cell.getBoundingClientRect(), vh=window.innerHeight;
+  aDefile=true; window.__glisse=true;      // le calage d'arrivée ne doit plus ramener la page sur la première vidéo
+  if(window.__focusSur) window.__focusSur(suivante.cell.closest('.cell'));
+  // glissement fait à la main (1,2 s, départ et arrivée en douceur) : identique sur tous les navigateurs
+  const de=window.scrollY, vers=Math.max(0,r.top+de-(vh-r.height)/2), t0=performance.now(), duree=1200;
+  (function pas(t){
+    if(aTouche) return;
+    const u=Math.min(1,(t-t0)/duree), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    window.scrollTo(0,de+(vers-de)*e);
+    if(u<1) requestAnimationFrame(pas); else mesurer();
+  })(t0);
+}
+window.addEventListener('keydown',e=>{ if(['ArrowDown','ArrowUp','PageDown','PageUp',' ','End','Home'].includes(e.key)) aDefile=true; });
+// Lecture muette de secours : utilisée chaque fois que le navigateur refuse ou interrompt la lecture avec le son
+function enMuet(o){ o.vid.muted=true; const q=o.vid.play(); if(q) q.catch(()=>{}); o.maj(); }
+// Le volume est-il réglable par la page ? (non sur iPhone)
+const VOLUME_REGLABLE=(()=>{ try{ const v=document.createElement('video'); v.volume=0.5; return v.volume===0.5; }catch(e){ return false; } })();
+// Démarre le passage sonore d'une vidéo, depuis son début, SANS laisser passer le son de l'endroit où elle se trouvait :
+// on revient d'abord au début, et le son n'est ouvert qu'une fois ce retour effectué.
+function demarrerSon(o, geste){
+  const vid=o.vid, essai=++o.essai, cible=(!o.vid._apercu && o.passes===1)?0.75:1; o.refuse=false; o.enDemarrage=true; o.dernier=0;
+  const refus=()=>{ if(o.essai===essai){ o.enDemarrage=false; o.refuse=true; try{ vid.volume=1; }catch(e){} enMuet(o); } };
+  let ouvert=false;
+  const ouvrir=()=>{ if(ouvert || o.essai!==essai) return; ouvert=true; o.enDemarrage=false;
+    if(VOLUME_REGLABLE){ if(!vid.muted) vid.volume=cible; }
+    else { setTimeout(()=>{ if(o.essai!==essai) return; vid.muted=false; vid.removeAttribute('muted');
+             const p=vid.play(); if(p) p.catch(()=>{ o.direct=true; refus(); }); o.maj(); },80); }
+    o.maj(); };
+  const auRetour=()=>{ vid.removeEventListener('seeked',auRetour); ouvrir(); };
+  vid.addEventListener('seeked',auRetour); setTimeout(ouvrir,600);        // filet de sécurité si l'événement ne vient pas
+  if(VOLUME_REGLABLE){
+    vid.volume=0; vid.muted=false; vid.removeAttribute('muted');           // son ouvert mais à zéro pendant le retour au début
+    vid.currentTime=0;
+    const p=vid.play(); if(p) p.catch(refus);
+  } else if(geste && o.direct){
+    // iPhone, dernier recours : le son est ouvert pendant le geste lui-même (un bref accroc est alors possible)
+    vid.muted=false; vid.removeAttribute('muted'); vid.currentTime=0;
+    const p=vid.play(); if(p) p.catch(refus);
+  } else {
+    // iPhone : la vidéo reste muette pendant son retour au début, le son n'est ouvert qu'ensuite (pas d'accroc).
+    // Le play() lancé pendant le geste « déverrouille » la vidéo : iOS accepte ensuite que son son s'ouvre un instant plus tard.
+    const p=vid.play(); if(p) p.catch(()=>{});
+    vid.currentTime=0;
+  }
+}
+function arbitrer(geste){
+  const lbOuvert=document.getElementById('lb').classList.contains('on');
+  let elue=null;
+  if(!lbOuvert && !document.hidden && !window.__enSommeil){
+    const tiers=(window.innerHeight||0)/6;                 // le centre de la vidéo doit être dans le tiers central de la fenêtre
+    if(!aDefile) elue=sonores.find(o=>o.cell.closest('.cell-top') && o.ratio>=o.seuil && o.ecart<=tiers) || null;
+    if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && o.ecart<=tiers && (!elue || o.ecart<elue.ecart)) elue=o; });
+  }
+  sonores.forEach(o=>{
+    if(o.vid._apercu && !o.vid._fige) o.vid.loop=(o!==elue);          // aperçu regardé : sa lecture unique est en cours
+    if(o===elue && !o.coupe && !o.finie){
+      // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
+      if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
+    } else {
+      if(!o.vid.muted) o.vid.muted=true;
+      if(geste && !o.vid._fige){ const p=o.vid.play(); if(p) p.then(()=>{ if(!videosVoulues.has(o.vid)) o.vid.pause(); }).catch(()=>{}); }   // déverrouille toutes les vidéos sonores
+    }
+    o.maj();
+  });
+}
+// ---- Page affichée par-dessus la page d'accueil (voir index.html) ----
+// La page d'accueil charge cette page en arrière-plan ; au clic sur « IA », elle l'affiche et appelle entrerAvecSon()
+// dans le même clic : c'est ce qui permet au son de démarrer tout seul, y compris dans Safari.
+const INCRUSTEE = window.top!==window.self;
+window.__enSommeil = INCRUSTEE;      // chargée en arrière-plan : aucun son tant qu'elle n'est pas affichée
+if(INCRUSTEE){
+  const base=document.createElement('base'); base.target='_top'; document.head.appendChild(base);
+  document.addEventListener('click',e=>{
+    const a=e.target.closest && e.target.closest('a[href]');
+    if(a && new URL(a.href,location.href).pathname==='/'){ e.preventDefault(); window.parent.history.back(); }   // « Accueil » : simple retour
+  });
+}
+window.entrerAvecSon=()=>{ window.__enSommeil=false; if(window.__reposInitial) window.__reposInitial(); relancer(); if(window.__allerALaVideo) window.__allerALaVideo(); mesurer(); arbitrer(true); };
+window.sortirEnSilence=()=>{ window.__enSommeil=true; document.querySelectorAll('video').forEach(v=>{ v.muted=true; v.pause(); }); sonores.forEach(o=>o.maj()); if(typeof closeLb==='function') closeLb(); };
+const sonObs=new IntersectionObserver(entries=>{
+  mesurer();
+},{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
+// Seuls ces gestes sont reconnus par tous les navigateurs, Safari compris, pour autoriser le son
+['click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
+  if(e.target.closest && (e.target.closest('.sound-btn') || e.target.closest('.cell-top'))) return;
+  arbitrer(true);
+}));
+document.addEventListener('visibilitychange',()=>arbitrer(false));
+// Mesure directe de la part de chaque vidéo sonore visible à l'écran, à chaque défilement (en plus de l'observateur)
+function mesurer(){
+  const h=window.innerHeight||document.documentElement.clientHeight;
+  sonores.forEach(o=>{
+    const r=o.cell.getBoundingClientRect();
+    o.ratio = r.height>0 ? Math.max(0, Math.min(r.bottom,h)-Math.max(r.top,0))/r.height : 0;
+    o.ecart = Math.abs((r.top+r.bottom)/2 - h/2);            // distance au centre de l'écran
+    if(o.ratio<=0){ o.finie=false; o.passes=0; o.refuse=false; try{ o.vid.volume=1; }catch(e){} }                            // sortie complète de l'écran : au retour, un nouveau passage avec le son
+  });
+  arbitrer(false);
+}
+let mesureEnAttente=false;
+['scroll','resize'].forEach(ev=>window.addEventListener(ev,()=>{
+  if(mesureEnAttente) return; mesureEnAttente=true;
+  requestAnimationFrame(()=>{ mesureEnAttente=false; mesurer(); });
+},{passive:true}));
+['load','pageshow'].forEach(ev=>window.addEventListener(ev,()=>{ mesurer(); setTimeout(mesurer,600); }));
+// En quittant la page, tout son est coupé
+window.addEventListener('pagehide',()=>sonores.forEach(o=>{ o.vid.muted=true; o.vid.pause(); }));
+function avecSon(vid, wrap, clicSurLaCase){
+  const btn=document.createElement('button');
+  btn.className='sound-btn';
+  // ordinateur : libellé en toutes lettres ; mobile : mention discrète dans la typo des légendes
+  const o={vid, cell:wrap, ratio:0, ecart:1e9, seuil:0.3, coupe:false, refuse:false, enDemarrage:false, finie:false, passes:0, dernier:0, essai:0, maj:()=>{
+    btn.innerHTML=vid.muted ? '<span class="sb-d">▶&nbsp; Activer le son</span><span class="sb-m">Sound on</span>'
+                            : '<span class="sb-d">■&nbsp; Couper le son</span><span class="sb-m">Sound off</span>';
+    btn.setAttribute('aria-label',vid.muted?'Activer le son':'Couper le son');
+  }};
+  sonores.push(o);
+  vid._avecSon=()=>{ const p=vid.play(); if(p) p.catch(()=>{ if(!vid.muted) enMuet(o); }); arbitrer(false); };
+  // Un seul passage avec le son : quand la boucle repart, les passages suivants sont muets.
+  // Le son ne revient que si la vidéo est sortie de l'écran puis y revient, ou si le visiteur le redemande avec le bouton.
+  vid.addEventListener('timeupdate',()=>{
+    const t=vid.currentTime, d=vid.duration||0;
+    // la boucle vient de repartir : les passages suivants jouent un quart moins fort
+    // (un aperçu ne se lit qu'une fois : rien à faire. Le retour au début qui ouvre le son était pris pour une reprise de
+    //  boucle et faisait tomber le volume d'un quart dans la première seconde : c'était l'accroc.)
+    if(!vid._apercu && d && t<o.dernier-1 && !vid.muted){
+      o.passes++;
+      if(o.passes===1){ try{ vid.volume=0.75; }catch(e){} glisserVersSuivante(o); }
+      else { o.finie=true; vid.muted=true; }
+    }
+    o.dernier=t;
+  });
+  // Safari met parfois en pause une vidéo dont on a activé le son sans geste : on la relance en muet plutôt que de la laisser figée
+  vid.addEventListener('pause',()=>{ if(!vid.muted && videosVoulues.has(vid) && !document.hidden && !window.__enSommeil){ if(!VOLUME_REGLABLE) o.direct=true; enMuet(o); } });
+  const bascule=()=>{
+    if(vid.muted || vid.paused){
+      o.coupe=false; o.finie=false; o.dernier=0; sonores.forEach(x=>{ if(x!==o) x.vid.muted=true; });
+      o.passes=0; demarrerSon(o, true);
+      o.maj();
+    } else { o.coupe=true; vid.muted=true; o.maj(); }
+  };
+  o.maj();
+  btn.addEventListener('click',e=>{ e.stopPropagation(); bascule(); });
+  if(clicSurLaCase){ wrap.style.cursor='none'; wrap.addEventListener('click',bascule); }
+  wrap.appendChild(btn);
+  sonObs.observe(wrap);
+}
+
+// Build grid
+const grid=document.getElementById('grid');
+let imgIndex=1;
+
+CONFIG.forEach((item,i)=>{
+  const cell=document.createElement('div');
+  cell.className='cell reveal';
+  if(item.skipImage) imgIndex++;          // cette case occupe la place d'une image : la numérotation des suivantes ne bouge pas
+  if(item.hero) cell.classList.add('cell-hero');
+  if(item.third) cell.classList.add('cell-third');
+  if(item.noIso) cell.classList.add('no-iso');      // cette vidéo ne s'isole pas sur fond blanc
+  if(item.top) cell.classList.add('cell-top');
+
+  if(item.type==='series'){
+    cell.classList.add('cell-series');
+    let idx=0;
+    const imgs=item.images;
+    const track=document.createElement('div');
+    track.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:hidden;cursor:none;';
+    cell.appendChild(track);
+    const strip=document.createElement('div');
+    strip.style.cssText=`display:flex;width:${imgs.length*100}%;height:100%;transition:transform .35s cubic-bezier(.25,.46,.45,.94);will-change:transform;`;
+    track.appendChild(strip);
+    imgs.forEach((src,si)=>{
+      const slide=document.createElement('div');
+      slide.style.cssText=`width:${100/imgs.length}%;height:100%;flex-shrink:0;position:relative;overflow:hidden;`;
+      const si_img=document.createElement('img');
+      si_img.src=src; si_img.alt=item.t; si_img.loading=si===0?'eager':'lazy';
+      si_img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none;';
+      slide.appendChild(si_img);
+      strip.appendChild(slide);
+    });
+    const img=strip.querySelectorAll('img')[0];
+    const icon=document.createElement('div');
+    icon.className='series-icon';
+    icon.innerHTML=`<svg width="48" height="48" viewBox="0 0 56 56"><circle cx="28" cy="28" r="28" fill="rgba(255,255,255,.82)"/><polyline points="20,18 36,28 20,38" fill="none" stroke="#0a0a0a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    cell.appendChild(icon);
+    const dots=document.createElement('div');
+    dots.className='series-dots';
+    imgs.forEach((_,di)=>{ const d=document.createElement('span'); if(di===0)d.classList.add('active'); dots.appendChild(d); });
+    cell.appendChild(dots);
+    const prev=document.createElement('button');
+    prev.className='series-arrow prev desktop-only';
+    prev.innerHTML=`<svg width="28" height="28" viewBox="0 0 28 28"><polyline points="18,5 9,14 18,23" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+    const next=document.createElement('button');
+    next.className='series-arrow next desktop-only';
+    next.innerHTML=`<svg width="28" height="28" viewBox="0 0 28 28"><polyline points="10,5 19,14 10,23" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+    function goTo(n){
+      idx=(n+imgs.length)%imgs.length;
+      strip.style.transform=`translateX(-${idx*(100/imgs.length)}%)`;
+      dots.querySelectorAll('span').forEach((d,di)=>d.classList.toggle('active',di===idx));
+      cap.querySelector('span').textContent=`${item.s} · ${idx+1}/${imgs.length}`;
+    }
+    prev.onclick=(e)=>{ e.stopPropagation(); goTo(idx-1); };
+    next.onclick=(e)=>{ e.stopPropagation(); goTo(idx+1); };
+    cell.appendChild(prev);
+    cell.appendChild(next);
+    let touchStartX=0, touchStartY=0, isSwiping=false, baseOffset=0;
+    function getOffset(){ return -idx*(100/imgs.length); }
+    track.addEventListener('touchstart',e=>{ touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; isSwiping=true; baseOffset=getOffset(); strip.style.transition='none'; },{passive:true});
+    track.addEventListener('touchmove',e=>{ if(!isSwiping) return; const diffX=e.touches[0].clientX-touchStartX; const diffY=Math.abs(e.touches[0].clientY-touchStartY); if(Math.abs(diffX)>diffY){ e.preventDefault(); } strip.style.transform=`translateX(calc(${baseOffset}% + ${diffX}px))`; },{passive:false});
+    track.addEventListener('touchend',e=>{ if(!isSwiping) return; isSwiping=false; strip.style.transition='transform .35s cubic-bezier(.25,.46,.45,.94)'; const diff=touchStartX-e.changedTouches[0].clientX; if(Math.abs(diff)>50) goTo(diff>0?idx+1:idx-1); else { strip.style.transform=`translateX(${getOffset()}%)`; if(Math.abs(diff)<10) openLb(imgs[0], imgs); } },{passive:true});
+    let mouseStartX=0, mouseDragging=false, mouseMoved=false;
+    track.addEventListener('mousedown',e=>{ mouseStartX=e.clientX; mouseDragging=true; mouseMoved=false; baseOffset=getOffset(); strip.style.transition='none'; });
+    track.addEventListener('mousemove',e=>{ if(!mouseDragging) return; const diff=e.clientX-mouseStartX; if(Math.abs(diff)>5){ mouseMoved=true; strip.style.transform=`translateX(calc(${baseOffset}% + ${diff}px))`; } });
+    track.addEventListener('mouseup',e=>{ if(!mouseDragging) return; mouseDragging=false; strip.style.transition='transform .35s cubic-bezier(.25,.46,.45,.94)'; const diff=mouseStartX-e.clientX; if(mouseMoved && Math.abs(diff)>50) goTo(diff>0?idx+1:idx-1); else { strip.style.transform=`translateX(${getOffset()}%)`; if(!mouseMoved) openLb(imgs[0], imgs); } });
+    track.addEventListener('mouseleave',()=>{ if(mouseDragging){ mouseDragging=false; strip.style.transition='transform .35s'; strip.style.transform=`translateX(${getOffset()}%)`; } });
+
+  } else if(item.type==='hidden'){
+    imgIndex++;
+    return;
+  } else if(item.type==='image'){
+    const src=item.src || `../images/image${imgIndex}.jpg${imgIndex===1?'?v=3':''}`;
+    if(!item.horsCompte) imgIndex++;
+    if(item.pinFirst) cell.classList.add('cell-first');
+    // video: l'image est remplacée par une vidéo muette en boucle (l'image sert d'affiche pendant le chargement)
+    const img=document.createElement(item.video?'video':'img');
+    if(item.video){
+      img.poster=src; img.src=item.video;
+      lazyVideo(img);
+      img.style.pointerEvents='none';
+      cell.appendChild(img);
+    } else {
+    img.src=src;
+    img.alt=item.t;
+    img.loading='lazy';
+    img.onerror=function(){
+      cell.style.display='none';
+    };
+    img.onclick=()=>openLb(src);
+    cell.appendChild(img);
+    }
+  } else if(item.type==='video'){
+    // Vidéo locale en boucle, sans lien
+    const wrap=document.createElement('div');
+    wrap.className='vimeo-wrap';
+    const vid=document.createElement('video');
+    vid.src=item.src;
+    lazyVideo(vid);
+    vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
+    wrap.appendChild(vid);
+    if(item.sound) avecSon(vid, wrap, !item.vimeoId);     // sans version longue : le clic sur la case gère le son
+    if(item.vimeoId) enApercu(vid, item.vimeoId, item.imageFixe);
+    if(item.local) (window.__filmsLocaux=window.__filmsLocaux||{})[item.vimeoId]=item.local;
+    if(item.affiche) vid.poster=item.affiche;          // visible tant que la vidéo n'a pas démarré (plus de rectangle noir)
+    if(item.fige){ vid._imageFigee=item.fige; new Image().src=item.fige; }
+    if(item.vimeoId){ wrap.style.cursor='none'; wrap.addEventListener('click',()=>openLbVideo(item.vimeoId)); auToucher(wrap,()=>openLbVideo(item.vimeoId)); }   // le clic sur le teaser ouvre le film
+    if(item.top){ const fl=document.createElement('div'); fl.className='fleche-suite';
+      fl.innerHTML='<svg viewBox="0 0 11 20" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="5.5" y1="1" x2="5.5" y2="18.5"/><polyline points="1,14 5.5,18.5 10,14"/></svg>';
+      cell.appendChild(fl); }
+    if(item.vimeoId && item.duree){
+      // même mention que sous les autres films : le teaser a sa version longue sur Vimeo
+      const m=document.createElement('a'); m.className='voir-film'; m.href='#';
+      m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full video · '+item.duree+' →');
+      m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+      auToucher(m,()=>openLbVideo(item.vimeoId));
+      cell.classList.add('avec-mention'); cell.appendChild(m);
+    }
+    cell.appendChild(wrap);
+  } else {
+    // Vimeo
+    const wrap=document.createElement('div');
+    wrap.className='vimeo-wrap';
+    if(item.vimeoId){
+      // Preview video ou miniature Vimeo
+      if(item.preview){
+        const vid=document.createElement('video');
+        vid.src=item.preview;
+        lazyVideo(vid);
+        vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
+        if(item.previewTransform) vid.style.transform=item.previewTransform;
+        if(item.natif){
+          // format d'origine respecté (le clip Air est presque carré) : la vidéo n'est plus recadrée ni agrandie pour remplir
+          // le 16:9 ; elle est centrée à pleine hauteur, avec le blanc de la page à gauche et à droite.
+          const [lf,hf,lu]=item.natif, boite=document.createElement('div');
+          boite.style.cssText=`position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);aspect-ratio:${lu}/${hf};overflow:hidden;`;
+          vid.style.cssText=`position:absolute;top:0;left:0;height:100%;width:${(lf/lu*100).toFixed(3)}%;object-fit:fill;display:block;pointer-events:none;`;
+          boite.appendChild(vid); wrap.appendChild(boite); wrap.style.background='#fff';
+          cell._bordGauche=(1-(9/16)*(lu/hf))/2;          // part de blanc à gauche, pour aligner la mention sous l'image
+        } else
+        wrap.appendChild(vid);
+        if(item.sound) avecSon(vid, wrap, false);        // le clic sur la case ouvre toujours le film ; le bouton gère le son
+        if(!item.noLink && item.duree){ enApercu(vid, item.vimeoId, item.imageFixe); if(!item.sound) apercuObs.observe(vid); }
+        if(!item.noLink && item.duree){
+          // mention discrète sous le cadre, à gauche : il existe une version longue (reste visible au blanc)
+          const m=document.createElement('a'); m.className='voir-film'; m.href='#';
+          m.textContent='Voir la version complète · '+item.duree+' →'; m.setAttribute('data-en','Watch the full video · '+item.duree+' →');
+          m.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); openLbVideo(item.vimeoId); });
+      auToucher(m,()=>openLbVideo(item.vimeoId));
+          if(cell._bordGauche) m.style.left=(cell._bordGauche*100).toFixed(2)+'%';
+          cell.classList.add('avec-mention'); cell.appendChild(m);
+        }
+        if(!item.noLink){
+          wrap.style.cursor='none';
+          wrap.addEventListener('click',()=>openLbVideo(item.vimeoId));
+          auToucher(wrap,()=>openLbVideo(item.vimeoId));
+        }
+      } else {
+        const thumb=document.createElement('img');
+        thumb.style.cssText='width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;';
+        thumb.alt=item.t;
+        fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${item.vimeoId}&width=1280`)
+          .then(r=>r.json())
+          .then(d=>{ thumb.src=d.thumbnail_url; thumb.style.display='block'; })
+          .catch(()=>{ /* fond noir déjà en CSS */ });
+        wrap.appendChild(thumb);
+      }
+      if(!item.noLink){
+        // Bouton play (seulement sans preview)
+        if(!item.preview){
+          const btn=document.createElement('div');
+          btn.className='play-btn';
+          btn.innerHTML=`<svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="28"/><polygon points="22,18 42,28 22,38"/></svg>`;
+          btn.onclick=()=>{ openLbVideo(item.vimeoId); };
+          wrap.appendChild(btn);
+        }
+      }
+    } else {
+      // Pas encore de vimeoId — placeholder sombre
+      const ph=document.createElement('div');
+      ph.className='placeholder placeholder-dark';
+      ph.innerHTML=`<span>▶ ${item.t}</span>`;
+      wrap.appendChild(ph);
+    }
+    cell.appendChild(wrap);
+  }
+
+  // Caption
+  const cap=document.createElement('div');
+  cap.className='caption';
+  cap.innerHTML=`<h3>${item.t}</h3><span>${item.s}</span>`;
+  cell.appendChild(cap);
+
+  grid.appendChild(cell);
+});
+
+let lbImages=[], lbCurrent=0;
+function openLb(src, images){
+  const lbVideo=document.getElementById('lbVideo');
+  lbVideo.src=''; lbVideo.style.display='none';
+  document.getElementById('lbImg').style.display='block';
+  lbImages = images || [src];
+  lbCurrent = lbImages.indexOf(src);
+  if(lbCurrent<0) lbCurrent=0;
+  _updateLb();
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
+}
+// Vidéo locale en grand, avec le son (lancée par le clic, donc autorisée par le navigateur)
+function openLbLocal(src){
+  const v=document.getElementById('lbLocal');
+  document.getElementById('lbImg').style.display='none';
+  const lbVideo=document.getElementById('lbVideo'); lbVideo.src=''; lbVideo.style.display='none';
+  v.src=src; v.muted=false; v.style.display='block';
+  lbImages=[]; lbCurrent=0;
+  document.getElementById('lbPrev').classList.remove('visible');
+  document.getElementById('lbNext').classList.remove('visible');
+  document.getElementById('lbCounter').textContent='';
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
+  const p=v.play(); if(p) p.catch(()=>{});
+}
+// ---- Film Vimeo sans habillage ----
+// Ni titre, ni nom, ni portrait. Le lecteur est plus haut que l'image : la barre de commandes de Vimeo se pose dans la
+// bande noire sous l'image et ne couvre donc jamais les sous-titres, sur ordinateur comme sur téléphone. Elle vient avec
+// la souris (pour se déplacer dans le film) et repart quand la souris quitte l'image.
+// À la fin du film, la visionneuse se referme : pas de propositions d'autres vidéos, on retrouve la page.
+const BANDE=64;                                           // hauteur de la bande, au-dessus et au-dessous de l'image
+let lbJeton=0, lbFilm=null;
+function taillerLecteur(){
+  const cadre=document.getElementById('lbVideo');
+  const W=window.innerWidth||document.documentElement.clientWidth, H=window.innerHeight||document.documentElement.clientHeight;
+  const B=BANDE;
+  const l=Math.min(W*0.9, (H*0.9-2*B)*16/9);
+  if(!(l>0)) return;                                      // fenêtre pas encore mesurable : on garde la taille par défaut
+  cadre.style.width=l+'px'; cadre.style.height=(l*9/16+2*B)+'px'; cadre.style.maxHeight='none';
+}
+window.addEventListener('resize',taillerLecteur);
+function lireVimeo(vimeoId){
+  // un cadre neuf pour chaque film : le suivi de la lecture se rattache ainsi toujours au bon lecteur
+  const ancien=document.getElementById('lbVideo'), cadre=ancien.cloneNode(false), jeton=++lbJeton;
+  cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
+  ancien.replaceWith(cadre);
+  lbFilm=vimeoId; taillerLecteur();
+  // À la fin du film la visionneuse se referme, toujours. On la referme un quart de seconde avant la dernière image :
+  // Vimeo n'a pas le temps d'afficher ses vignettes d'autres films.
+  const fermer=()=>{ if(jeton===lbJeton) closeLb(); };
+  // 1. suivi direct, sans dépendre de la bibliothèque de Vimeo : on demande au lecteur de nous prévenir (messages entre fenêtres)
+  const ORIGINE='https://player.vimeo.com'; let recu=false, essais=0;
+  const demander=()=>{ if(jeton!==lbJeton || !cadre.contentWindow) return;
+    ['ended','timeupdate','finish','playProgress'].forEach(ev=>{ try{ cadre.contentWindow.postMessage(JSON.stringify({method:'addEventListener',value:ev}),ORIGINE); }catch(e){} }); };
+  const ecouter=e=>{
+    if(jeton!==lbJeton){ window.removeEventListener('message',ecouter); return; }
+    if(e.origin!==ORIGINE || e.source!==cadre.contentWindow) return;
+    let m=e.data; if(typeof m==='string'){ try{ m=JSON.parse(m); }catch(x){ return; } } if(!m) return;
+    if(m.event==='ready') demander();
+    if(m.event==='ended' || m.event==='finish'){ recu=true; fermer(); }
+    if((m.event==='timeupdate' || m.event==='playProgress') && m.data){ recu=true; if(m.data.duration && m.data.seconds>=m.data.duration-0.25) fermer(); }
+  };
+  window.addEventListener('message',ecouter);
+  cadre.addEventListener('load',demander);
+  const relance=setInterval(()=>{ if(jeton!==lbJeton || recu || ++essais>40){ clearInterval(relance); return; } demander(); },500);   // tant que le lecteur n'a pas répondu
+  // 2. en plus, la bibliothèque de Vimeo quand elle est chargée
+  if(window.Vimeo){ try{ const l=new Vimeo.Player(cadre); l.on('ended',fermer); l.on('timeupdate',d=>{ if(d && d.duration && d.seconds>=d.duration-0.25) fermer(); }); }catch(e){} }
+}
+function apresLeFilm(vimeoId){
+  const vid=[...document.querySelectorAll('#grid video')].find(v=>v._film===vimeoId); if(!vid) return;
+  figer(vid);
+  const cell=vid.closest('.cell');
+  if(!cell.classList.contains('cell-top')) return;      // la descente : seulement après le premier film
+  document.body.classList.remove('calme');
+  const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
+    .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
+  if(!suivante) return;
+  if(SUR_TEL()){
+    const dy=suivante.getBoundingClientRect().top-window.innerHeight*0.62;    // téléphone : le haut du film suivant monte aux deux tiers de l'écran
+    if(dy>0) setTimeout(()=>window.scrollBy({top:dy,behavior:'smooth'}),350);
+    return;
+  }
+  // ordinateur : la page descend entièrement jusqu'au film suivant, qui se retrouve au milieu de l'écran
+  setTimeout(()=>{
+    const r=suivante.getBoundingClientRect(); aDefile=true; window.__glisse=true;
+    if(window.__focusSur) window.__focusSur(suivante);
+    glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1400, ()=>{ mesurer(); arbitrer(false); });
+  },350);
+}
+// Téléphone : un film dont le fichier est sur le site est lu par le site lui-même, sans Vimeo. Aucune barre de commande ne
+// couvre l'image (le sous-titre du début reste lisible) ; un toucher sur l'image met en pause ou relance ; à la fin, la
+// visionneuse se referme. Le film démarre avec le son : c'est le toucher du visiteur qui le lance.
+const FILMS_LOCAUX=window.__filmsLocaux=window.__filmsLocaux||{};       // rempli à la construction de la grille
+function lireSurLeSite(vimeoId){
+  const v=document.getElementById('lbLocal'), jeton=++lbJeton;
+  lbFilm=vimeoId; v.removeAttribute('controls'); v.setAttribute('playsinline',''); v.loop=false; v.muted=false;
+  v.style.cssText='display:block;width:90vw;max-width:90vw;max-height:90vh;background:#000;';
+  v.src=FILMS_LOCAUX[vimeoId];
+  v.onended=()=>{ if(jeton===lbJeton) closeLb(); };
+  v.onclick=e=>{ e.stopPropagation(); if(v.paused){ const p=v.play(); if(p) p.catch(()=>{}); } else v.pause(); };
+  const p=v.play(); if(p) p.catch(()=>{ v.setAttribute('controls',''); });      // refusé : on rend les commandes du téléphone
+}
+function openLbVideo(vimeoId){
+  const lbImg=document.getElementById('lbImg');
+  const lbVideo=document.getElementById('lbVideo');
+  lbImg.style.display='none';
+  document.getElementById('lb').classList.add('film');
+  document.querySelectorAll('#grid video').forEach(v=>v.pause());      // rien ne bouge derrière le film
+  if(SUR_TEL() && FILMS_LOCAUX[vimeoId]){ lbVideo.style.display='none'; lireSurLeSite(vimeoId); }
+  else { lbVideo.style.display='block'; lireVimeo(vimeoId); }
+  lbImages=[]; lbCurrent=0;
+  document.getElementById('lbPrev').classList.remove('visible');
+  document.getElementById('lbNext').classList.remove('visible');
+  document.getElementById('lbCounter').textContent='';
+  document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
+}
+function _updateLb(){
+  const img=document.getElementById('lbImg');
+  img.style.opacity='0';
+  setTimeout(()=>{ img.src=lbImages[lbCurrent]; img.style.opacity='1'; },150);
+  const hasMult=lbImages.length>1;
+  document.getElementById('lbPrev').classList.toggle('visible',hasMult);
+  document.getElementById('lbNext').classList.toggle('visible',hasMult);
+  document.getElementById('lbCounter').textContent=hasMult?(lbCurrent+1)+' / '+lbImages.length:'';
+}
+function lbNav(dir){ lbCurrent=(lbCurrent+dir+lbImages.length)%lbImages.length; _updateLb(); }
+function closeLb(){
+  const film=lbFilm; lbFilm=null;
+  if(film) apresLeFilm(film);          // avant de rendre le son à la page : le teaser de ce film ne doit pas repartir
+  document.getElementById('lb').classList.remove('on','film'); arbitrer(false); relancer();
+  const lbLocal=document.getElementById('lbLocal'); lbLocal.pause(); lbLocal.removeAttribute('src'); lbLocal.load(); lbLocal.style.display='none';
+  const lbVideo=document.getElementById('lbVideo');
+  lbVideo.src=''; lbVideo.style.display='none'; lbJeton++;
+  document.getElementById('lbImg').style.display='block';
+}
+document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
+document.getElementById('lbImg').addEventListener('click',function(){ if(lbImages.length>1){ if(lbCurrent===lbImages.length-1) closeLb(); else lbNav(1); } else closeLb(); });
+document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(lbFilm){ if(e.key==='Escape') closeLb(); return; } if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
+
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// ---- Au repos : on ne voit que la case regardée ----
+// À l'arrivée, puis après 3 secondes sans mouvement, tout ce qui entoure la case la plus proche du centre de l'écran s'efface.
+// Le moindre mouvement (souris, molette, doigt, clavier) fait tout réapparaître.
+(function(){
+  const grille=document.getElementById('grid'); if(!grille) return;
+  for(let el=grille; el && el!==document.body; el=el.parentElement){
+    [...el.parentElement.children].forEach(f=>{ if(f!==el && f.id!=='lb' && f.tagName!=='SCRIPT' && f.tagName!=='STYLE') f.classList.add('autour'); });
+  }
+  const DELAI=500; let minuterie=null;
+  function caseRegardee(){
+    const h=window.innerHeight; let choix=null, mieux=1e9;
+    grille.querySelectorAll('.cell').forEach(c=>{
+      const r=c.getBoundingClientRect(); if(!r.height || r.bottom<0 || r.top>h) return;
+      const e=Math.abs((r.top+r.bottom)/2-h/2); if(e<mieux){ mieux=e; choix=c; }
+    });
+    return choix;
+  }
+  function calmer(){
+    if(arret) return;                                    // le visiteur est sorti du mode : la mosaïque reste visible
+    if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
+    grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
+    const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso') || c.querySelector('video')._fige) return;      // seulement sur les vidéos, jamais sur les photos
+    c.classList.add('focus','on'); document.body.classList.add('calme');
+  }
+  function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
+  // Sortir du mode : un clic ou un toucher sur le blanc autour de la vidéo ramène la mosaïque, pour de bon (jusqu'au
+  // rechargement de la page). Le blanc se retire dès que la souris bouge : on compte donc comme « sur le blanc » un clic
+  // donné dans la seconde et demie qui suit, hors de la vidéo regardée. Ce clic n'ouvre rien d'autre.
+  let arret=false, tBlanc=0;
+  const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
+  ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
+  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav'));
+  // avaler=true (clic de souris) : le clic ne doit pas ouvrir l'image qui se trouve dessous. Au toucher on n'avale rien :
+  // sur téléphone, c'est ce même toucher qui autorise le son et lance les vidéos, il doit continuer son chemin.
+  const sortir=(e, avaler)=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
+    if(avaler){ if(e.cancelable) e.preventDefault(); e.stopPropagation(); if(typeof relancer==='function') relancer(); if(typeof arbitrer==='function') arbitrer(true); } };
+  // ordinateur : le clic
+  document.addEventListener('click',e=>{
+    if(arret || Date.now()-tBlanc>3000 || document.getElementById('lb').classList.contains('on')) return;
+    if(horsVideo(e.target)) sortir(e, true);
+  },true);
+  // téléphone : le toucher lui-même (Safari n'envoie pas de « clic » pour un toucher sur une zone vide) ; un doigt qui
+  // glisse pour faire défiler la page ne compte pas
+  let tx=0, ty=0, tt=0, surBlanc=false;
+  document.addEventListener('touchstart',e=>{ const p=e.touches[0]; tx=p.clientX; ty=p.clientY; tt=Date.now(); surBlanc=document.body.classList.contains('calme') || Date.now()-tBlanc<3000; },{capture:true,passive:true});
+  document.addEventListener('touchend',e=>{
+    if(arret || !surBlanc || document.getElementById('lb').classList.contains('on')) return;
+    const p=e.changedTouches[0]; if(Math.abs(p.clientX-tx)>10 || Math.abs(p.clientY-ty)>10 || Date.now()-tt>700) return;
+    if(horsVideo(e.target)) sortir(e, false);
+  },{capture:true,passive:true});
+  let agi=false;
+  function reveiller(){ agi=true; document.body.classList.remove('calme'); armer(); }
+  // défilement qui continue après le geste (élan sur téléphone, barre de défilement) : on reste éveillé
+  window.addEventListener('scroll',()=>{ if(agi){ document.body.classList.remove('calme'); armer(); } },{passive:true});
+  ['mousemove','wheel','touchstart','touchmove','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,reveiller,{passive:true}));
+  // à l'arrivée : la première vidéo seule, tout de suite
+  const premiere=grille.querySelector('.cell-top');
+  if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); }
+  window.__focusSur=(c)=>{
+    if(!c) return; const avant=[...grille.querySelectorAll('.cell.focus')];
+    c.classList.add('focus','on');
+    setTimeout(()=>avant.forEach(a=>{ if(a!==c) a.classList.remove('focus'); }),900);
+  };
+  window.__reposInitial=()=>{ arret=false; clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
+})();
+// Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
+// La position est recalée tant que la mise en page bouge encore (polices, images, affichage par-dessus l'accueil),
+// et jusqu'au premier geste du visiteur : sans cela, la page pouvait s'ouvrir sur la 2e ou la 3e vidéo.
+(function(){
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  let visiteurAgit=false, fin=0;
+  function caler(){
+    if(visiteurAgit || window.__glisse || location.hash || window.__enSommeil) return;
+    const cible=document.querySelector('.cell-top') || document.getElementById('grid');
+    if(!cible || !cible.getBoundingClientRect().width) return;
+    const r=cible.getBoundingClientRect(), vh=window.innerHeight;
+    const y=Math.max(0, Math.round(r.top+window.scrollY-Math.max(8,(vh-r.height)/2)));
+    if(Math.abs(window.scrollY-y)>1){ window.scrollTo(0,y); if(typeof mesurer==='function') mesurer(); }
+  }
+  function surveiller(){
+    fin=Date.now()+4000;
+    (function boucle(){ caler(); if(!visiteurAgit && Date.now()<fin) requestAnimationFrame(boucle); })();
+  }
+  ['wheel','touchstart','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,()=>{ visiteurAgit=true; },{passive:true}));
+  window.addEventListener('load',()=>{ if(!visiteurAgit) surveiller(); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!visiteurAgit) caler(); });
+  surveiller();
+  window.__allerALaVideo=()=>{ visiteurAgit=false; surveiller(); };
+})();
+
+function alignBioRight(){
+  const left=document.querySelector('.bio-left');
+  const right=document.querySelector('.bio-right');
+  if(left&&right){
+    if(window.innerWidth>768) right.style.paddingTop=left.offsetHeight+'px';
+    else right.style.paddingTop='';
+  }
+}
+alignBioRight();
+window.addEventListener('resize',alignBioRight);
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+<script src="/image-protection.js"></script>
+</body>
+</html>
