@@ -1043,12 +1043,25 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     return choix;
   }
   function calmer(){
+    if(arret) return;                                    // le visiteur est sorti du mode : la mosaïque reste visible
     if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
     grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
     const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso') || c.querySelector('video')._fige) return;      // seulement sur les vidéos, jamais sur les photos
     c.classList.add('focus','on'); document.body.classList.add('calme');
   }
   function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
+  // Sortir du mode : un clic ou un toucher sur le blanc autour de la vidéo ramène la mosaïque, pour de bon (jusqu'au
+  // rechargement de la page). Le blanc se retire dès que la souris bouge : on compte donc comme « sur le blanc » un clic
+  // donné dans la seconde et demie qui suit, hors de la vidéo regardée. Ce clic n'ouvre rien d'autre.
+  let arret=false, tBlanc=0;
+  const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
+  ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
+  document.addEventListener('click',e=>{
+    if(arret || Date.now()-tBlanc>1500 || document.getElementById('lb').classList.contains('on')) return;
+    if(e.target.closest && e.target.closest('.cell.focus, a, button, nav')) return;
+    arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
+    e.preventDefault(); e.stopPropagation();
+  },true);
   let agi=false;
   function reveiller(){ agi=true; document.body.classList.remove('calme'); armer(); }
   // défilement qui continue après le geste (élan sur téléphone, barre de défilement) : on reste éveillé
@@ -1062,7 +1075,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     c.classList.add('focus','on');
     setTimeout(()=>avant.forEach(a=>{ if(a!==c) a.classList.remove('focus'); }),900);
   };
-  window.__reposInitial=()=>{ clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
+  window.__reposInitial=()=>{ arret=false; clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
 })();
 // Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
 // La position est recalée tant que la mise en page bouge encore (polices, images, affichage par-dessus l'accueil),
