@@ -259,43 +259,67 @@
           el.src = '../photo/' + encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
         })));
 
-        // Mise en page à échelles variées : la largeur de la page est divisée en 6 colonnes fines (3 sur téléphone).
-        // Un portrait en occupe 1, 2 ou 3 (du simple au triple) ; un paysage en occupe 3 ou 4 : il est plus large qu'un
-        // portrait, pas un portrait réduit ; un carré en occupe 2. Chaque image se pose dans le creux le plus haut de la
-        // page, à gauche d'abord, et se réduit si le creux est plus étroit qu'elle : pas de trou, l'ordre est gardé.
-        const ENVIES = [3, 1, 2, 1, 2, 3, 1, 1, 2, 2, 1, 3, 2, 1, 1, 2];       // rythme des tailles des portraits
-        let np = 0;
-        const items = loaded.map(item => {
-          const fig = document.createElement('figure'); fig.className = 'cell'; fig.appendChild(item.el);
-          const r = item.ratio; let envie, mini;
-          if (r >= 1.15) { envie = r >= 1.3 ? 4 : 3; mini = 2; }
-          else if (r >= 0.95) { envie = 2; mini = 1; }
-          else { envie = ENVIES[np++ % ENVIES.length]; mini = 1; if (envie === 3 && item.el.naturalWidth < 900) envie = 2; }   // pas de très grand tirage pour un petit fichier
-          return { fig, r, envie, mini };
-        });
+        // Mise en page à échelles variées, sans recadrage ni trou. La galerie est une suite de bandes ; chaque bande est une
+        // composition : des images côte à côte à la même hauteur (H), dont certaines sont des piles d'images de même
+        // largeur (V). Une grande image voisine avec quatre petites, une rangée de six petites suit une rangée de trois
+        // moyennes : les largeurs vont du simple au triple. Dans une rangée, un paysage est naturellement plus large
+        // qu'un portrait ; il n'est jamais empilé avec des portraits (il deviendrait un portrait réduit).
+        const H = (...c) => ({ t: 'H', c }), V = (...c) => ({ t: 'V', c });
+        const MODELES = {
+          1: [0], 2: [H(0, 1)], 3: [H(0, 1, 2)],
+          4: [H(0, V(1, 2), 3), H(V(0, 1), 2, 3)],
+          5: [H(0, V(H(1, 2), H(3, 4))), H(V(0, 1), 2, V(3, 4)), H(V(H(0, 1), H(2, 3)), 4)],
+          6: [H(0, 1, 2, 3, 4, 5), H(V(0, 1), 2, 3, V(4, 5))],
+          7: [H(V(0, 1), 2, V(H(3, 4), H(5, 6)))]
+        };
+        const MODELES_TEL = { 1: [0], 2: [H(0, 1)], 3: [H(0, V(1, 2)), H(V(0, 1), 2)], 4: [H(V(0, 1), V(2, 3))] };
+        const large_ = it => it.ratio >= 0.95;                                    // paysage ou carré
+        function composer(tel) {
+          const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [5, 3, 6, 5, 4, 5, 3, 6], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 7;
+          const bandes = []; let i = 0, tour = 0; const vus = {};
+          while (i < loaded.length) {
+            let k = Math.min(rythme[tour++ % rythme.length], loaded.length - i), arbre = null;
+            const j = loaded.slice(i, i + k).findIndex(large_);
+            if (j >= 0) {
+              if (tel) k = j === 0 ? 1 : j;                                       // téléphone : un paysage occupe seul toute la largeur
+              else if (j >= 3) k = j;                                             // les portraits d'avant forment leur propre bande
+              else { k = Math.min(k, 4); arbre = H(...Array.from({ length: k }, (_, n) => n)); }   // une rangée : le paysage y prend sa largeur
+            }
+            if (loaded.length - i - k === 1 && k < max && !loaded.slice(i, i + k + 1).some(large_)) k++;   // jamais une image seule à la fin
+            if (!arbre) { const liste = modeles[k]; vus[k] = (vus[k] || 0) + 1; arbre = liste[(vus[k] - 1) % liste.length]; }
+            bandes.push({ arbre, images: loaded.slice(i, i + k) }); i += k;
+          }
+          return bandes;
+        }
         const dedans = document.createElement('div'); dedans.className = 'gal-in';
-        items.forEach(it => dedans.appendChild(it.fig));
+        loaded.forEach(it => { it.fig = document.createElement('figure'); it.fig.className = 'cell'; it.fig.appendChild(it.el); dedans.appendChild(it.fig); });
         gallery.appendChild(dedans);
         function poser() {
-          const large = dedans.clientWidth; if (!large) return;
-          const mobile = window.matchMedia('(max-width:768px)').matches, N = mobile ? 3 : 6;
-          const gap = parseFloat(getComputedStyle(gallery).getPropertyValue('--gal-gap')) || 24;
-          const col = (large - (N - 1) * gap) / N, haut = new Array(N).fill(0);
-          items.forEach(it => {
-            const envie = mobile ? (it.r >= 1.15 ? 3 : Math.min(it.envie, 3)) : it.envie, mini = Math.min(it.mini, N);
-            const bas = Math.min(...haut); let x = haut.findIndex(h => h - bas < 1), creux = 0;
-            while (x + creux < N && haut[x + creux] - bas < 1) creux++;
-            let n = Math.min(envie, creux), y = bas;
-            if (creux < mini) {                                   // creux trop étroit pour un paysage : la place la plus haute où il tient
-              n = mini; let mieux = Infinity;
-              for (let c = 0; c + n <= N; c++) { const h = Math.max(...haut.slice(c, c + n)); if (h < mieux - 1) { mieux = h; x = c; } }
-              y = mieux;
-            }
-            const w = n * col + (n - 1) * gap, h = w / it.r;
-            it.fig.style.cssText = `left:${(x * (col + gap)).toFixed(1)}px;top:${y.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;`;
-            for (let c = x; c < x + n; c++) haut[c] = y + h + gap;
+          const W = dedans.clientWidth; if (!W) return;
+          const tel = window.matchMedia('(max-width:768px)').matches;
+          const g = parseFloat(getComputedStyle(gallery).getPropertyValue('--gal-gap')) || 24;
+          let y = 0;
+          composer(tel).forEach(({ arbre, images }) => {
+            // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
+            const coef = n => {
+              if (typeof n === 'number') return { a: images[n].ratio, b: 0 };
+              const cs = n.c.map(coef);
+              if (n.t === 'H') return { a: cs.reduce((s, c) => s + c.a, 0), b: cs.reduce((s, c) => s + c.b, 0) + (cs.length - 1) * g };
+              const S = cs.reduce((s, c) => s + 1 / c.a, 0);
+              return { a: 1 / S, b: (cs.reduce((s, c) => s + c.b / c.a, 0) - (cs.length - 1) * g) / S };
+            };
+            const placer = (n, x, yy, w, h) => {
+              if (typeof n === 'number') { images[n].fig.style.cssText = `left:${x.toFixed(1)}px;top:${yy.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;`; return; }
+              n.c.forEach(c => {
+                const k = coef(c);
+                if (n.t === 'H') { const cw = k.a * h + k.b; placer(c, x, yy, cw, h); x += cw + g; }
+                else { const ch = (w - k.b) / k.a; placer(c, x, yy, w, ch); yy += ch + g; }
+              });
+            };
+            const k = coef(arbre), h = (W - k.b) / k.a;
+            placer(arbre, 0, y, W, h); y += h + g;
           });
-          dedans.style.height = (Math.max(...haut) - gap) + 'px';
+          dedans.style.height = (y - g) + 'px';
         }
         poser();
         let attente; window.addEventListener('resize', () => { clearTimeout(attente); attente = setTimeout(poser, 120); });
