@@ -938,7 +938,7 @@ function lireVimeo(vimeoId){
   taillerLecteur(); lbFilm=vimeoId;
   cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
   if(!window.Vimeo) return;                              // bibliothèque Vimeo absente : lecteur ordinaire
-  new Vimeo.Player(cadre).on('ended',()=>{ if(jeton===lbJeton) filmVoisin(1, true); });       // fin du film : le suivant ; après le dernier, retour à la page
+  new Vimeo.Player(cadre).on('ended',()=>{ if(jeton!==lbJeton) return; if(SUR_TEL()) closeLb(); else filmVoisin(1, true); });       // fin du film, ordinateur : le suivant (après le dernier, retour à la page) ; téléphone : retour à la page, comme avant
 }
 // Au retour du film Faces : le teaser ne rejoue pas (la même bande-son une seconde fois pèse) ; il reste sur une image
 // fixe, sans son, et la page descend un peu pour montrer le film suivant.
