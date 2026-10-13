@@ -938,14 +938,35 @@ function lireVimeo(vimeoId){
   taillerLecteur(); lbFilm=vimeoId;
   cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
   if(!window.Vimeo) return;                              // bibliothèque Vimeo absente : lecteur ordinaire
-  new Vimeo.Player(cadre).on('ended',()=>{ if(jeton===lbJeton) closeLb(); });
+  new Vimeo.Player(cadre).on('ended',()=>{ if(jeton===lbJeton) filmVoisin(1, true); });       // fin du film : le suivant ; après le dernier, retour à la page
 }
 // Au retour du film Faces : le teaser ne rejoue pas (la même bande-son une seconde fois pèse) ; il reste sur une image
 // fixe, sans son, et la page descend un peu pour montrer le film suivant.
+// ---- D'un film à l'autre dans la visionneuse ----
+// Flèche gauche / flèche droite : film précédent / suivant, dans l'ordre de la page ; il démarre tout de suite.
+// À la fin d'un film, le suivant s'enchaîne ; après le dernier, la visionneuse se referme.
+function filmsDeLaPage(){
+  const vus=[...document.querySelectorAll('#grid video')].filter(v=>v._film && v.getBoundingClientRect().height)
+    .map(v=>{ const r=v.getBoundingClientRect(); return {id:v._film, y:r.top, x:r.left}; }).sort((a,b)=>a.y-b.y || a.x-b.x);
+  return [...new Set(vus.map(v=>v.id))];
+}
+function filmVoisin(sens, finDeFilm){
+  const liste=filmsDeLaPage(), i=liste.indexOf(lbFilm); if(i<0 || liste.length<2) { if(finDeFilm) closeLb(); return; }
+  let j=i+sens;
+  if(j<0 || j>=liste.length){ if(finDeFilm){ closeLb(); return; } j=(j+liste.length)%liste.length; }     // aux flèches, on boucle
+  const quitte=[...document.querySelectorAll('#grid video')].find(v=>v._film===lbFilm); if(quitte) figer(quitte);   // l'aperçu du film quitté ne rejouera pas
+  lireVimeo(liste[j]);
+}
 function apresLeFilm(vimeoId){
   const vid=[...document.querySelectorAll('#grid video')].find(v=>v._film===vimeoId); if(!vid) return;
   figer(vid);
-  const cell=vid.closest('.cell'); if(!cell.classList.contains('cell-top')) return;      // la descente : seulement après le premier film
+  const cell=vid.closest('.cell');
+  if(!cell.classList.contains('cell-top')){
+    // ordinateur : on a pu changer de film aux flèches ; la page vient se poser sur l'aperçu du dernier film vu
+    const r=cell.getBoundingClientRect(), milieu=(r.top+r.bottom)/2;
+    if(!SUR_TEL() && Math.abs(milieu-window.innerHeight/2)>window.innerHeight*0.25){ aDefile=true; window.__glisse=true; setTimeout(()=>glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1200, ()=>{ mesurer(); arbitrer(false); }),350); }
+    return;
+  }
   document.body.classList.remove('calme');
   const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
     .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
@@ -997,7 +1018,7 @@ function closeLb(){
 }
 document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
 document.getElementById('lbImg').addEventListener('click',function(){ if(lbImages.length>1){ if(lbCurrent===lbImages.length-1) closeLb(); else lbNav(1); } else closeLb(); });
-document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
+document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(lbFilm){ if(e.key==='ArrowLeft'){ e.preventDefault(); filmVoisin(-1); } if(e.key==='ArrowRight'){ e.preventDefault(); filmVoisin(1); } if(e.key==='Escape') closeLb(); return; } if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
