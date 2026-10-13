@@ -1144,6 +1144,24 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
   });
 });
+
+// ---- Page à jour ----
+// Le navigateur (surtout celui d'Instagram) garde la page en mémoire une dizaine de minutes : on pouvait revoir une
+// ancienne version juste après une mise à jour. À l'ouverture, on compare la copie gardée en mémoire à celle du serveur ;
+// si elles diffèrent, la page se recharge une fois (pas plus d'une fois par visite, et seulement au tout début, ou tant
+// qu'elle attend, cachée, derrière la page d'accueil).
+(function(){
+  try{
+    if(sessionStorage.getItem('lb_page_fraiche')) return;
+    const u=location.pathname, lire=(url,cache)=>fetch(url,{cache}).then(r=>r.ok?r.text():Promise.reject());
+    Promise.all([lire(u,'force-cache'), lire(u+'?frais='+Date.now(),'no-store')]).then(([gardee,serveur])=>{
+      if(gardee===serveur || serveur.length<1000 || serveur.indexOf('id="grid"')<0) return;
+      const cachee=window.top!==window && window.frameElement && getComputedStyle(window.frameElement).display==='none';
+      if(!cachee && !(window.top===window && performance.now()<5000)) return;
+      sessionStorage.setItem('lb_page_fraiche','1'); location.reload();
+    }).catch(()=>{});
+  }catch(e){}
+})();
 </script>
 <script src="/image-protection.js"></script>
 </body>
