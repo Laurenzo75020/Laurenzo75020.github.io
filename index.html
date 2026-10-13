@@ -186,7 +186,8 @@
 
   nav.choice{
     position:fixed;
-    top:calc(3.4rem + env(safe-area-inset-top));
+    /* le haut du premier onglet s'aligne sur le haut des capitales du nom (qui sont 0,1365 corps sous le haut de leur bloc) */
+    top:calc(3.4rem + env(safe-area-inset-top) + 0.1365 * clamp(2.6rem, 5.85vw, 6.5rem));
     right:calc(2rem + env(safe-area-inset-right));
     z-index:4;
     display:flex;
@@ -219,7 +220,7 @@
   @media (max-width:560px){
     .signature{ top:calc(1.6rem + env(safe-area-inset-top)); left:1.4rem; right:auto; width:min-content; font-size:clamp(1.8rem, 8vw, 3rem); line-height:1.15; }
     nav.choice{
-      top:calc(1.6rem + env(safe-area-inset-top));
+      top:calc(1.6rem + env(safe-area-inset-top) + 0.267 * clamp(1.8rem, 8vw, 3rem));   /* même alignement, nom sur deux lignes */
       bottom:auto;
       right:1.4rem;
       gap:0.6rem;
