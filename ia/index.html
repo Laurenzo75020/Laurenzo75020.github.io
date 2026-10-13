@@ -947,38 +947,32 @@ function lireVimeo(vimeoId){
   cadre.src=`https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0&title=0&byline=0&portrait=0&vimeo_logo=0`;
   ancien.replaceWith(cadre);
   taillerLecteur(); lbFilm=vimeoId;
-  if(!window.Vimeo) return;                              // bibliothèque Vimeo absente : lecteur ordinaire
   // À la fin du film la visionneuse se referme, toujours. On la referme un quart de seconde avant la dernière image :
   // Vimeo n'a pas le temps d'afficher ses vignettes d'autres films.
-  const l=new Vimeo.Player(cadre), fermer=()=>{ if(jeton===lbJeton) closeLb(); };
-  l.on('ended',fermer);
-  l.on('timeupdate',d=>{ if(d && d.duration && d.seconds>=d.duration-0.25) fermer(); });
-}
-// ---- D'un film à l'autre dans la visionneuse ----
-// Flèche gauche / flèche droite : film précédent / suivant, dans l'ordre de la page ; il démarre tout de suite.
-// C'est une option : à la fin d'un film, la visionneuse se referme toujours.
-function filmsDeLaPage(){
-  const vus=[...document.querySelectorAll('#grid video')].filter(v=>v._film && v.getBoundingClientRect().height)
-    .map(v=>{ const r=v.getBoundingClientRect(); return {id:v._film, y:r.top, x:r.left}; }).sort((a,b)=>a.y-b.y || a.x-b.x);
-  return [...new Set(vus.map(v=>v.id))];
-}
-function filmVoisin(sens, finDeFilm){
-  const liste=filmsDeLaPage(), i=liste.indexOf(lbFilm); if(i<0 || liste.length<2) { if(finDeFilm) closeLb(); return; }
-  let j=i+sens;
-  if(j<0 || j>=liste.length){ if(finDeFilm){ closeLb(); return; } j=(j+liste.length)%liste.length; }     // aux flèches, on boucle
-  const quitte=[...document.querySelectorAll('#grid video')].find(v=>v._film===lbFilm); if(quitte) figer(quitte);   // l'aperçu du film quitté ne rejouera pas
-  lireVimeo(liste[j]);
+  const fermer=()=>{ if(jeton===lbJeton) closeLb(); };
+  // 1. suivi direct, sans dépendre de la bibliothèque de Vimeo : on demande au lecteur de nous prévenir (messages entre fenêtres)
+  const ORIGINE='https://player.vimeo.com'; let recu=false, essais=0;
+  const demander=()=>{ if(jeton!==lbJeton || !cadre.contentWindow) return;
+    ['ended','timeupdate','finish','playProgress'].forEach(ev=>{ try{ cadre.contentWindow.postMessage(JSON.stringify({method:'addEventListener',value:ev}),ORIGINE); }catch(e){} }); };
+  const ecouter=e=>{
+    if(jeton!==lbJeton){ window.removeEventListener('message',ecouter); return; }
+    if(e.origin!==ORIGINE || e.source!==cadre.contentWindow) return;
+    let m=e.data; if(typeof m==='string'){ try{ m=JSON.parse(m); }catch(x){ return; } } if(!m) return;
+    if(m.event==='ready') demander();
+    if(m.event==='ended' || m.event==='finish'){ recu=true; fermer(); }
+    if((m.event==='timeupdate' || m.event==='playProgress') && m.data){ recu=true; if(m.data.duration && m.data.seconds>=m.data.duration-0.25) fermer(); }
+  };
+  window.addEventListener('message',ecouter);
+  cadre.addEventListener('load',demander);
+  const relance=setInterval(()=>{ if(jeton!==lbJeton || recu || ++essais>40){ clearInterval(relance); return; } demander(); },500);   // tant que le lecteur n'a pas répondu
+  // 2. en plus, la bibliothèque de Vimeo quand elle est chargée
+  if(window.Vimeo){ try{ const l=new Vimeo.Player(cadre); l.on('ended',fermer); l.on('timeupdate',d=>{ if(d && d.duration && d.seconds>=d.duration-0.25) fermer(); }); }catch(e){} }
 }
 function apresLeFilm(vimeoId){
   const vid=[...document.querySelectorAll('#grid video')].find(v=>v._film===vimeoId); if(!vid) return;
   figer(vid);
   const cell=vid.closest('.cell');
-  if(!cell.classList.contains('cell-top')){
-    // ordinateur : on a pu changer de film aux flèches ; la page vient se poser sur l'aperçu du dernier film vu
-    const r=cell.getBoundingClientRect(), milieu=(r.top+r.bottom)/2;
-    if(!SUR_TEL() && Math.abs(milieu-window.innerHeight/2)>window.innerHeight*0.25){ aDefile=true; window.__glisse=true; setTimeout(()=>glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1200, ()=>{ mesurer(); arbitrer(false); }),350); }
-    return;
-  }
+  if(!cell.classList.contains('cell-top')) return;      // la descente : seulement après le premier film
   document.body.classList.remove('calme');
   const suivante=[...document.querySelectorAll('#grid .cell')].filter(c=>c!==cell && c.getBoundingClientRect().top>cell.getBoundingClientRect().top+10 && c.getBoundingClientRect().height)
     .sort((a,b)=>a.getBoundingClientRect().top-b.getBoundingClientRect().top)[0];
@@ -1030,7 +1024,7 @@ function closeLb(){
 }
 document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
 document.getElementById('lbImg').addEventListener('click',function(){ if(lbImages.length>1){ if(lbCurrent===lbImages.length-1) closeLb(); else lbNav(1); } else closeLb(); });
-document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(lbFilm){ if(e.key==='ArrowLeft'){ e.preventDefault(); filmVoisin(-1); } if(e.key==='ArrowRight'){ e.preventDefault(); filmVoisin(1); } if(e.key==='Escape') closeLb(); return; } if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
+document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(lbFilm){ if(e.key==='Escape') closeLb(); return; } if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
