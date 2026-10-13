@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laurent Bourdoiseau — Photographie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#ffffff; --ink:#0a0a0a; --grey:#888; --line:rgba(0,0,0,0.08); --gap:56px; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{ background:var(--bg); color:var(--ink); font-family:'Barlow', sans-serif; }
+
+    .top-menu{
+      position:fixed;
+      top:calc(1.4rem + env(safe-area-inset-top));
+      right:calc(2rem + env(safe-area-inset-right));
+      z-index:200;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:0.5rem;
+      font-family:'Barlow', sans-serif;
+      font-weight:600;
+      font-size:0.85rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      pointer-events:none;
+      -webkit-transform:translate3d(0,0,0);
+      transform:translate3d(0,0,0);
+      will-change:transform;
+      backface-visibility:hidden;
+    }
+    .top-menu a{
+      color:var(--ink);
+      text-decoration:none;
+      opacity:0.9;
+      transition:opacity 0.2s;
+      pointer-events:auto;
+      background:rgba(255,255,255,0.95);
+      padding:0.35rem 0.7rem;
+      box-shadow:0 1px 4px rgba(0,0,0,0.12);
+    }
+    .top-menu a:hover{ opacity:1; }
+    /* les mêmes onglets en bas de page, en ligne, pour ne pas avoir à remonter */
+    .top-menu.bottom-menu{ position:static !important; width:auto !important; flex-direction:row; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:0.6rem; padding:0 2rem 3rem !important; margin-top:-3.5rem; transform:none; will-change:auto; }
+    .top-menu.bottom-menu a{ pointer-events:auto; }
+
+    .name-hero{ padding:calc(9rem + env(safe-area-inset-top)) 0 0; }
+    .bio-strip{ display:grid; grid-template-columns:52fr 48fr; align-items:start; }
+    .bio-left{ padding:0 2rem 2rem; display:flex; flex-direction:column; align-items:flex-start; gap:0.6rem; }
+    .bio-right{ padding-top:0; padding-right:2rem; padding-bottom:1.5rem; padding-left:2rem; display:flex; flex-direction:column; align-items:stretch; }
+    .bio-text{ font-family:'Barlow', sans-serif; font-weight:400; font-size:0.9rem; line-height:1.8; letter-spacing:0.05em; text-transform:uppercase; text-align:right; }
+    .epigraph{
+      font-family:'Barlow', sans-serif;
+      font-weight:400;
+      font-size:0.9rem;
+      line-height:1.8;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      text-align:justify;
+      max-width:75%;
+      margin:0 0 1.6rem auto;
+      color:var(--ink);
+    }
+    .lang-toggle{ display:inline-flex; align-items:center; align-self:flex-end; gap:.55rem; margin:0 0 1.1rem; font-family:'Barlow',sans-serif; font-weight:400; font-size:.82rem; letter-spacing:.06em; text-transform:none; color:var(--ink); text-decoration:none; cursor:pointer; transition:opacity .2s; background:none; border:0; padding:0; -webkit-appearance:none; appearance:none; text-align:right; }
+    .lang-toggle:hover{ opacity:.6; }
+    .lang-toggle svg{ display:block; width:24px; height:16px; flex:none; box-shadow:0 0 0 1px rgba(0,0,0,.2); }
+    .tag{ font-family:'Barlow', sans-serif; font-weight:400; font-size:0.88rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ink); padding:0.32rem 0.9rem; }
+
+    .section-label{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:1.2rem 2rem;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      font-family:'Barlow', sans-serif;
+      font-size:0.72rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--grey);
+    }
+
+    .gallery{
+      display:block;
+      --gal-gap:40px;
+      padding:2rem 2rem 5rem;
+    }
+    .col{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:var(--gap);
+      min-width:0;
+    }
+    .gal-in{ position:relative; width:100%; }
+    .cell{ line-height:0; position:absolute; margin:0; }
+    .cell img{ width:100%; height:100%; object-fit:cover; display:block; -webkit-user-drag:none; -webkit-user-select:none; user-select:none; }
+
+    footer{
+      padding:1.5rem 2rem 2.5rem;
+      font-family:'Barlow', sans-serif;
+      font-size:0.65rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      color:var(--grey);
+    }
+
+    .loading{
+      padding:2rem;
+      font-size:0.7rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      opacity:0.4;
+    }
+
+    .cell img{ cursor:zoom-in; }
+
+    .lightbox{
+      position:fixed;
+      inset:0;
+      z-index:500;
+      background:rgba(10,10,10,0.86);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:6vh 6vw;
+      cursor:zoom-out;
+    }
+    .lightbox.open{ display:flex; }
+    .lightbox img{
+      max-width:88vw;
+      max-height:88vh;
+      width:auto;
+      height:auto;
+      display:block;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      cursor:zoom-out;
+      -webkit-user-drag:none;
+      -webkit-user-select:none;
+      user-select:none;
+    }
+
+    @media (max-width:768px){
+      .bio-strip{ grid-template-columns:1fr; }
+      .bio-left{ border-right:none; border-bottom:none; padding:1.5rem 1.5rem 0.8rem; gap:0.5rem; }
+      .bio-text{ font-size:0.75rem; text-align:right; }
+      .epigraph{ font-size:0.75rem; max-width:90%; text-align:justify; }
+      .bio-right{ padding:1rem 1.5rem 2rem; align-items:stretch; }
+      .name-hero{ padding-top:1.6rem; }
+      .top-menu{
+        position:static;
+        width:100%;
+        padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0;
+      }
+    }
+
+    @media (max-width:980px){
+      .gallery{ --gal-gap:28px; padding:1.5rem 1.5rem 4rem; }
+      .col{ gap:32px; }
+    }
+
+    @media (max-width:560px){
+      .gallery{ --gal-gap:10px; padding:1rem 1rem 3rem; }
+      .col{ gap:14px; }
+    }
+  </style>
+<script src="../lang.js?v=2"></script>
+</head>
+<body>
+
+  <div class="page-scroll">
+  <div class="top-menu">
+    <a href="../index.html" data-en="← Home">← Accueil</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="../portfolio/?from=photos">Portfolio</a>
+  </div>
+  <div class="name-hero">
+    <div class="bio-strip">
+      <div class="bio-left">
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+          <span class="tag">Street Photography</span>
+          <span class="tag">Portrait</span>
+          <span class="tag">Paris</span>
+        </div>
+      </div>
+      <div class="bio-right">
+        <button type="button" class="lang-toggle"><svg width="24" height="16" viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40M60,0 0,40" stroke="#fff" stroke-width="8"/><path d="M0,0 60,40M60,0 0,40" stroke="#C8102E" stroke-width="3"/><path d="M30,0V40M0,20H60" stroke="#fff" stroke-width="13"/><path d="M30,0V40M0,20H60" stroke="#C8102E" stroke-width="8"/></svg><span>(English version)</span></button>
+        <p class="epigraph" data-en="“Photography is not very far from the territory of childhood. One plays in it, and a great deal is at play in it. It is a syntax that must be reactivated each time (often by walking) to reach that dimension of an external reality that corresponds to my inner state: unburdened, pared down and candid.”">« La photographie n'est pas très éloignée du territoire de l'enfance. On y joue et il s'y joue beaucoup de choses. C'est une syntaxe qu'il faut réactiver à chaque fois (par la marche souvent) pour accéder à cette dimension d'un réel extérieur qui correspond à mon état intérieur : délesté, épuré et candide. »</p>
+        <p class="bio-text" data-en="Laurent Bourdoiseau was William Klein's assistant. His field of exploration draws on the work of great photographers such as Saul Leiter, Harry Gruyaert, Henri Cartier-Bresson and Doisneau, as much as on literature, psychoanalysis or contemporary art.">
+          Laurent Bourdoiseau a été l'assistant de William Klein. Son champ d'exploration puise dans les travaux des grands photographes comme Saul Leiter, Harry Gruyaert, Henri Cartier-Bresson, Doisneau, autant que dans la littérature, la psychanalyse ou l'art contemporain.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <span data-en="Photography — Paris">Photographie — Paris</span>
+    <span id="photoCount"></span>
+  </div>
+
+  <main class="gallery" id="gallery" aria-label="Galerie photographie">
+    <p class="loading" data-en="Loading…">Chargement…</p>
+  </main>
+
+  <div class="top-menu bottom-menu">
+    <a href="../index.html" data-en="← Home">← Accueil</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="#" onclick="(document.querySelector('.page-scroll')||window).scrollTo({top:0,behavior:'smooth'});window.scrollTo({top:0,behavior:'smooth'});return false;">Photo</a>
+    <a href="../portfolio/?from=photos">Portfolio</a>
+  </div>
+  <footer>© 2026 Laurent Bourdoiseau</footer>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script>
+    const REPO_API = "https://api.github.com/repos/Laurenzo75020/Laurenzo75020.github.io/contents/photo";
+    const IMG_EXT = /\.(jpe?g|png|webp)$/i;
+
+    async function loadGallery() {
+      const gallery = document.getElementById('gallery');
+      const countEl = document.getElementById('photoCount');
+      try {
+        const res = await fetch(REPO_API + '?t=' + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("API error " + res.status);
+        const files = await res.json();
+
+        const images = files
+          .filter(f => f.type === "file" && IMG_EXT.test(f.name))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+
+        gallery.innerHTML = "";
+
+        if (images.length === 0) {
+          gallery.innerHTML = '<p class="loading">' + t('Aucune image trouvée.', 'No images found.') + '</p>';
+          return;
+        }
+
+        countEl.textContent = images.length + (images.length > 1 ? " photos" : " photo");
+
+        // Les 3 colonnes ont la même largeur : on répartit chaque image dans la
+        // colonne la plus courte (masonry), à égalité on privilégie toujours la
+        // colonne de gauche, pour garder un rendu "escalier descendant" gauche→droite.
+        const loaded = await Promise.all(images.map(img => new Promise(resolve => {
+          const el = document.createElement('img');
+          el.alt = '';
+          el.addEventListener('click', () => openLightbox(el.src));
+          const settle = () => {
+            const ratio = (el.naturalWidth && el.naturalHeight) ? el.naturalWidth / el.naturalHeight : 1;
+            resolve({ el, ratio });
+          };
+          el.addEventListener('load', settle);
+          el.addEventListener('error', settle);
+          el.src = '../photo/' + encodeURIComponent(img.name) + '?v=' + img.sha.slice(0, 8);
+        })));
+
+        // Mise en page à échelles variées, sans recadrage ni trou. La galerie est une suite de bandes ; chaque bande est une
+        // composition : des images côte à côte à la même hauteur (H), dont certaines sont des piles d'images de même
+        // largeur (V). Une grande image voisine avec quatre petites, une rangée de six petites suit une rangée de trois
+        // moyennes : les largeurs vont du simple au triple. Dans une rangée, un paysage est naturellement plus large
+        // qu'un portrait ; il n'est jamais empilé avec des portraits (il deviendrait un portrait réduit).
+        const H = (...c) => ({ t: 'H', c }), V = (...c) => ({ t: 'V', c });
+        // Chaque modèle : [composition, cases « grandes »]. Une photo dont le fichier est petit (760 px de large au plus)
+        // ne va jamais dans une case grande : elle reste petite.
+        const MODELES = {
+          1: [[0, [0]]], 2: [[H(0, 1), [0, 1]]], 3: [[H(0, 1, 2), [0, 1, 2]]],
+          4: [[H(0, V(1, 2), 3), [0, 3]], [H(V(0, 1), 2, 3), [2, 3]], [H(0, 1, 2, 3), []]],
+          5: [[H(0, V(H(1, 2), H(3, 4))), [0]], [H(V(0, 1), 2, V(3, 4)), [2]], [H(V(H(0, 1), H(2, 3)), 4), [4]], [H(0, 1, 2, 3, 4), []]],
+          6: [[H(0, 1, 2, 3, 4, 5), []], [H(V(0, 1), 2, 3, V(4, 5)), [2, 3]]],
+          7: [[H(V(0, 1), 2, V(H(3, 4), H(5, 6))), [2]]]
+        };
+        const MODELES_TEL = { 1: [[0, []]], 2: [[H(0, 1), []]], 3: [[H(0, V(1, 2)), []], [H(V(0, 1), 2), []]], 4: [[H(V(0, 1), V(2, 3)), []]] };
+        const large_ = it => it.ratio >= 0.95;                                    // paysage ou carré
+        const petit_ = it => it.el.naturalWidth <= 760;                           // petit fichier : reste petit
+        function composer(tel) {
+          const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [5, 3, 6, 5, 4, 5, 3, 6], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 7;
+          const bandes = []; let i = 0, tour = 0; const vus = {};
+          // une bande de k portraits : le premier modèle (à tour de rôle) dont les cases grandes peuvent toutes recevoir un grand fichier
+          const essayer = k => {
+            const lot = loaded.slice(i, i + k), liste = modeles[k] || [], libres = lot.filter(it => tel || !petit_(it)).length;
+            for (let n = 0; n < liste.length; n++) {
+              const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
+              if (grandes.length > libres) continue;
+              // les grands fichiers d'abord dans les cases grandes ; les autres images gardent leur ordre dans les cases restantes
+              const images = new Array(k), reste = lot.slice();
+              grandes.forEach(c => { const q = reste.findIndex(it => tel || !petit_(it)); images[c] = reste.splice(q, 1)[0]; });
+              for (let c = 0; c < k; c++) if (!images[c]) images[c] = reste.shift();
+              vus[k] = (vus[k] || 0) + n + 1;
+              return { arbre, images };
+            }
+            return null;
+          };
+          while (i < loaded.length) {
+            const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
+            const j = loaded.slice(i, i + envie).findIndex(large_);
+            let bande = null;
+            if (j >= 0 && j < 3) {
+              // un paysage arrive : téléphone, il occupe seul la largeur ; ordinateur, une rangée où il prend sa largeur
+              const k = tel ? (j === 0 ? 1 : j) : Math.min(envie, 4);
+              bande = (tel && j > 0) ? essayer(k) : { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) };
+            } else {
+              const limite = j >= 3 ? j : rest;                                    // les portraits d'avant le paysage forment leur bande
+              const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= 1 && k <= Math.min(limite, max) && t.indexOf(k) === n);
+              for (const k of tailles) {
+                const apres = rest - k;
+                if (apres === 1 && !large_(loaded[i + k])) continue;               // jamais un portrait seul à la fin
+                if (loaded.slice(i, i + k).some(large_)) continue;
+                bande = essayer(k); if (bande) break;
+              }
+              if (!bande) { const k = Math.min(limite, 6); bande = { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) }; }
+            }
+            bandes.push(bande); i += bande.images.length;
+          }
+          return bandes;
+        }
+        const dedans = document.createElement('div'); dedans.className = 'gal-in';
+        loaded.forEach(it => { it.fig = document.createElement('figure'); it.fig.className = 'cell'; it.fig.appendChild(it.el); dedans.appendChild(it.fig); });
+        gallery.appendChild(dedans);
+        function poser() {
+          const W = dedans.clientWidth; if (!W) return;
+          const tel = window.matchMedia('(max-width:768px)').matches;
+          const g = parseFloat(getComputedStyle(gallery).getPropertyValue('--gal-gap')) || 24;
+          let y = 0;
+          composer(tel).forEach(({ arbre, images }) => {
+            // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
+            const coef = n => {
+              if (typeof n === 'number') return { a: images[n].ratio, b: 0 };
+              const cs = n.c.map(coef);
+              if (n.t === 'H') return { a: cs.reduce((s, c) => s + c.a, 0), b: cs.reduce((s, c) => s + c.b, 0) + (cs.length - 1) * g };
+              const S = cs.reduce((s, c) => s + 1 / c.a, 0);
+              return { a: 1 / S, b: (cs.reduce((s, c) => s + c.b / c.a, 0) - (cs.length - 1) * g) / S };
+            };
+            const placer = (n, x, yy, w, h) => {
+              if (typeof n === 'number') { images[n].fig.style.cssText = `left:${x.toFixed(1)}px;top:${yy.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;`; return; }
+              n.c.forEach(c => {
+                const k = coef(c);
+                if (n.t === 'H') { const cw = k.a * h + k.b; placer(c, x, yy, cw, h); x += cw + g; }
+                else { const ch = (w - k.b) / k.a; placer(c, x, yy, w, ch); yy += ch + g; }
+              });
+            };
+            const k = coef(arbre), h = (W - k.b) / k.a;
+            placer(arbre, 0, y, W, h); y += h + g;
+          });
+          dedans.style.height = (y - g) + 'px';
+        }
+        poser();
+        let attente; window.addEventListener('resize', () => { clearTimeout(attente); attente = setTimeout(poser, 120); });
+      } catch (err) {
+        gallery.innerHTML = '<p class="loading">' + t('Erreur de chargement de la galerie.', 'Gallery failed to load.') + '</p>';
+        console.error(err);
+      }
+    }
+
+    loadGallery();
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add('open');
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+    }
+    lightbox.addEventListener('click', () => closeLightbox());
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+  </script>
+
+  <script src="/image-protection.js"></script>
+</body>
+</html>
