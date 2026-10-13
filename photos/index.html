@@ -265,29 +265,59 @@
         // moyennes : les largeurs vont du simple au triple. Dans une rangée, un paysage est naturellement plus large
         // qu'un portrait ; il n'est jamais empilé avec des portraits (il deviendrait un portrait réduit).
         const H = (...c) => ({ t: 'H', c }), V = (...c) => ({ t: 'V', c });
+        // Chaque modèle : [composition, cases « grandes »]. Une photo dont le fichier est petit (760 px de large au plus)
+        // ne va jamais dans une case grande : elle reste petite.
         const MODELES = {
-          1: [0], 2: [H(0, 1)], 3: [H(0, 1, 2)],
-          4: [H(0, V(1, 2), 3), H(V(0, 1), 2, 3)],
-          5: [H(0, V(H(1, 2), H(3, 4))), H(V(0, 1), 2, V(3, 4)), H(V(H(0, 1), H(2, 3)), 4)],
-          6: [H(0, 1, 2, 3, 4, 5), H(V(0, 1), 2, 3, V(4, 5))],
-          7: [H(V(0, 1), 2, V(H(3, 4), H(5, 6)))]
+          1: [[0, [0]]], 2: [[H(0, 1), [0, 1]]], 3: [[H(0, 1, 2), [0, 1, 2]]],
+          4: [[H(0, V(1, 2), 3), [0, 3]], [H(V(0, 1), 2, 3), [2, 3]], [H(0, 1, 2, 3), []]],
+          5: [[H(0, V(H(1, 2), H(3, 4))), [0]], [H(V(0, 1), 2, V(3, 4)), [2]], [H(V(H(0, 1), H(2, 3)), 4), [4]], [H(0, 1, 2, 3, 4), []]],
+          6: [[H(0, 1, 2, 3, 4, 5), []], [H(V(0, 1), 2, 3, V(4, 5)), [2, 3]]],
+          7: [[H(V(0, 1), 2, V(H(3, 4), H(5, 6))), [2]]]
         };
-        const MODELES_TEL = { 1: [0], 2: [H(0, 1)], 3: [H(0, V(1, 2)), H(V(0, 1), 2)], 4: [H(V(0, 1), V(2, 3))] };
+        const MODELES_TEL = { 1: [[0, []]], 2: [[H(0, 1), []]], 3: [[H(0, V(1, 2)), []], [H(V(0, 1), 2), []]], 4: [[H(V(0, 1), V(2, 3)), []]] };
         const large_ = it => it.ratio >= 0.95;                                    // paysage ou carré
-        function composer(tel) {
+        const petit_ = it => it.el.naturalWidth <= 760;                           // petit fichier : reste petit
+        function composer(tel, W, g) {
           const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [5, 3, 6, 5, 4, 5, 3, 6], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 7;
           const bandes = []; let i = 0, tour = 0; const vus = {};
-          while (i < loaded.length) {
-            let k = Math.min(rythme[tour++ % rythme.length], loaded.length - i), arbre = null;
-            const j = loaded.slice(i, i + k).findIndex(large_);
-            if (j >= 0) {
-              if (tel) k = j === 0 ? 1 : j;                                       // téléphone : un paysage occupe seul toute la largeur
-              else if (j >= 3) k = j;                                             // les portraits d'avant forment leur propre bande
-              else { k = Math.min(k, 4); arbre = H(...Array.from({ length: k }, (_, n) => n)); }   // une rangée : le paysage y prend sa largeur
+          // une bande de k portraits : le premier modèle (à tour de rôle) dont les cases grandes peuvent toutes recevoir un grand fichier
+          const essayer = k => {
+            const lot = loaded.slice(i, i + k), liste = modeles[k] || [], libres = lot.filter(it => tel || !petit_(it)).length;
+            for (let n = 0; n < liste.length; n++) {
+              const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
+              if (grandes.length > libres) continue;
+              // les grands fichiers d'abord dans les cases grandes ; les autres images gardent leur ordre dans les cases restantes
+              const images = new Array(k), reste = lot.slice();
+              grandes.forEach(c => { const q = reste.findIndex(it => tel || !petit_(it)); images[c] = reste.splice(q, 1)[0]; });
+              for (let c = 0; c < k; c++) if (!images[c]) images[c] = reste.shift();
+              vus[k] = (vus[k] || 0) + n + 1;
+              return { arbre, images };
             }
-            if (loaded.length - i - k === 1 && k < max && !loaded.slice(i, i + k + 1).some(large_)) k++;   // jamais une image seule à la fin
-            if (!arbre) { const liste = modeles[k]; vus[k] = (vus[k] || 0) + 1; arbre = liste[(vus[k] - 1) % liste.length]; }
-            bandes.push({ arbre, images: loaded.slice(i, i + k) }); i += k;
+            return null;
+          };
+          while (i < loaded.length) {
+            const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
+            const j = loaded.slice(i, i + envie).findIndex(large_);
+            let bande = null;
+            if (j >= 0 && j < 3) {
+              // un paysage arrive : téléphone, il occupe seul la largeur ; ordinateur, une rangée où il prend sa largeur
+              let k = tel ? (j === 0 ? 1 : j) : Math.min(envie, 4);
+              // rangée avec paysage : si un petit fichier y dépasse 350 px de large, on ajoute une image (la rangée baisse)
+              const tropGrand = n => { const lot = loaded.slice(i, i + n), h = (W - (n - 1) * g) / lot.reduce((s, it) => s + it.ratio, 0); return lot.some(it => petit_(it) && it.ratio * h > 350); };
+              while (!tel && k < 6 && i + k < loaded.length && tropGrand(k)) k++;
+              bande = (tel && j > 0) ? essayer(k) : { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) };
+            } else {
+              const limite = j >= 3 ? j : rest;                                    // les portraits d'avant le paysage forment leur bande
+              const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= 1 && k <= Math.min(limite, max) && t.indexOf(k) === n);
+              for (const k of tailles) {
+                const apres = rest - k;
+                if (apres === 1 && !large_(loaded[i + k])) continue;               // jamais un portrait seul à la fin
+                if (loaded.slice(i, i + k).some(large_)) continue;
+                bande = essayer(k); if (bande) break;
+              }
+              if (!bande) { const k = Math.min(limite, 6); bande = { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) }; }
+            }
+            bandes.push(bande); i += bande.images.length;
           }
           return bandes;
         }
@@ -299,7 +329,7 @@
           const tel = window.matchMedia('(max-width:768px)').matches;
           const g = parseFloat(getComputedStyle(gallery).getPropertyValue('--gal-gap')) || 24;
           let y = 0;
-          composer(tel).forEach(({ arbre, images }) => {
+          composer(tel, W, g).forEach(({ arbre, images }) => {
             // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
             const coef = n => {
               if (typeof n === 'number') return { a: images[n].ratio, b: 0 };
