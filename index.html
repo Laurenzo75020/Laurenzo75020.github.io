@@ -88,11 +88,14 @@
     /* téléphone : sous les deux lignes du nom et le menu */
     .scene.still.plein{ --gy:calc(1.6rem + env(safe-area-inset-top) + 2.3 * clamp(1.8rem, 8vw, 3rem) + 2.1rem); --gx:39vw; }
   }
-  .scene.still.plein .bg-half{
-    inset:auto; bottom:auto; transform:none; object-fit:fill; max-width:none;
-    width:var(--iw); height:calc(var(--iw) * 0.8381);
-    top:calc(var(--gy) - var(--iw) * 0.8381 * 0.345);
-    left:calc(var(--gx) - var(--iw) * 0.447);
+  /* La photo est peinte en fond d'un bloc qui s'arrête exactement aux bords de la fenêtre : aucun élément ne dépasse
+     au-dessus de l'écran (sur téléphone, une image qui dépassait en haut teintait en bleu la barre du navigateur). */
+  .scene.still.plein .bg-half{ display:none; }
+  .scene.still.plein::before{
+    content:""; position:absolute; inset:0;
+    background-image:url(accueil-colonne.jpg); background-repeat:no-repeat;
+    background-size:var(--iw) calc(var(--iw) * 0.8381);
+    background-position:calc(var(--gx) - var(--iw) * 0.447) calc(var(--gy) - var(--iw) * 0.8381 * 0.345);
   }
   .scene.still.plein .signature{ color:#fff; }
 
