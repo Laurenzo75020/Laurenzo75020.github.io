@@ -277,7 +277,30 @@
         const MODELES_TEL = { 1: [[0, []]], 2: [[H(0, 1), []]], 3: [[H(0, V(1, 2)), []], [H(V(0, 1), 2), []]], 4: [[H(V(0, 1), V(2, 3)), []]] };
         const large_ = it => it.ratio >= 0.95;                                    // paysage ou carré
         const petit_ = it => it.el.naturalWidth <= 760;                           // petit fichier : reste petit
+        // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
+        function tracer(arbre, images, W, g, y, poserImage) {
+          const coef = n => {
+            if (typeof n === 'number') return { a: images[n].ratio, b: 0 };
+            const cs = n.c.map(coef);
+            if (n.t === 'H') return { a: cs.reduce((s, c) => s + c.a, 0), b: cs.reduce((s, c) => s + c.b, 0) + (cs.length - 1) * g };
+            const S = cs.reduce((s, c) => s + 1 / c.a, 0);
+            return { a: 1 / S, b: (cs.reduce((s, c) => s + c.b / c.a, 0) - (cs.length - 1) * g) / S };
+          };
+          const placer = (n, x, yy, w, h) => {
+            if (typeof n === 'number') { poserImage(images[n], x, yy, w, h); return; }
+            n.c.forEach(c => {
+              const k = coef(c);
+              if (n.t === 'H') { const cw = k.a * h + k.b; placer(c, x, yy, cw, h); x += cw + g; }
+              else { const ch = (w - k.b) / k.a; placer(c, x, yy, w, ch); yy += ch + g; }
+            });
+          };
+          const k = coef(arbre), h = (W - k.b) / k.a;
+          placer(arbre, 0, y, W, h); return h;
+        }
+        const rangee = k => k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n));
         function composer(tel, W, g) {
+          // une bande est refusée si une photo d'un petit fichier y dépasserait 350 px de large (ordinateur seulement)
+          const convient = (arbre, images) => { if (tel) return true; let ok = true; tracer(arbre, images, W, g, 0, (it, x, y, w) => { if (petit_(it) && w > 350) ok = false; }); return ok; };
           const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [5, 3, 6, 5, 4, 5, 3, 6], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 7;
           const bandes = []; let i = 0, tour = 0; const vus = {};
           // une bande de k portraits : le premier modèle (à tour de rôle) dont les cases grandes peuvent toutes recevoir un grand fichier
@@ -286,12 +309,13 @@
             for (let n = 0; n < liste.length; n++) {
               const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
               if (grandes.length > libres) continue;
+              const essai = lot.slice(), casees = new Array(k);
+              grandes.forEach(c => { const q = essai.findIndex(it => tel || !petit_(it)); casees[c] = essai.splice(q, 1)[0]; });
+              for (let c = 0; c < k; c++) if (!casees[c]) casees[c] = essai.shift();
+              if (!convient(arbre, casees)) continue;
               // les grands fichiers d'abord dans les cases grandes ; les autres images gardent leur ordre dans les cases restantes
-              const images = new Array(k), reste = lot.slice();
-              grandes.forEach(c => { const q = reste.findIndex(it => tel || !petit_(it)); images[c] = reste.splice(q, 1)[0]; });
-              for (let c = 0; c < k; c++) if (!images[c]) images[c] = reste.shift();
               vus[k] = (vus[k] || 0) + n + 1;
-              return { arbre, images };
+              return { arbre, images: casees };
             }
             return null;
           };
@@ -305,7 +329,7 @@
               // rangée avec paysage : si un petit fichier y dépasse 350 px de large, on ajoute une image (la rangée baisse)
               const tropGrand = n => { const lot = loaded.slice(i, i + n), h = (W - (n - 1) * g) / lot.reduce((s, it) => s + it.ratio, 0); return lot.some(it => petit_(it) && it.ratio * h > 350); };
               while (!tel && k < 6 && i + k < loaded.length && tropGrand(k)) k++;
-              bande = (tel && j > 0) ? essayer(k) : { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) };
+              bande = (tel && j > 0) ? essayer(k) : { arbre: rangee(k), images: loaded.slice(i, i + k) };
             } else {
               const limite = j >= 3 ? j : rest;                                    // les portraits d'avant le paysage forment leur bande
               const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= 1 && k <= Math.min(limite, max) && t.indexOf(k) === n);
@@ -315,9 +339,17 @@
                 if (loaded.slice(i, i + k).some(large_)) continue;
                 bande = essayer(k); if (bande) break;
               }
-              if (!bande) { const k = Math.min(limite, 6); bande = { arbre: k === 1 ? 0 : H(...Array.from({ length: k }, (_, n) => n)), images: loaded.slice(i, i + k) }; }
+              if (!bande) { const k = Math.min(limite, 6); bande = { arbre: rangee(k), images: loaded.slice(i, i + k) }; }
             }
             bandes.push(bande); i += bande.images.length;
+          }
+          // fin de galerie : jamais une ou deux images seules en très grand ; elles rejoignent la bande d'avant, en rangées
+          const fin = bandes[bandes.length - 1];
+          if (!tel && bandes.length > 1 && fin.images.length < 3 && !fin.images.some(large_)) {
+            const tout = bandes.splice(-2).flatMap(b => b.images), n = tout.length;
+            const parts = n <= 6 ? [[n]] : [[Math.ceil(n / 2), Math.floor(n / 2)], [Math.floor(n / 2), Math.ceil(n / 2)], [n]];
+            const choix = parts.find(p => { let d = 0; return p.every(k => { const lot = tout.slice(d, d + k); d += k; return convient(rangee(k), lot); }); }) || parts[parts.length - 1];
+            let d = 0; choix.forEach(k => { bandes.push({ arbre: rangee(k), images: tout.slice(d, d + k) }); d += k; });
           }
           return bandes;
         }
@@ -330,24 +362,7 @@
           const g = parseFloat(getComputedStyle(gallery).getPropertyValue('--gal-gap')) || 24;
           let y = 0;
           composer(tel, W, g).forEach(({ arbre, images }) => {
-            // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
-            const coef = n => {
-              if (typeof n === 'number') return { a: images[n].ratio, b: 0 };
-              const cs = n.c.map(coef);
-              if (n.t === 'H') return { a: cs.reduce((s, c) => s + c.a, 0), b: cs.reduce((s, c) => s + c.b, 0) + (cs.length - 1) * g };
-              const S = cs.reduce((s, c) => s + 1 / c.a, 0);
-              return { a: 1 / S, b: (cs.reduce((s, c) => s + c.b / c.a, 0) - (cs.length - 1) * g) / S };
-            };
-            const placer = (n, x, yy, w, h) => {
-              if (typeof n === 'number') { images[n].fig.style.cssText = `left:${x.toFixed(1)}px;top:${yy.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;`; return; }
-              n.c.forEach(c => {
-                const k = coef(c);
-                if (n.t === 'H') { const cw = k.a * h + k.b; placer(c, x, yy, cw, h); x += cw + g; }
-                else { const ch = (w - k.b) / k.a; placer(c, x, yy, w, ch); yy += ch + g; }
-              });
-            };
-            const k = coef(arbre), h = (W - k.b) / k.a;
-            placer(arbre, 0, y, W, h); y += h + g;
+            y += tracer(arbre, images, W, g, y, (it, x, yy, w, h) => { it.fig.style.cssText = `left:${x.toFixed(1)}px;top:${yy.toFixed(1)}px;width:${w.toFixed(1)}px;height:${h.toFixed(1)}px;`; }) + g;
           });
           dedans.style.height = (y - g) + 'px';
         }
