@@ -166,6 +166,10 @@
       .gallery{ --gal-gap:10px; padding:1rem 1rem 3rem; }
       .col{ gap:14px; }
     }
+    /* téléphone : les onglets du bas ne remontent plus sur les dernières photos */
+    @media (max-width:768px){
+      .top-menu.bottom-menu{ margin-top:0; padding:0 1.5rem 2rem !important; }
+    }
   </style>
 <script src="../lang.js?v=2"></script>
 </head>
