@@ -228,7 +228,7 @@
 <body>
 
   <div class="top-menu">
-    <a href="../index.html" id="homeLink">← Accueil</a>
+    <a href="../index.html?accueil" id="homeLink">← Accueil</a>
     <a href="../photos/">Photo</a>
     <a href="../ia/">IA</a>
   </div>
@@ -345,7 +345,7 @@
 
     function goNext(){
       if(current >= pages.length - 1){
-        window.location.href = '../index.html';
+        window.location.href = '../index.html?accueil';
       } else {
         showPage(current + 1);
       }
