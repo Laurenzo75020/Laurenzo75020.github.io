@@ -1207,13 +1207,16 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 // qu'elle attend, cachée, derrière la page d'accueil).
 (function(){
   try{
-    if(sessionStorage.getItem('lb_page_fraiche')) return;
     const u=location.pathname, lire=(url,cache)=>fetch(url,{cache}).then(r=>r.ok?r.text():Promise.reject());
     Promise.all([lire(u,'force-cache'), lire(u+'?frais='+Date.now(),'no-store')]).then(([gardee,serveur])=>{
       if(gardee===serveur || serveur.length<1000 || serveur.indexOf('id="grid"')<0) return;
       const cachee=window.top!==window && window.frameElement && getComputedStyle(window.frameElement).display==='none';
       if(!cachee && !(window.top===window && performance.now()<5000)) return;
-      sessionStorage.setItem('lb_page_fraiche','1'); location.reload();
+      // une seule fois par version du serveur (et non plus une seule fois par visite : dans Instagram, la « visite » dure
+      // longtemps, et une deuxième mise à jour n'était alors jamais rechargée)
+      let h=0; for(let i=0;i<serveur.length;i++) h=(h*31+serveur.charCodeAt(i))|0;
+      if(sessionStorage.getItem('lb_page_fraiche')===String(h)) return;
+      sessionStorage.setItem('lb_page_fraiche',String(h)); location.reload();
     }).catch(()=>{});
   }catch(e){}
 })();
