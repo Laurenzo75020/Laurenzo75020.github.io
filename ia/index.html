@@ -609,7 +609,7 @@ function demarrerSon(o, geste){
     vid.currentTime=0;
   }
 }
-let sonCoupe=false, elueCourante=null;      // sonCoupe : le visiteur a coupé le son avec « Sound off » (pour toute la visite)
+let sonCoupe=(()=>{ try{ return sessionStorage.getItem('lb_son_coupe')==='1'; }catch(e){ return false; } })(), elueCourante=null;      // sonCoupe : le visiteur a coupé le son avec « Sound off » (pour toute la visite)
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
@@ -644,10 +644,14 @@ function arbitrer(geste){
   b.addEventListener('click',e=>{
     e.stopPropagation();
     sonCoupe=!sonCoupe;
+    try{ sessionStorage.setItem('lb_son_coupe', sonCoupe?'1':'0'); }catch(e){}
     if(sonCoupe) sonores.forEach(o=>{ o.vid.muted=true; o.maj(); });
     else if(elueCourante){ elueCourante.refuse=false; }
     libelle(); arbitrer(true); actualiser();
   });
+  // son coupé : aucune vidéo de la grille ne peut se remettre à parler, quel que soit le chemin (défilement, retour en haut…)
+  document.addEventListener('volumechange',e=>{ const v=e.target; if(sonCoupe && v.tagName==='VIDEO' && v.closest('#grid') && !v.muted) v.muted=true; },true);
+  setInterval(()=>{ if(sonCoupe) document.querySelectorAll('#grid video').forEach(v=>{ if(!v.muted) v.muted=true; }); },250);
   (window.onLangChange=window.onLangChange||[]).push(libelle);
   libelle(); placer();
   window.addEventListener('resize',placer); window.addEventListener('load',placer);
