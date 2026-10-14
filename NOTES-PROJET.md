@@ -1,7 +1,41 @@
 # Notes de projet — site de Laurent Bourdoiseau et film « Faces »
 
 Dernière mise à jour : 14 octobre 2026. Ce fichier sert à reprendre le travail dans une nouvelle session sans rien perdre.
-À lire avec `CLAUDE.local.md` (règles de travail, non publié) et `_atelier-video/LISEZ-MOI.md` (ateliers vidéo, non publié).
+
+---
+
+## 0. Avant toute chose : ouvrir la session dans le bon dossier
+
+**Le projet se trouve ici, et nulle part ailleurs :**
+
+```
+/Users/bourdoiseau/Desktop/Laurenzo75020.github.io
+```
+
+- C'est un dépôt Git (branche `main`, dépôt distant `https://github.com/Laurenzo75020/Laurenzo75020.github.io`), publié
+  automatiquement sur `https://www.laurentbourdoiseau.com` à chaque `git push`.
+- **La session doit être ouverte dans ce dossier** (dans l'application Claude : choisir ce dossier comme dossier de travail).
+  Si la session est ouverte ailleurs, elle ne voit ni le site, ni ce fichier, ni les scripts, ni l'historique Git.
+- **Ne pas confondre avec les dossiers de rushes du Bureau** (`~/Desktop/11111`, `11111/_PL1`, `2222`, `Blood`, `rimmel`,
+  `French FLAG`, `Packshot`, `EDITs`, `___`). Ce ne sont **que des sources vidéo** (fichiers `.mp4` de plans générés par IA),
+  pas des dépôts Git, pas le site. Une session ouverte dans `Desktop/11111` ne peut rien faire sur le site.
+- Si une session est ouverte au mauvais endroit : demander à l'utilisateur de rouvrir la session dans
+  `/Users/bourdoiseau/Desktop/Laurenzo75020.github.io`, ou d'y ajouter ce dossier.
+
+**Au démarrage d'une session, dans cet ordre :**
+
+1. Vérifier le dossier : `pwd` doit afficher `/Users/bourdoiseau/Desktop/Laurenzo75020.github.io`, et `git status -sb`
+   doit afficher `## main...origin/main`.
+2. Lire ce fichier en entier, puis `CLAUDE.local.md` (règles, à la racine, non publié) et `_atelier-video/LISEZ-MOI.md`
+   (ateliers vidéo ; ses parties anciennes sont dépassées par ce fichier-ci, notamment la règle « demander avant de pousser »,
+   remplacée par « pousser tout de suite »).
+3. Regarder les derniers commits (`git log --oneline -15`) : chaque commit décrit en anglais ce qui a changé.
+4. Reprendre à la section 8 (« Prochaines étapes »).
+
+**Ce fichier est public** : il est dans le dépôt GitHub et lisible à `https://www.laurentbourdoiseau.com/NOTES-PROJET.md`.
+Ne jamais y écrire de mot de passe, de clé ou de jeton. Si l'utilisateur préfère le garder privé, l'ajouter à
+`.gitignore` (comme `CLAUDE.local.md`) et le retirer du dépôt avec `git rm --cached NOTES-PROJET.md` ; il restera alors
+seulement sur son Mac.
 
 ---
 
@@ -124,8 +158,9 @@ Deux chantiers liés :
   pâle), « THERE IS NO ALTERNATIVE » (sur l'image), « I AM THE TRUTH » (16 images avant la partie 2), partie 2 très cut
   avec les flacons, voix « Et j'ai peur. », dernier plan du flacon rouge.
 - Cartons dessinés d'après ses maquettes (Helvetica gras, composition à quatre lignes). Sous-titres français des voix.
-- Rushes utilisés : uniquement ses dossiers de sélection du Bureau : `11111` (et `11111/_PL1` pour le plan 1), `2222`,
-  `Blood`, `rimmel`, `French FLAG`, `Packshot`. **Ne jamais reprendre ceux du dossier `___`** (plans écartés).
+- Rushes utilisés : uniquement ses dossiers de sélection, tous dans `/Users/bourdoiseau/Desktop/` : `11111` (et
+  `11111/_PL1` pour le plan 1), `2222`, `Blood`, `rimmel`, `French FLAG`, `Packshot`. Les scripts les lisent à ces
+  chemins (variable `DOSSIERS`). **Ne jamais reprendre ceux du dossier `___`** (plans écartés).
 
 ### Le teaser Faces (sur le site)
 - Version en ligne : n° 12 (15,4 s), script `_atelier-video/scripts/make_teasing_faces_v12.py`, fichier
