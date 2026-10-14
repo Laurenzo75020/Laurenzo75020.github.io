@@ -1112,11 +1112,18 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   function calmer(){
     if(arret) return;                                    // le visiteur est sorti du mode : la mosaïque reste visible
     if(document.getElementById('lb').classList.contains('on')) { armer(); return; }
+    // souris ou doigt au-dessus de la première vidéo (nom, texte de présentation) : le texte reste affiché, pas de blanc
+    const haut=grille.querySelector('.cell-top');
+    if(pY!==null && haut && pY < haut.getBoundingClientRect().top) return;
     grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus'));
     const c=caseRegardee(); if(!c || !c.querySelector('video') || c.classList.contains('no-iso') || c.querySelector('video')._fige) return;      // seulement sur les vidéos, jamais sur les photos
     c.classList.add('focus','on'); document.body.classList.add('calme');
   }
   function armer(){ clearTimeout(minuterie); minuterie=setTimeout(calmer,DELAI); }
+  let pY=null;      // dernière position verticale de la souris ou du doigt dans la fenêtre
+  window.addEventListener('mousemove',e=>{ pY=e.clientY; },{capture:true,passive:true});
+  window.addEventListener('touchstart',e=>{ if(e.touches[0]) pY=e.touches[0].clientY; },{capture:true,passive:true});
+  document.documentElement.addEventListener('mouseleave',()=>{ pY=null; });
   // Sortir du mode : un clic ou un toucher sur le blanc autour de la vidéo ramène la mosaïque, pour de bon (jusqu'au
   // rechargement de la page). Le blanc se retire dès que la souris bouge : on compte donc comme « sur le blanc » un clic
   // donné dans la seconde et demie qui suit, hors de la vidéo regardée. Ce clic n'ouvre rien d'autre.
