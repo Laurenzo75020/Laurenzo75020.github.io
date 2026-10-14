@@ -897,6 +897,7 @@ CONFIG.forEach((item,i)=>{
   const cap=document.createElement('div');
   cap.className='caption';
   cap.innerHTML=`<h3>${item.t}</h3><span>${item.s}</span>`;
+  if(cell._bordGauche){ const b=(cell._bordGauche*100).toFixed(2)+'%'; cap.style.left=b; cap.style.right=b; }   // clip Air : la légende ne déborde pas sur le blanc
   cell.appendChild(cap);
 
   grid.appendChild(cell);
