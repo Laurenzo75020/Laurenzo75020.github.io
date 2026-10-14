@@ -16,9 +16,9 @@ Dernière mise à jour : 14 octobre 2026. Ce fichier sert à reprendre le travai
   automatiquement sur `https://www.laurentbourdoiseau.com` à chaque `git push`.
 - **La session doit être ouverte dans ce dossier** (dans l'application Claude : choisir ce dossier comme dossier de travail).
   Si la session est ouverte ailleurs, elle ne voit ni le site, ni ce fichier, ni les scripts, ni l'historique Git.
-- **Ne pas confondre avec les dossiers de rushes du Bureau** (`~/Desktop/11111`, `11111/_PL1`, `2222`, `Blood`, `rimmel`,
-  `French FLAG`, `Packshot`, `EDITs`, `___`). Ce ne sont **que des sources vidéo** (fichiers `.mp4` de plans générés par IA),
-  pas des dépôts Git, pas le site. Une session ouverte dans `Desktop/11111` ne peut rien faire sur le site.
+- **Ne pas confondre avec les dossiers de rushes du Bureau** (`~/Desktop/FACES/` : `11111`, `11111/_PL1`, `2222`, `Blood`, `rimmel`,
+  `French FLAG`, `Packshot`, `EDITs` ; et `~/Desktop/___`). Ce ne sont **que des sources vidéo** (fichiers `.mp4` de plans générés par IA),
+  pas des dépôts Git, pas le site. Une session ouverte dans `Desktop/FACES/11111` ne peut rien faire sur le site.
 - Si une session est ouverte au mauvais endroit : demander à l'utilisateur de rouvrir la session dans
   `/Users/bourdoiseau/Desktop/Laurenzo75020.github.io`, ou d'y ajouter ce dossier.
 
@@ -150,7 +150,7 @@ Deux chantiers liés :
 ### Le film « Faces » (atelier, non publié)
 - Versions `_atelier-video/faces/montage_faces_cale_reference_v2.mp4` à `_v31.mp4`, une par script
   `_atelier-video/scripts/make_faces_cale_reference_vN.py`. **La version 31 est celle de Vimeo** (identique à
-  `~/Desktop/EDITs/TRUTH_2.mp4`).
+  `~/Desktop/FACES/EDITs/TRUTH_2.mp4`).
 - Structure de la v31 : partie 1A (plan 1 de la même femme en trois parties : cuts avec noirs, cuts rapides, doigt pointé
   en boucles de 2 / 3 images ; bouches ; blonde pâle en plan long ; larmes de sang sous « Laissez-moi vous dire. »),
   partie 1B (cils rouges, tête renversée de femme en femme, mascara bleu, gouttes de sang en cuts rapides, bouche tordue,
@@ -158,7 +158,7 @@ Deux chantiers liés :
   pâle), « THERE IS NO ALTERNATIVE » (sur l'image), « I AM THE TRUTH » (16 images avant la partie 2), partie 2 très cut
   avec les flacons, voix « Et j'ai peur. », dernier plan du flacon rouge.
 - Cartons dessinés d'après ses maquettes (Helvetica gras, composition à quatre lignes). Sous-titres français des voix.
-- Rushes utilisés : uniquement ses dossiers de sélection, tous dans `/Users/bourdoiseau/Desktop/` : `11111` (et
+- Rushes utilisés : uniquement ses dossiers de sélection, tous dans `/Users/bourdoiseau/Desktop/FACES/` (rangés là le 14 octobre 2026) : `11111` (et
   `11111/_PL1` pour le plan 1), `2222`, `Blood`, `rimmel`, `French FLAG`, `Packshot`. Les scripts les lisent à ces
   chemins (variable `DOSSIERS`). **Ne jamais reprendre ceux du dossier `___`** (plans écartés).
 
@@ -218,8 +218,8 @@ Deux chantiers liés :
 | `_atelier-video/reglages/` | Timeline de référence, son de référence, musique du teaser, police Barlow Condensed |
 | `CLAUDE.local.md`, `_atelier-video/LISEZ-MOI.md` | Règles et passation (non publiés) |
 
-Sources hors dépôt : `~/Desktop/11111` (+ `_PL1`), `2222`, `Blood`, `rimmel`, `French FLAG`, `Packshot`, `EDITs`
-(exports, dont `TRUTH_2.mp4`), `___` (archives et plans écartés) ; film Mirror d'origine :
+Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222`, `Blood`, `rimmel`, `French FLAG`, `Packshot`, `EDITs`
+(exports, dont `TRUTH_2.mp4`), et, resté sur le Bureau, `~/Desktop/___` (archives et plans écartés) ; film Mirror d'origine :
 `~/Documents/___Mid/_AI_film_demo/Mon film_Mirror.mp4`.
 
 ---
