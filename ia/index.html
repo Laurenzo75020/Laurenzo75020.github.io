@@ -22,6 +22,11 @@ nav a:hover, .nav-right a:hover { opacity:1; }
 .top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
 .top-nav a { color:var(--ink); text-decoration:none; opacity:.9; transition:opacity .2s; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .top-nav a:hover { opacity:1; }
+/* ordinateur : « Sound off » sous le menu, plus espacé ; visible seulement quand une vidéo joue avec le son ; reste visible pendant le blanc */
+#sonGeneral { position:fixed; top:0; right:calc(2rem + env(safe-area-inset-right)); z-index:200; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); border:0; cursor:none; opacity:0; pointer-events:none; transition:opacity .4s; }
+#sonGeneral.visible { opacity:.9; pointer-events:auto; }
+#sonGeneral.visible:hover { opacity:1; }
+@media (max-width:768px){ #sonGeneral { display:none !important; } }
 .bottom-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:16px 0 3.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
 .bottom-nav a { color:var(--ink); text-decoration:none; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .big-name { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.6rem,5.85vw,6.5rem); line-height:.88; letter-spacing:-.02em; text-transform:uppercase; display:block; margin-bottom:.6rem; white-space:nowrap; }
@@ -603,6 +608,7 @@ function demarrerSon(o, geste){
     vid.currentTime=0;
   }
 }
+let sonCoupe=false, elueCourante=null;      // sonCoupe : le visiteur a coupé le son avec « Sound off » (pour toute la visite)
 function arbitrer(geste){
   const lbOuvert=document.getElementById('lb').classList.contains('on');
   let elue=null;
@@ -613,7 +619,7 @@ function arbitrer(geste){
   }
   sonores.forEach(o=>{
     if(o.vid._apercu && !o.vid._fige) o.vid.loop=(o!==elue);          // aperçu regardé : sa lecture unique est en cours
-    if(o===elue && !o.coupe && !o.finie){
+    if(o===elue && !o.coupe && !o.finie && !sonCoupe){
       // on (re)tente le son si la vidéo est muette, ou si elle est restée bloquée en pause (cas de Safari)
       if(!o.enDemarrage && ((o.vid.muted && (geste || !o.refuse)) || (geste && o.vid.paused))) demarrerSon(o, geste);
     } else {
@@ -622,7 +628,30 @@ function arbitrer(geste){
     }
     o.maj();
   });
+  elueCourante=elue;
 }
+// ---- Bouton « Sound off / Sound on » (ordinateur) ----
+(function(){
+  const b=document.createElement('button'); b.id='sonGeneral'; b.type='button'; document.body.appendChild(b);
+  const libelle=()=>{ b.textContent=(typeof window.t==='function') ? (sonCoupe ? window.t('Remettre le son','Sound on') : window.t('Couper le son','Sound off')) : (sonCoupe ? 'Remettre le son' : 'Couper le son'); };
+  const placer=()=>{ const l=document.querySelector('.top-nav a:last-child'); if(l){ const r=l.getBoundingClientRect(); if(r.height) b.style.top=(r.bottom+32)+'px'; } };
+  const actualiser=()=>{
+    const lbOuvert=document.getElementById('lb').classList.contains('on');
+    const joue=sonores.some(o=>!o.vid.muted && !o.vid.paused);
+    b.classList.toggle('visible', !lbOuvert && !window.__enSommeil && (sonCoupe ? !!(elueCourante && !elueCourante.finie && !elueCourante.coupe) : joue));
+  };
+  b.addEventListener('click',e=>{
+    e.stopPropagation();
+    sonCoupe=!sonCoupe;
+    if(sonCoupe) sonores.forEach(o=>{ o.vid.muted=true; o.maj(); });
+    else if(elueCourante){ elueCourante.refuse=false; }
+    libelle(); arbitrer(true); actualiser();
+  });
+  (window.onLangChange=window.onLangChange||[]).push(libelle);
+  libelle(); placer();
+  window.addEventListener('resize',placer); window.addEventListener('load',placer);
+  setInterval(actualiser,300);
+})();
 // ---- Page affichée par-dessus la page d'accueil (voir index.html) ----
 // La page d'accueil charge cette page en arrière-plan ; au clic sur « IA », elle l'affiche et appelle entrerAvecSon()
 // dans le même clic : c'est ce qui permet au son de démarrer tout seul, y compris dans Safari.
