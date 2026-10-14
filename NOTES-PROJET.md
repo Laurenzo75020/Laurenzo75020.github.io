@@ -244,6 +244,10 @@ Sources hors dépôt : `~/Desktop/11111` (+ `_PL1`), `2222`, `Blood`, `rimmel`, 
 
 ## 8. Prochaines étapes
 
+0. **Entrée temporaire du site (14 → 21 octobre 2026)** : l'adresse du site ouvre l'écran ENTER de la page IA
+   (`index.html`, script en tête, fin automatique le 22 octobre à 0 h, heure de Paris). Les boutons « Accueil » mènent à
+   `index.html?accueil`. Après cette date, proposer de retirer le script (les liens `?accueil` peuvent rester).
+
 1. **Attendre sa réponse sur la coupure du son par le blanc.** Proposition faite le 13 octobre, non réalisée : un clic ou
    un toucher sur le blanc ferait sortir du mode isolement **et** couperait le son, la vidéo continuant en muet ; le son
    reviendrait à la vidéo suivante quand on fait défiler la page. Autre piste évoquée (ordinateur seulement) : son
