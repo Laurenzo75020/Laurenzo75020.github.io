@@ -311,7 +311,7 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 #entree:hover span { background:rgba(255,255,255,.12); }
 #entree.parti { opacity:0; pointer-events:none; }
 body.calme #entree:not(.parti) { opacity:1 !important; pointer-events:auto !important; }   /* le blanc n'efface pas l'écran d'entrée */
-@media (max-width:768px){ #entree { background-image:url('../images/entree_ia_mobile.jpg?v=1'); } #entree span { font-size:.9rem; padding:.9rem 2.6rem; } }
+@media (max-width:768px){ #entree { background-size:100% auto; }   /* téléphone : l'image entière, sur toute la largeur, sur fond blanc */ #entree span { font-size:.9rem; padding:.9rem 2.6rem; } }
 </style>
 </head>
 <body>
