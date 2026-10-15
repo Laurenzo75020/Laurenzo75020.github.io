@@ -144,7 +144,7 @@ Deux chantiers liés :
   760 px de large ou moins restent petits (350 px au plus à l'écran, sur ordinateur). Téléphone : bandes de 1 à 4 images.
 
 ### Portfolio — `portfolio/`
-- Version ordinateur : 26 nouvelles pages (`photo/book/`, copiées de `~/Desktop/___/__BOOKS/site`) ; la dernière page
+- Version ordinateur : 25 pages (`photo/book/Page_1.jpg` à `Page_25.jpg`, numéro du fichier = numéro affiché ; à l’origine copiées de `~/Desktop/___/__BOOKS/site`) ; la dernière page
   ramène à l'accueil. La version mobile (`photo/book-mobile/`) n'a pas été touchée.
 
 ### Le film « Faces » (atelier, non publié)
