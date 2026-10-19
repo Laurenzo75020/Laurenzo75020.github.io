@@ -325,8 +325,11 @@ else {
   // un peu compte quand même (jusqu'à 40 px), et l'écran d'entrée ne fait pas défiler la page qui est derrière.
   (function(){
     const e=document.getElementById('entree'); let x0=0, y0=0, fait=false;
-    const entrer=()=>{ if(fait) return; fait=true; e.classList.add('parti'); setTimeout(()=>e.remove(),600);
-      if(typeof window.entrerAvecSon==='function') window.entrerAvecSon(); else window.__entrerDesQuePret=true; };
+    // l'écran disparaît d'un coup, AVANT le lancement des vidéos : Safari refuse de lire une vidéo encore recouverte
+    // (pendant un fondu, elle est cachée à ses yeux) ; puis une relance de sécurité, une fois la page bien visible
+    const entrer=()=>{ if(fait) return; fait=true; e.style.display='none'; e.remove();
+      if(typeof window.entrerAvecSon==='function') window.entrerAvecSon(); else window.__entrerDesQuePret=true;
+      [400,1200].forEach(ms=>setTimeout(()=>{ try{ if(typeof relancer==='function') relancer(); if(typeof mesurer==='function') mesurer(); }catch(err){} },ms)); };
     e.addEventListener('touchstart',ev=>{ const p=ev.touches[0]; x0=p.clientX; y0=p.clientY; },{passive:true});
     e.addEventListener('touchmove',ev=>{ ev.preventDefault(); },{passive:false});
     e.addEventListener('touchend',ev=>{ const p=ev.changedTouches[0]; if(Math.abs(p.clientX-x0)>40 || Math.abs(p.clientY-y0)>40) return; if(ev.cancelable) ev.preventDefault(); entrer(); });
