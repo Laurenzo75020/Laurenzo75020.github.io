@@ -1050,7 +1050,7 @@ function apresLeFilm(vimeoId){
   setTimeout(()=>{
     const r=suivante.getBoundingClientRect(); aDefile=true; window.__glisse=true;
     if(window.__focusSur) window.__focusSur(suivante);
-    glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1400, ()=>{ mesurer(); arbitrer(false); });
+    glisserJusqua(Math.max(0,r.top+window.scrollY-(window.innerHeight-r.height)/2), 1400, ()=>{ mesurer(); arbitrer(false); if(window.__calmerBientot) window.__calmerBientot(); });
   },350);
 }
 // Téléphone : un film dont le fichier est sur le site est lu par le site lui-même, sans Vimeo. Aucune barre de commande ne
@@ -1143,7 +1143,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   let arret=false, tBlanc=0;
   const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
   ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
-  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav'));
+  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav, #lb'));      // la visionneuse n'est pas « le blanc »
   // avaler=true (clic de souris) : le clic ne doit pas ouvrir l'image qui se trouve dessous. Au toucher on n'avale rien :
   // sur téléphone, c'est ce même toucher qui autorise le son et lance les vidéos, il doit continuer son chemin.
   const sortir=(e, avaler)=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
@@ -1170,6 +1170,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   // à l'arrivée : la première vidéo seule, tout de suite
   const premiere=grille.querySelector('.cell-top');
   if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); }
+  window.__calmerBientot=()=>{ if(!arret) armer(); };      // remet le blanc en route (après un glissement fait par la page elle-même)
   window.__focusSur=(c)=>{
     if(!c) return; const avant=[...grille.querySelectorAll('.cell.focus')];
     c.classList.add('focus','on');
