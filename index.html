@@ -2,17 +2,6 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<script>
-// Du 14 au 21 octobre 2026 (fin le 22 octobre à 0 h, heure de Paris) : l'entrée du site est l'écran ENTER de la page IA.
-// Cette page d'accueil reste accessible par le bouton « Accueil » du menu (lien avec ?accueil) et depuis les autres pages
-// du site. Passé la date, elle redevient l'entrée du site toute seule.
-(function(){ try{
-  if(Date.now() >= Date.parse('2026-10-22T00:00:00+02:00')) return;
-  if(/[?&]accueil\b/.test(location.search)) return;
-  if(document.referrer && new URL(document.referrer).hostname.replace(/^www\./,'') === location.hostname.replace(/^www\./,'')) return;
-  location.replace('/ia/');
-}catch(e){} })();
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- barre du navigateur (téléphone) : blanche, et non teintée par le bleu du haut de la photo -->
 <meta name="theme-color" content="#ffffff">
