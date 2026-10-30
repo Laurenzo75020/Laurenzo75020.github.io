@@ -137,6 +137,12 @@ Deux chantiers liés :
 - Correctifs mobiles : liens qui s'ouvrent au toucher (`auToucher`), trois vidéos réécrites avec l'index en tête,
   affiche de départ et vraie image figée pour le teaser Faces (plus de rectangle noir).
 
+### Écran ENTER (arrivée directe sur la page IA)
+- `ia/index.html` ouverte directement renvoie vers `/?entree` : l'accueil affiche l'écran ENTER et charge la page IA en arrière-plan ; le clic l'affiche (même chemin que depuis l'accueil, pour le son et les vidéos dans Safari). Déplacé là le 30 octobre 2026 : sur l'ancien écran, placé dans la page IA, il a signalé des cadres noirs dans Safari. **Non vérifié dans Safari au moment de la mise en ligne.**
+
+### Page Macro — `macro/index.html`
+- Première mise en page (11 images, `macro/images/`), pas encore dans les menus. Rangées dans le tableau `RANGS`.
+
 ### Page Photo — `photos/index.html`
 - Les photos sont lues dans le dossier `photo/` via l'API GitHub (47 photos ; la première, `-1.jpg`, a été retirée).
 - Mise en page en **bandes composées**, sans recadrage ni trou : des rangées où toutes les images ont la même hauteur, avec
