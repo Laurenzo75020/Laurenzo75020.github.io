@@ -142,7 +142,7 @@ Deux chantiers liés :
 - **Cadres noirs dans Safari (30 octobre 2026), cause non prouvée** : le déplacement de l'écran n'a pas suffi, le défaut persistait. Après avoir quitté Safari (Cmd + Q), tout remarche : accueil → IA, et Macro → IA → ENTER. La page de test (`test-video.html`, sans lien, noindex) lit aussi les vidéos, donc fichiers et serveur sont hors de cause. Piste la plus probable : Safari bloqué après une longue session. Si cela revient : avant de quitter Safari, ouvrir `test-video.html` dans un nouvel onglet. Vidéos normales = défaut dans la page IA ; vidéos absentes = Safari bloqué.
 
 ### Page Macro — `macro/index.html`
-- Première mise en page (11 images, `macro/images/`), pas encore dans les menus. Rangées dans le tableau `RANGS`.
+- Première mise en page (11 images, `macro/images/`), dans le menu de l'accueil sous le nom « Macro IA » depuis le 30 octobre 2026, pas dans les menus des pages IA, Photo et Portfolio. Rangées dans le tableau `RANGS`.
 
 ### Page Photo — `photos/index.html`
 - Les photos sont lues dans le dossier `photo/` via l'API GitHub (47 photos ; la première, `-1.jpg`, a été retirée).
