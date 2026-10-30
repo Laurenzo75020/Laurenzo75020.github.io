@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laurent Bourdoiseau — Macro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#ffffff; --ink:#0a0a0a; --grey:#888; --line:rgba(0,0,0,0.08); --gap:40px; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{ background:var(--bg); color:var(--ink); font-family:'Barlow', sans-serif; }
+    .menu{ position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+    .menu a{ color:var(--ink); text-decoration:none; opacity:.9; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); transition:opacity .2s; }
+    .menu a:hover{ opacity:1; }
+    .section-label{ display:flex; justify-content:space-between; align-items:center; margin-top:calc(9rem + env(safe-area-inset-top)); padding:1.2rem 2rem; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); }
+    /* rangées : une image seule en pleine largeur, ou deux images de même forme, à la même hauteur, sans recadrage */
+    .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:2rem 2rem 5rem; }
+    .rang{ display:flex; gap:var(--gap); }
+    .rang img{ display:block; min-width:0; width:0; height:auto; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
+    .bas{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:0 2rem 3rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+    .bas a{ color:var(--ink); text-decoration:none; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); }
+    footer{ padding:1.5rem 2rem 2.5rem; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); }
+    .lightbox{ position:fixed; inset:0; z-index:500; background:rgba(10,10,10,.86); display:none; align-items:center; justify-content:center; padding:6vh 6vw; cursor:zoom-out; }
+    .lightbox.open{ display:flex; }
+    .lightbox img{ max-width:88vw; max-height:88vh; display:block; box-shadow:0 20px 60px rgba(0,0,0,.5); -webkit-user-drag:none; user-select:none; }
+    @media (max-width:768px){
+      :root{ --gap:12px; }
+      .menu{ position:static; padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0; }
+      .section-label{ margin-top:1.6rem; padding:1rem; }
+      .mur{ padding:1rem 1rem 3rem; }
+      .rang{ flex-direction:column; }
+      .rang img{ width:100% !important; flex:none !important; }
+      .bas{ padding:0 1rem 2rem; }
+      footer{ padding:1rem 1rem 2rem; }
+    }
+  </style>
+  <script src="../lang.js?v=2"></script>
+</head>
+<body>
+  <div class="menu">
+    <a href="../index.html?accueil" data-en="← Home">← Accueil</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="../photos/">Photo</a>
+    <a href="../portfolio/?from=macro">Portfolio</a>
+  </div>
+  <div class="section-label">
+    <span data-en="Macro — AI images">Macro — Images IA</span>
+    <span id="compte"></span>
+  </div>
+  <main class="mur" id="mur" aria-label="Macros"></main>
+  <div class="bas">
+    <a href="../index.html?accueil" data-en="← Home">← Accueil</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="../photos/">Photo</a>
+    <a href="../portfolio/?from=macro">Portfolio</a>
+  </div>
+  <footer>© 2026 Laurent Bourdoiseau</footer>
+  <div class="lightbox" id="lb"><img id="lbImg" src="" alt=""></div>
+  <script>
+    // Chaque ligne est une rangée : [fichier, largeur, hauteur]. Ajouter une image = ajouter une entrée ici.
+    const RANGS=[
+      [['macro_01.jpg',1352,760]],
+      [['macro_02.jpg',1774,1014],['macro_03.jpg',1774,1014]],
+      [['macro_04.jpg',1774,1014],['macro_05.jpg',2000,1143]],
+      [['macro_06.jpg',1352,760]],
+      [['macro_07.jpg',1774,1014],['macro_08.jpg',1774,1014]],
+      [['macro_09.jpg',2000,1171],['macro_10.jpg',2000,1143]],
+      [['macro_11.jpg',1774,1014]],
+    ];
+    const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
+    RANGS.forEach(r=>{
+      const d=document.createElement('div'); d.className='rang';
+      r.forEach(([f,l,h])=>{
+        const im=document.createElement('img'); im.src='images/'+f; im.alt=''; im.width=l; im.height=h; im.loading='lazy';
+        im.style.flex=(l/h)+' 1 0';       // même hauteur dans la rangée, sans recadrer
+        im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
+        d.appendChild(im);
+      });
+      mur.appendChild(d);
+    });
+    document.getElementById('compte').textContent=RANGS.flat().length+' images';
+    lb.addEventListener('click',()=>{ lb.classList.remove('open'); lbImg.src=''; });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') lb.click(); });
+  </script>
+  <script src="/image-protection.js"></script>
+</body>
+</html>
