@@ -273,7 +273,8 @@ body.calme .voir-film { opacity:0 !important; pointer-events:none; }
 .regarder { position:absolute; left:0; right:0; top:70%; transform:translateY(-50%); z-index:5; text-align:center; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:4.6vw; font-size:5.6cqw; line-height:1; letter-spacing:.035em; text-transform:uppercase; white-space:nowrap; color:#fff; text-shadow:0 0 14px rgba(0,0,0,.16); opacity:0; transition:opacity .7s; pointer-events:none; }
 .regarder.on { opacity:1; }
 .cell.cell-top .vimeo-wrap { overflow:hidden; }
-.fleche-suite { position:absolute; right:2px; top:calc(100% + 12px); width:11px; height:20px; pointer-events:none; opacity:.75; }
+.fleche-suite { position:absolute; right:2px; top:calc(100% + 12px); width:11px; height:20px; opacity:.75; }
+.fleche-suite::before { content:''; position:absolute; inset:-14px -16px; }   /* zone de toucher élargie : un doigt sur la flèche ne compte pas comme un toucher sur le blanc */
 .fleche-suite svg { display:block; width:100%; height:100%; }
 .sound-btn { display:none !important; }   /* boutons de son masqués : un seul passage sonore par vidéo */
 .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0); transition:background .3s; cursor:pointer; }
@@ -681,7 +682,7 @@ const sonObs=new IntersectionObserver(entries=>{
 },{threshold:[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1]});
 // Seuls ces gestes sont reconnus par tous les navigateurs, Safari compris, pour autoriser le son
 ['click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,e=>{
-  if(e.target.closest && (e.target.closest('.sound-btn') || e.target.closest('.cell-top'))) return;
+  if(e.target.closest && (e.target.closest('.sound-btn') || (e.target.closest('.cell-top') && !e.target.closest('.fleche-suite')))) return;
   arbitrer(true);
 }));
 document.addEventListener('visibilitychange',()=>arbitrer(false));
@@ -1115,7 +1116,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   let arret=false, tBlanc=0;
   const noter=()=>{ if(document.body.classList.contains('calme')) tBlanc=Date.now(); };
   ['mousemove','mousedown','touchstart'].forEach(ev=>document.addEventListener(ev,noter,{capture:true,passive:true}));
-  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, a, button, nav, #lb'));      // la visionneuse n'est pas « le blanc »
+  const horsVideo=cible=>!(cible && cible.closest && cible.closest('.cell.focus, .fleche-suite, a, button, nav, #lb'));      // la visionneuse n'est pas « le blanc »
   // avaler=true (clic de souris) : le clic ne doit pas ouvrir l'image qui se trouve dessous. Au toucher on n'avale rien :
   // sur téléphone, c'est ce même toucher qui autorise le son et lance les vidéos, il doit continuer son chemin.
   const sortir=(e, avaler)=>{ arret=true; clearTimeout(minuterie); document.body.classList.remove('calme');
