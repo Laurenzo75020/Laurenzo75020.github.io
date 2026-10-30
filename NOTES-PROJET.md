@@ -138,7 +138,8 @@ Deux chantiers liés :
   affiche de départ et vraie image figée pour le teaser Faces (plus de rectangle noir).
 
 ### Écran ENTER (arrivée directe sur la page IA)
-- `ia/index.html` ouverte directement renvoie vers `/?entree` : l'accueil affiche l'écran ENTER et charge la page IA en arrière-plan ; le clic l'affiche (même chemin que depuis l'accueil, pour le son et les vidéos dans Safari). Déplacé là le 30 octobre 2026 : sur l'ancien écran, placé dans la page IA, il a signalé des cadres noirs dans Safari. **Non vérifié dans Safari au moment de la mise en ligne.**
+- `ia/index.html` ouverte directement renvoie vers `/?entree` : l'accueil affiche l'écran ENTER et charge la page IA en arrière-plan ; le clic l'affiche (même chemin que depuis l'accueil, pour le son et les vidéos dans Safari). Déplacé là le 30 octobre 2026.
+- **Cadres noirs dans Safari (30 octobre 2026), cause non prouvée** : le déplacement de l'écran n'a pas suffi, le défaut persistait. Après avoir quitté Safari (Cmd + Q), tout remarche : accueil → IA, et Macro → IA → ENTER. La page de test (`test-video.html`, sans lien, noindex) lit aussi les vidéos, donc fichiers et serveur sont hors de cause. Piste la plus probable : Safari bloqué après une longue session. Si cela revient : avant de quitter Safari, ouvrir `test-video.html` dans un nouvel onglet. Vidéos normales = défaut dans la page IA ; vidéos absentes = Safari bloqué.
 
 ### Page Macro — `macro/index.html`
 - Première mise en page (11 images, `macro/images/`), pas encore dans les menus. Rangées dans le tableau `RANGS`.
