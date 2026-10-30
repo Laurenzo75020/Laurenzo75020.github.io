@@ -2,6 +2,11 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<script>
+// Arrivée directe sur la page IA : on passe par l'écran ENTER de l'accueil, qui ouvre cette page par le chemin éprouvé
+// (page chargée en arrière-plan puis affichée dans le clic : son et vidéos démarrent aussi dans Safari).
+if(window.top===window.self) location.replace('/?entree');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laurent Bourdoiseau</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -304,39 +309,8 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
 </style>
 <script src="../lang.js?v=2"></script>
 <script src="https://player.vimeo.com/api/player.js" defer></script>
-<style>
-/* Écran d'entrée (arrivée directe sur la page IA) : le clic sur ENTER autorise le son du teaser */
-#entree { position:fixed; inset:0; z-index:9000; border:0; padding:0; margin:0; width:100%; height:100%; background:#fff url('../images/entree_ia.jpg?v=2') center/cover no-repeat; display:flex; align-items:center; justify-content:center; cursor:none; transition:opacity .5s ease; touch-action:none; -webkit-tap-highlight-color:transparent; }
-#entree span { font-family:'Barlow',sans-serif; font-weight:400; font-size:1.05rem; letter-spacing:.42em; text-indent:.42em; text-transform:uppercase; color:#fff; border:1.5px solid #fff; padding:1.05rem 3.4rem; text-shadow:0 0 12px rgba(0,0,0,.25); box-shadow:0 0 14px rgba(0,0,0,.12), inset 0 0 14px rgba(0,0,0,.08); transition:background .3s; }
-#entree:hover span { background:rgba(255,255,255,.12); }
-#entree.parti { opacity:0; pointer-events:none; }
-body.calme #entree:not(.parti) { opacity:1 !important; pointer-events:auto !important; }   /* le blanc n'efface pas l'écran d'entrée */
-@media (max-width:768px){ #entree { background-size:100% auto; }   /* téléphone : l'image entière, sur toute la largeur, sur fond blanc */ #entree span { font-size:.9rem; padding:.9rem 2.6rem; } }
-</style>
 </head>
 <body>
-<button id="entree" type="button" aria-label="Enter"><span>Enter</span></button>
-<script>
-// affichée seulement quand on arrive directement sur la page IA ; par l'accueil (page incrustée), le clic d'entrée a déjà eu lieu
-if(window.top!==window.self){ document.getElementById('entree').remove(); }
-else {
-  window.__entree=true; window.__enSommeil=true;     // rien ne se lance avant le clic sur ENTER (le teaser n'est lu qu'une fois)
-  // Toute la page est sensible, dès son affichage (même avant la fin du chargement). Sur téléphone, un toucher qui bouge
-  // un peu compte quand même (jusqu'à 40 px), et l'écran d'entrée ne fait pas défiler la page qui est derrière.
-  (function(){
-    const e=document.getElementById('entree'); let x0=0, y0=0, fait=false;
-    // l'écran disparaît d'un coup, AVANT le lancement des vidéos : Safari refuse de lire une vidéo encore recouverte
-    // (pendant un fondu, elle est cachée à ses yeux) ; puis une relance de sécurité, une fois la page bien visible
-    const entrer=()=>{ if(fait) return; fait=true; e.style.display='none'; e.remove();
-      if(typeof window.entrerAvecSon==='function') window.entrerAvecSon(); else window.__entrerDesQuePret=true;
-      [400,1200].forEach(ms=>setTimeout(()=>{ try{ if(typeof relancer==='function') relancer(); if(typeof mesurer==='function') mesurer(); }catch(err){} },ms)); };
-    e.addEventListener('touchstart',ev=>{ const p=ev.touches[0]; x0=p.clientX; y0=p.clientY; },{passive:true});
-    e.addEventListener('touchmove',ev=>{ ev.preventDefault(); },{passive:false});
-    e.addEventListener('touchend',ev=>{ const p=ev.changedTouches[0]; if(Math.abs(p.clientX-x0)>40 || Math.abs(p.clientY-y0)>40) return; if(ev.cancelable) ev.preventDefault(); entrer(); });
-    e.addEventListener('click',ev=>{ ev.stopPropagation(); entrer(); });
-  })();
-}
-</script>
 
 <div id="c1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="0 0 12 18" shape-rendering="crispEdges"><polygon points="0,0 0,14 3,11 5,16 7,15 5,10 8,10" fill="white"/><polygon points="0,0 0,14 3,11 5,16 7,15 5,10 8,10" fill="none" stroke="black" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
 <div id="c2"></div>
@@ -692,7 +666,7 @@ function arbitrer(geste){
 // La page d'accueil charge cette page en arrière-plan ; au clic sur « IA », elle l'affiche et appelle entrerAvecSon()
 // dans le même clic : c'est ce qui permet au son de démarrer tout seul, y compris dans Safari.
 const INCRUSTEE = window.top!==window.self;
-window.__enSommeil = INCRUSTEE || !!window.__entree;      // chargée en arrière-plan, ou derrière l'écran d'entrée : aucun son tant qu'elle n'est pas affichée
+window.__enSommeil = INCRUSTEE;      // chargée en arrière-plan, ou derrière l'écran d'entrée : aucun son tant qu'elle n'est pas affichée
 if(INCRUSTEE){
   const base=document.createElement('base'); base.target='_top'; document.head.appendChild(base);
   document.addEventListener('click',e=>{
@@ -701,8 +675,6 @@ if(INCRUSTEE){
   });
 }
 window.entrerAvecSon=()=>{ window.__enSommeil=false; if(window.__reposInitial) window.__reposInitial(); relancer(); if(window.__allerALaVideo) window.__allerALaVideo(); mesurer(); arbitrer(true); };
-// arrivée directe : ENTER touché avant la fin du chargement de la page → on entre maintenant (le son peut alors rester coupé jusqu'au geste suivant)
-if(window.__entrerDesQuePret) window.entrerAvecSon();
 window.sortirEnSilence=()=>{ window.__enSommeil=true; document.querySelectorAll('video').forEach(v=>{ v.muted=true; v.pause(); }); sonores.forEach(o=>o.maj()); if(typeof closeLb==='function') closeLb(); };
 const sonObs=new IntersectionObserver(entries=>{
   mesurer();

@@ -249,6 +249,9 @@
 </style>
 </head>
 <body>
+<script>
+if(/[?&]entree\b/.test(location.search)) document.write('<style>#entree{position:fixed;inset:0;z-index:10000;border:0;padding:0;margin:0;width:100%;height:100%;background:#fff url(images/entree_ia.jpg?v=2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}#entree span{font-family:Barlow,sans-serif;font-weight:400;font-size:1.05rem;letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;color:#fff;border:1.5px solid #fff;padding:1.05rem 3.4rem;text-shadow:0 0 12px rgba(0,0,0,.25);box-shadow:0 0 14px rgba(0,0,0,.12),inset 0 0 14px rgba(0,0,0,.08);transition:background .3s}#entree:hover span{background:rgba(255,255,255,.12)}@media (max-width:768px){#entree{background-size:100% auto}#entree span{font-size:.9rem;padding:.9rem 2.6rem}}</style><button id="entree" type="button" aria-label="Enter"><span>Enter</span></button>');
+</script>
 
   <div id="scenes">
     <!-- Accueil actuel : une seule image plein écran -->
@@ -468,6 +471,7 @@
     (function(){
       var lien=document.querySelector('nav.choice a.ia'); if(!lien) return;
       var cadre=null, pret=false, ouvert=false, titreAccueil=document.title;
+      var attente=false, entree=document.getElementById('entree');
       function preparer(){
         cadre=document.createElement('iframe');
         cadre.src='ia/';
@@ -475,7 +479,7 @@
         cadre.setAttribute('allowfullscreen','');
         cadre.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:9999;background:#fff;display:none;';
         // prête dès que son script est chargé, sans attendre toutes ses vidéos (sinon un clic rapide sur « IA » passait à côté)
-        var guet=setInterval(function(){ try{ if(typeof cadre.contentWindow.entrerAvecSon==='function' && cadre.contentDocument.querySelector('.cell-top video')){ pret=true; clearInterval(guet); } }catch(e){} },150);
+        var guet=setInterval(function(){ try{ if(typeof cadre.contentWindow.entrerAvecSon==='function' && cadre.contentDocument.querySelector('.cell-top video')){ pret=true; clearInterval(guet); if(attente){ attente=false; lien.click(); } } }catch(e){} },150);
         document.body.appendChild(cadre);
       }
       function fermer(){
@@ -492,6 +496,15 @@
         history.pushState({ia:true},'','ia/');
         try{ cadre.contentWindow.focus(); }catch(err){}
       });
+      // écran ENTER (lien direct vers la page IA) : tout l'écran réagit, dès son affichage ; un doigt qui bouge un peu compte
+      if(entree){
+        var x0=0, y0=0, fait=false;
+        var entrer=function(){ if(fait) return; fait=true; entree.parentNode.removeChild(entree); if(pret) lien.click(); else attente=true; };
+        entree.addEventListener('touchstart',function(ev){ x0=ev.touches[0].clientX; y0=ev.touches[0].clientY; },{passive:true});
+        entree.addEventListener('touchmove',function(ev){ ev.preventDefault(); },{passive:false});
+        entree.addEventListener('touchend',function(ev){ var p=ev.changedTouches[0]; if(Math.abs(p.clientX-x0)>40 || Math.abs(p.clientY-y0)>40) return; if(ev.cancelable) ev.preventDefault(); entrer(); });
+        entree.addEventListener('click',function(ev){ ev.stopPropagation(); entrer(); });
+      }
       // un clic sur la photo mène aussi à la page IA (par le même chemin, donc avec le son)
       var photo=document.querySelector('.scene.still');
       if(photo){ photo.style.cursor='pointer'; photo.addEventListener('click',function(e){ if(e.target.closest('a')) return; lien.click(); }); }
