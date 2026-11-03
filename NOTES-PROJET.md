@@ -142,7 +142,10 @@ Deux chantiers liés :
 - **Cadres noirs dans Safari (30 octobre 2026), cause non prouvée** : le déplacement de l'écran n'a pas suffi, le défaut persistait. Après avoir quitté Safari (Cmd + Q), tout remarche : accueil → IA, et Macro → IA → ENTER. La page de test (`test-video.html`, sans lien, noindex) lit aussi les vidéos, donc fichiers et serveur sont hors de cause. Piste la plus probable : Safari bloqué après une longue session. Si cela revient : avant de quitter Safari, ouvrir `test-video.html` dans un nouvel onglet. Vidéos normales = défaut dans la page IA ; vidéos absentes = Safari bloqué.
 
 ### Page Macro — `macro/index.html`
-- Première mise en page (11 images, `macro/images/`), accessible seulement depuis les menus de la page IA (en haut et en bas), sous le nom « New série » (anglais : « New series »), depuis le 3 novembre 2026. Retirée du menu de l'accueil le même jour. Rangées dans le tableau `RANGS`.
+- Première mise en page (11 images, `macro/images/`), accessible seulement depuis les menus de la page IA (en haut et en bas), sous le nom « Macro IA » (anglais : « AI Macro »). Retirée du menu de l'accueil le 3 novembre 2026.
+
+### Page New série — `serie/index.html`
+- Créée le 3 novembre 2026 : les 30 images du dossier `Def` du Bureau (série aux visages couverts de gélules), copiées dans `serie/images/serie_01..30.jpg` dans l'ordre du dossier, deux par rangée (même modèle que la page Macro, tableau `RANGS`). Onglet « New série » (anglais : « New series ») dans les menus de la page IA, après « Macro IA ». Première mise en page, ordre et paires à valider avec lui. Rangées dans le tableau `RANGS`.
 
 ### Page Photo — `photos/index.html`
 - Les photos sont lues dans le dossier `photo/` via l'API GitHub (47 photos ; la première, `-1.jpg`, a été retirée).
