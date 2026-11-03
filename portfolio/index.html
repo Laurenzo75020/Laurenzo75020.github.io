@@ -265,6 +265,12 @@
     }
 
     async function fetchFolder(url){
+      // d'abord la liste publiée avec le site (photo/…/liste.json, voir _outils/listes.py) : GitHub limite ses réponses
+      // à 60 par heure et par visiteur ; on ne lui demande le dossier que si la liste manque
+      try{
+        const r = await fetch('../photo/' + url.slice(API_BASE.length) + '/liste.json?t=' + Date.now(), { cache:"no-store" });
+        if(r.ok) return r.json();
+      }catch(e){}
       const res = await fetch(url + '?t=' + Date.now(), { cache:"no-store" });
       if(!res.ok) throw new Error("API error " + res.status);
       return res.json();

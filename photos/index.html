@@ -211,7 +211,10 @@
       const gallery = document.getElementById('gallery');
       const countEl = document.getElementById('photoCount');
       try {
-        const res = await fetch(REPO_API + '?t=' + Date.now(), { cache: "no-store" });
+        // d'abord la liste publiée avec le site (photo/liste.json, voir _outils/listes.py) : GitHub limite ses réponses
+        // à 60 par heure et par visiteur ; on ne lui demande le dossier que si la liste manque
+        let res = await fetch('../photo/liste.json?t=' + Date.now(), { cache: "no-store" }).catch(() => null);
+        if (!res || !res.ok) res = await fetch(REPO_API + '?t=' + Date.now(), { cache: "no-store" });
         if (!res.ok) throw new Error("API error " + res.status);
         const files = await res.json();
 

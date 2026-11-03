@@ -282,3 +282,7 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 ### Bandeau et retour vers la page IA (3 novembre 2026)
 - Bandeau gris (titre de section + nombre d'images, entre deux filets) retiré des pages Photo, Macro et New série, à sa demande.
 - `ia/index.html` : l'écran ENTER n'apparaît plus quand on vient d'une autre page du site (test sur `document.referrer`, même domaine avec ou sans www). Seule une arrivée directe (lien reçu, favori) passe encore par `/?entree`. Sans ENTER, les vidéos démarrent muettes et le son vient au premier clic ou toucher.
+
+### Listes d'images Photo et Portfolio (3 novembre 2026)
+- « Erreur de chargement » sur le Portfolio : les pages demandaient la liste des images à GitHub, limité à 60 demandes par heure et par visiteur. Elles lisent maintenant `photo/liste.json`, `photo/book/liste.json` et `photo/book-mobile/liste.json` (GitHub seulement en secours si la liste manque).
+- **Après tout ajout, retrait ou remplacement d'image** dans `photo/`, `photo/book/` ou `photo/book-mobile/` : lancer `python3 _outils/listes.py` et committer les listes avec les images. Sinon l'image n'apparaît pas (ou l'ancienne version reste).
