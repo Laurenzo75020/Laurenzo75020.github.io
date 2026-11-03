@@ -14,9 +14,8 @@
     .menu{ position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .menu a{ color:var(--ink); text-decoration:none; opacity:.9; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); transition:opacity .2s; }
     .menu a:hover{ opacity:1; }
-    .section-label{ display:flex; justify-content:space-between; align-items:center; margin-top:calc(9rem + env(safe-area-inset-top)); padding:1.2rem 2rem; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--grey); }
     /* rangées : une image seule en pleine largeur, ou deux images de même forme, à la même hauteur, sans recadrage */
-    .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:2rem 2rem 5rem; }
+    .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:calc(9rem + env(safe-area-inset-top)) 2rem 5rem; }
     .rang{ display:flex; gap:var(--gap); }
     .rang img{ display:block; min-width:0; width:0; height:auto; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
     .bas{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:0 2rem 3rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
@@ -28,8 +27,7 @@
     @media (max-width:768px){
       :root{ --gap:12px; }
       .menu{ position:static; padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0; }
-      .section-label{ margin-top:1.6rem; padding:1rem; }
-      .mur{ padding:1rem 1rem 3rem; }
+      .mur{ padding:1.6rem 1rem 3rem; }
       .rang{ flex-direction:column; }
       .rang img{ width:100% !important; flex:none !important; }
       .bas{ padding:0 1rem 2rem; }
@@ -44,10 +42,6 @@
     <a href="../ia/" data-en="AI">IA</a>
     <a href="../photos/">Photo</a>
     <a href="../portfolio/?from=macro">Portfolio</a>
-  </div>
-  <div class="section-label">
-    <span data-en="Macro — AI images">Macro — Images IA</span>
-    <span id="compte"></span>
   </div>
   <main class="mur" id="mur" aria-label="Macros"></main>
   <div class="bas">
@@ -80,7 +74,6 @@
       });
       mur.appendChild(d);
     });
-    document.getElementById('compte').textContent=RANGS.flat().length+' images';
     lb.addEventListener('click',()=>{ lb.classList.remove('open'); lbImg.src=''; });
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') lb.click(); });
   </script>

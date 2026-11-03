@@ -69,20 +69,6 @@
     .lang-toggle svg{ display:block; width:24px; height:16px; flex:none; box-shadow:0 0 0 1px rgba(0,0,0,.2); }
     .tag{ font-family:'Barlow', sans-serif; font-weight:400; font-size:0.88rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--ink); padding:0.32rem 0.9rem; }
 
-    .section-label{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:1.2rem 2rem;
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-      font-family:'Barlow', sans-serif;
-      font-size:0.72rem;
-      letter-spacing:0.12em;
-      text-transform:uppercase;
-      color:var(--grey);
-    }
-
     .gallery{
       display:block;
       --gal-gap:40px;
@@ -200,11 +186,6 @@
     </div>
   </div>
 
-  <div class="section-label">
-    <span data-en="Photography — Paris">Photographie — Paris</span>
-    <span id="photoCount"></span>
-  </div>
-
   <main class="gallery" id="gallery" aria-label="Galerie photographie">
     <p class="loading" data-en="Loading…">Chargement…</p>
   </main>
@@ -245,7 +226,7 @@
           return;
         }
 
-        countEl.textContent = images.length + (images.length > 1 ? " photos" : " photo");
+        if (countEl) countEl.textContent = images.length + (images.length > 1 ? " photos" : " photo");
 
         // Les 3 colonnes ont la même largeur : on répartit chaque image dans la
         // colonne la plus courte (masonry), à égalité on privilégie toujours la
