@@ -13,6 +13,13 @@ for dossier in ['photo', 'photo/book', 'photo/book-mobile']:
     shas = subprocess.run(['git', 'hash-object'] + [os.path.join(chemin, n) for n in noms],
                           capture_output=True, text=True, check=True).stdout.split()
     liste = [{'name': n, 'type': 'file', 'sha': s} for n, s in zip(noms, shas)]
+    if dossier == 'photo':
+        # photos marquées d'un tag dans le Finder (n'importe quelle couleur) : à montrer en grand sur la page Photo.
+        # Le tag reste sur le Mac et ne part pas en ligne : on l'inscrit donc dans la liste.
+        for e in liste:
+            t = subprocess.run(['mdls', '-raw', '-name', 'kMDItemUserTags', os.path.join(chemin, e['name'])],
+                               capture_output=True, text=True).stdout.strip()
+            if t and t != '(null)': e['grand'] = True
     with open(os.path.join(chemin, 'liste.json'), 'w', encoding='utf-8') as f:
         json.dump(liste, f, ensure_ascii=False, indent=0)
     print(dossier, len(liste))

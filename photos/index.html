@@ -245,7 +245,7 @@
           el.addEventListener('click', () => openLightbox(el.src));
           const settle = () => {
             const ratio = (el.naturalWidth && el.naturalHeight) ? el.naturalWidth / el.naturalHeight : 1;
-            resolve({ el, ratio });
+            resolve({ el, ratio, grand: !!img.grand });
           };
           el.addEventListener('load', settle);
           el.addEventListener('error', settle);
@@ -313,11 +313,37 @@
             return null;
           };
           // une simple rangée d'au moins « mini » images : la plus courte où aucun petit fichier ne dépasse 350 px
-          const enRangee = mini => { const rest = loaded.length - i, haut = Math.min(rest, 5); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
+          const enRangee = mini => { const rest = borne() - i, haut = Math.min(rest, 5); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
           // ordinateur : la galerie s'ouvre toujours sur une simple rangée de quatre photos côte à côte (son choix)
           if (!tel && loaded.length >= 4) { bandes.push({ arbre: rangee(4), images: loaded.slice(0, 4) }); i = 4; tour = 1; }
+          // Photos marquées « en grand » (tag du Finder, inscrit dans photo/liste.json par _outils/listes.py). Les bandes
+          // ordinaires s'arrêtent juste avant la prochaine d'entre elles, qui ouvre sa propre bande.
+          const borne = () => { for (let n = i; n < loaded.length; n++) if (loaded[n].grand) return n; return loaded.length; };
+          let cote = 0;
+          // une grande photo : à côté d'elle, quatre photos ordinaires en deux rangées de deux (deux si la place manque),
+          // une fois à droite, une fois à gauche ; deux grandes qui se suivent se partagent la largeur, côte à côte.
+          // Les une ou deux photos ordinaires qui la précèdent (trop peu pour une bande) rejoignent ses voisines.
+          const bandeGrande = avant => {
+            const t = i + avant.length, T = loaded[t];
+            if (tel) return { arbre: 0, images: [T], grand: true, prises: avant.length + 1, avant };
+            if (avant.length === 0 && t + 1 < loaded.length && loaded[t + 1].grand)
+              return { arbre: H(0, 1), images: [T, loaded[t + 1]], grand: true, prises: 2 };
+            const voisins = avant.slice(); let n = t + 1;
+            while (voisins.length < 4 && n < loaded.length && !loaded[n].grand) voisins.push(loaded[n++]);
+            if (voisins.length === 3 && avant.length < 3) { voisins.pop(); }     // trois ne s'arrangent pas : deux
+            const pile = voisins.length >= 4 ? V(H(1, 2), H(3, 4)) : voisins.length >= 2 ? V(1, 2) : voisins.length === 1 ? 1 : null;
+            const gauche = avant.length ? false : (cote++ % 2 === 0);              // ses voisines d'avant restent à sa gauche
+            const arbre = pile === null ? 0 : (gauche ? H(0, pile) : H(pile, 0));
+            return { arbre, images: [T, ...voisins.slice(0, 4)], grand: true, prises: 1 + Math.min(voisins.length, 4) };
+          };
           while (i < loaded.length) {
-            const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
+            const fin_ = borne();
+            if (fin_ - i < 3 && fin_ < loaded.length) {
+              const b = bandeGrande(loaded.slice(i, fin_));
+              if (tel && b.avant && b.avant.length) { bandes.push({ arbre: b.avant.length === 1 ? 0 : H(0, 1), images: b.avant }); }
+              bandes.push(b); i += b.prises; continue;
+            }
+            const rest = fin_ - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
             const j = loaded.slice(i, i + envie).findIndex(large_);
             let bande = null;
             if (j >= 0 && j < 3) {
@@ -339,7 +365,7 @@
           }
           // fin de galerie : jamais une ou deux images seules en très grand ; elles rejoignent la bande d'avant, en rangées
           const fin = bandes[bandes.length - 1];
-          if (!tel && bandes.length > 1 && fin.images.length < 3 && !fin.images.some(large_)) {
+          if (!tel && bandes.length > 1 && fin.images.length < 3 && !fin.images.some(large_) && !fin.grand && !bandes[bandes.length - 2].grand) {
             const tout = bandes.splice(-2).flatMap(b => b.images), n = tout.length;
             const parts = n <= 6 ? [[n]] : [[Math.ceil(n / 2), Math.floor(n / 2)], [Math.floor(n / 2), Math.ceil(n / 2)], [n]];
             const choix = parts.find(p => { let d = 0; return p.every(k => { const lot = tout.slice(d, d + k); d += k; return convient(rangee(k), lot); }); }) || parts[parts.length - 1];

@@ -290,3 +290,7 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 
 ### Menu des pages intérieures (4 novembre 2026)
 - Toutes les pages sauf l'accueil ont le même menu, en haut et en bas, dans cet ordre : ← Accueil, Photo, Portfolio, IA, Macro IA, New série (pages `ia`, `photos`, `macro`, `serie`, `serie/essai.html`, `portfolio`). Sur sa propre page, l'onglet remonte en haut. Le menu du haut est **en ligne** (et non plus en colonne) sur toutes ces pages : six onglets en colonne couvraient le texte de présentation de la page IA, la mention « English version » et le haut des premières images. Le bouton Sound off/on de la page IA garde sa hauteur d'avant (150 px au moins).
+
+### Photos « en grand » (4 novembre 2026)
+- Il pose un tag du Finder (n'importe quelle couleur, aujourd'hui jaune) sur les photos de `photo/` qu'il veut voir en grand. `_outils/listes.py` lit ces tags et ajoute `"grand": true` dans `photo/liste.json` (le tag lui-même ne part pas en ligne) : relancer le script après tout changement de tag.
+- Page Photo, ordinateur : la première ligne reste une simple rangée de quatre. Une photo taguée ouvre sa bande, à côté de quatre photos ordinaires en deux rangées de deux (à droite puis à gauche) ; deux taguées qui se suivent sont côte à côte. Téléphone : une taguée occupe seule la largeur.
