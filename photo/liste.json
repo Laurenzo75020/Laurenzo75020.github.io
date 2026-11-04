@@ -61,9 +61,9 @@
 "sha": "024270ea5b6562e2010ad401b9d9de8a3c82de41"
 },
 {
-"name": "12b.jpg",
+"name": "12c.jpg",
 "type": "file",
-"sha": "31a11237d11047d373027c94d9e60f6c47ddfca2"
+"sha": "6453e3866c03d54f7d4de6ea2f1966a40685be8a"
 },
 {
 "name": "13.jpg",
@@ -137,7 +137,8 @@
 {
 "name": "24.jpg",
 "type": "file",
-"sha": "92bda2ebafbbf4cbd02d0a215de1be6d3f060586"
+"sha": "92bda2ebafbbf4cbd02d0a215de1be6d3f060586",
+"grand": true
 },
 {
 "name": "25.jpg",
@@ -150,9 +151,9 @@
 "sha": "82d9cc2273da8ee00de88d58dc18afa8754276b5"
 },
 {
-"name": "28.jpg",
+"name": "28b.jpg",
 "type": "file",
-"sha": "07ea87c7bac98cd4d774a1a59954a9e185115fb1"
+"sha": "7aca89564b56901ef806043ce65ab8e1ca055db4"
 },
 {
 "name": "29 2.jpg",
