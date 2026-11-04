@@ -60,12 +60,12 @@
     // à la même hauteur, V(...) = empilées à la même largeur ; les tailles sont calculées pour que tout tombe juste.
     const I=(f,l,h)=>({f,l,h}), H=(...c)=>({t:'H',c}), V=(...c)=>({t:'V',c});
     const COMPO=[
+      H(I('serie_06.jpg',1344,1111), I('serie_07.jpg',1344,768)),
       H(I('serie_02.jpg',1344,768), I('serie_03.jpg',1344,768)),
-      H(V(I('serie_04.jpg',1344,768), I('serie_05.jpg',1344,768)), I('serie_06.jpg',1344,1111)),
-      H(I('serie_07.jpg',1344,768), I('serie_08.jpg',1344,768), I('serie_09.jpg',1344,768)),
-      H(I('serie_10.jpg',1344,768), V(I('serie_12.jpg',1344,1111), I('serie_13.jpg',1344,1111))),
+      H(V(I('serie_04.jpg',1344,768), I('serie_05.jpg',1344,768)), V(I('serie_12.jpg',1344,1111), I('serie_13.jpg',1344,1111))),
+      H(I('serie_08.jpg',1344,768), I('serie_09.jpg',1344,768), I('serie_10.jpg',1344,768)),
       H(I('serie_15.jpg',1344,1111), I('serie_16.jpg',1344,1111), I('serie_17.jpg',1344,1111)),
-      H(V(I('serie_18.jpg',1344,768), I('serie_24.jpg',1344,768)), I('serie_20.jpg',1164,1222)),
+      H(I('serie_24.jpg',1344,768), I('serie_20.jpg',1164,1222)),
       H(I('serie_22.jpg',1344,1222), I('serie_25.jpg',1344,1222), I('serie_27.jpg',1344,1222)),
       H(I('serie_26.jpg',1344,1222), V(I('serie_28.jpg',1344,768), I('serie_30.jpg',1344,768))),
     ];
