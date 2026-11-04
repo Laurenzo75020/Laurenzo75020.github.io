@@ -93,9 +93,12 @@
   .scene.still.plein .bg-half{ display:none; }
   .scene.still.plein::before{
     content:""; position:absolute; inset:0;
-    background-image:url(accueil-colonne.jpg); background-repeat:no-repeat;
-    background-size:var(--iw) calc(var(--iw) * 0.8381);
-    background-position:calc(var(--gx) - var(--iw) * 0.447) calc(var(--gy) - var(--iw) * 0.8381 * 0.345);
+    /* depuis le 4 novembre 2026 : les baigneurs (photo verticale), plein cadre ; sur ordinateur on voit la bande du milieu,
+       des hanches aux genoux. L'ancienne image (accueil-colonne.jpg, calée par --iw, --gx, --gy) est gardée de côté :
+       background-image:url(accueil-colonne.jpg); background-size:var(--iw) calc(var(--iw) * 0.8381);
+       background-position:calc(var(--gx) - var(--iw) * 0.447) calc(var(--gy) - var(--iw) * 0.8381 * 0.345); */
+    background-image:url(accueil-baigneurs.jpg); background-repeat:no-repeat;
+    background-size:cover; background-position:center 38%;
   }
   .scene.still.plein .signature{ color:#fff; }
 
@@ -256,7 +259,7 @@ if(/[?&]entree\b/.test(location.search)) document.write('<style>#entree{position
   <div id="scenes">
     <!-- Accueil actuel : une seule image plein écran -->
     <section class="scene still plein">
-      <img class="bg-half" src="accueil-colonne.jpg" alt="">
+      <img class="bg-half" src="accueil-baigneurs.jpg" alt="">
       <div class="signature">Laurent Bourdoiseau</div>
     </section>
 
