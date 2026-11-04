@@ -286,3 +286,6 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 ### Listes d'images Photo et Portfolio (3 novembre 2026)
 - « Erreur de chargement » sur le Portfolio : les pages demandaient la liste des images à GitHub, limité à 60 demandes par heure et par visiteur. Elles lisent maintenant `photo/liste.json`, `photo/book/liste.json` et `photo/book-mobile/liste.json` (GitHub seulement en secours si la liste manque).
 - **Après tout ajout, retrait ou remplacement d'image** dans `photo/`, `photo/book/` ou `photo/book-mobile/` : lancer `python3 _outils/listes.py` et committer les listes avec les images. Sinon l'image n'apparaît pas (ou l'ancienne version reste).
+
+### Menu des pages intérieures (4 novembre 2026)
+- Toutes les pages sauf l'accueil ont le même menu, en haut et en bas, dans cet ordre : ← Accueil, Photo, Portfolio, IA, Macro IA, New série (pages `ia`, `photos`, `macro`, `serie`, `serie/essai.html`, `portfolio`). Sur sa propre page, l'onglet remonte en haut. Sur le Portfolio, le menu est en ligne (en colonne, il couvrirait la page du book).

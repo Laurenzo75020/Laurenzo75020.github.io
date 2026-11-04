@@ -26,8 +26,8 @@
     right:calc(2rem + env(safe-area-inset-right));
     z-index:200;
     display:flex;
-    flex-direction:column;
-    align-items:flex-end;
+    flex-wrap:wrap;              /* en ligne : en colonne, le menu couvrirait la page du book */
+    justify-content:flex-end;
     gap:0.5rem;
     font-weight:600;
     font-size:0.85rem;
@@ -179,7 +179,11 @@
     .top-menu{
       top:calc(0.4rem + env(safe-area-inset-top));
       right:calc(1.25rem + env(safe-area-inset-right));
+      left:calc(1.25rem + env(safe-area-inset-left));
+      gap:0.35rem;
+      font-size:0.7rem;
     }
+    .top-menu a{ padding:0.3rem 0.5rem; }
 
     .arrow.prev{ display:none; }
     .arrow.next,
@@ -218,7 +222,12 @@
 <body>
 
   <div class="top-menu">
-    <a href="../index.html?accueil" id="homeLink">← Accueil</a>
+    <a href="../index.html?accueil" data-en="← Home">← Accueil</a>
+    <a href="../photos/">Photo</a>
+    <a href="../portfolio/?from=portfolio">Portfolio</a>
+    <a href="../ia/" data-en="AI">IA</a>
+    <a href="../macro/" data-en="AI Macro">Macro IA</a>
+    <a href="../serie/" data-en="New series">New série</a>
   </div>
   <div class="counter-wrap" id="counterWrap">
     <div class="counter" id="counter"></div>
