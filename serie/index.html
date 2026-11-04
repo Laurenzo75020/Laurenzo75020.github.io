@@ -11,7 +11,7 @@
     :root{ --bg:#ffffff; --ink:#0a0a0a; --grey:#888; --line:rgba(0,0,0,0.08); --gap:40px; }
     *{ margin:0; padding:0; box-sizing:border-box; }
     body{ background:var(--bg); color:var(--ink); font-family:'Barlow', sans-serif; }
-    .menu{ position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
+    .menu{ position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.5rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .menu a{ color:var(--ink); text-decoration:none; opacity:.9; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); transition:opacity .2s; }
     .menu a:hover{ opacity:1; }
     /* rangées : une image seule en pleine largeur, ou deux images de même forme, à la même hauteur, sans recadrage */

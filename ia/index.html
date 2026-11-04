@@ -28,7 +28,7 @@ nav { display:flex; }
 nav a, .nav-right a { font-family:'Barlow',sans-serif; font-weight:400; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; color:var(--ink); padding:.4rem 1.2rem; opacity:.5; transition:opacity .2s; }
 nav a:hover, .nav-right a:hover { opacity:1; }
 .name-hero { padding:5.4rem 0 0; }
-.top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
+.top-nav { position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.5rem; font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; -webkit-transform:translate3d(0,0,0); transform:translate3d(0,0,0); will-change:transform; backface-visibility:hidden; }
 .top-nav a { color:var(--ink); text-decoration:none; opacity:.9; transition:opacity .2s; background:rgba(255,255,255,0.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,0.12); }
 .top-nav a:hover { opacity:1; }
 /* ordinateur : « Sound off » sous le menu, plus espacé ; visible seulement quand une vidéo joue avec le son ; reste visible pendant le blanc */
@@ -650,7 +650,7 @@ function arbitrer(geste){
 (function(){
   const b=document.createElement('button'); b.id='sonGeneral'; b.type='button'; document.body.appendChild(b);
   const libelle=()=>{ b.textContent=(typeof window.t==='function') ? (sonCoupe ? window.t('Remettre le son','Sound on') : window.t('Couper le son','Sound off')) : (sonCoupe ? 'Remettre le son' : 'Couper le son'); };
-  const placer=()=>{ const l=document.querySelector('.top-nav a:last-child'); if(l){ const r=l.getBoundingClientRect(); if(r.height) b.style.top=(r.bottom+32)+'px'; } };
+  const placer=()=>{ const l=document.querySelector('.top-nav a:last-child'); if(l){ const r=l.getBoundingClientRect(); if(r.height) b.style.top=Math.max(r.bottom+32,150)+'px'; } };
   const actualiser=()=>{
     const lbOuvert=document.getElementById('lb').classList.contains('on');
     const joue=sonores.some(o=>!o.vid.muted && !o.vid.paused);
