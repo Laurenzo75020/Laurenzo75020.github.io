@@ -326,8 +326,14 @@
           const bandeGrande = avant => {
             const t = i + avant.length, T = loaded[t];
             if (tel) return { arbre: 0, images: [T], grand: true, prises: avant.length + 1, avant };
-            if (avant.length === 0 && t + 1 < loaded.length && loaded[t + 1].grand)
+            if (avant.length === 0 && t + 1 < loaded.length && loaded[t + 1].grand) {
+              // trois grandes de suite : la première en très grand, les deux autres empilées à côté
+              if (t + 2 < loaded.length && loaded[t + 2].grand) {
+                const g3 = cote++ % 2 === 0;
+                return { arbre: g3 ? H(0, V(1, 2)) : H(V(1, 2), 0), images: [T, loaded[t + 1], loaded[t + 2]], grand: true, prises: 3 };
+              }
               return { arbre: H(0, 1), images: [T, loaded[t + 1]], grand: true, prises: 2 };
+            }
             const voisins = avant.slice(); let n = t + 1;
             while (voisins.length < 4 && n < loaded.length && !loaded[n].grand) voisins.push(loaded[n++]);
             if (voisins.length === 3 && avant.length < 3) { voisins.pop(); }     // trois ne s'arrangent pas : deux
@@ -355,6 +361,7 @@
               const tailles = [envie, envie + 1, envie - 1, 6, 5, 4, 7, 3, 2, 1].filter((k, n, t) => k >= (tel ? 1 : 3) && k <= Math.min(limite, max) && t.indexOf(k) === n);
               for (const k of tailles) {
                 const apres = rest - k;
+                if (fin_ < loaded.length && apres > 0 && apres < 3) continue;     // ne pas laisser une ou deux photos seules devant une grande
                 if (apres === 1 && !large_(loaded[i + k])) continue;               // jamais un portrait seul à la fin
                 if (loaded.slice(i, i + k).some(large_)) continue;
                 bande = essayer(k); if (bande) break;
