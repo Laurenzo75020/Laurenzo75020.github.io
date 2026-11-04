@@ -101,9 +101,8 @@ Deux chantiers liés :
   Téléphone (écran vertical) : plein cadre (`cover`, calé à 38 % de la hauteur). Ordinateur (`min-aspect-ratio:1/1`) :
   depuis le 4 novembre 2026 (après-midi), une autre photo : `accueil-velo.jpg` (le vélo bleu au coucher de soleil sur la
   Seine, « IMG_8468b copie 3 » du Bureau, 2219 × 1543), en `cover` calé à droite (il privilégie le vélo, la gauche peut
-  être coupée). Avant : son recadrage des baigneurs `accueil-baigneurs-large.jpg` (gardé), calé à « center 40% ». Sur tout l'écran sauf une bande noire à droite large comme une marge
-  (`--marge:12.5rem`, 200 px), où se trouve le menu. Une première version (photo entière, la moitié de l'écran en noir)
-  laissait trop de noir.
+  être coupée). Avant : son recadrage des baigneurs `accueil-baigneurs-large.jpg` (gardé), calé à « center 40% », avec une bande noire à droite pour
+  le menu. Avec la photo du vélo, plus de bande noire (sa demande) : la photo remplit tout l'écran, le menu est posé dessus.
 - Ancienne image gardée de côté : `accueil-colonne.jpg` (la colonne de la Bastille, calage par `--gy`, `--gx`, `--iw`,
   en commentaire dans le CSS).
 - Menu de l'accueil (4 novembre 2026) : Photo, Portfolio, IA, Macro IA, New série (le même que les autres pages, sans
