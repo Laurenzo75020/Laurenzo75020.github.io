@@ -15,14 +15,10 @@
     .menu{ position:fixed; top:calc(1.4rem + env(safe-area-inset-top)); right:calc(2rem + env(safe-area-inset-right)); z-index:200; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.5rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .menu a{ color:var(--ink); text-decoration:none; opacity:.9; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); transition:opacity .2s; }
     .menu a:hover{ opacity:1; }
-    /* rangées : une image seule en pleine largeur, ou deux images de même forme, à la même hauteur, sans recadrage */
+    /* compositions imbriquées (voir le script) : les images sont posées à leur place exacte dans chaque bloc */
     .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:calc(9rem + env(safe-area-inset-top)) 2rem 5rem; }
-    .rang{ display:flex; gap:var(--gap); }
-    .rang img{ display:block; min-width:0; width:0; height:auto; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
-    /* essai : une image seule n'occupe que 62 % de la largeur, calée à gauche (g) ou à droite (d) ; plus d'air autour */
-    .rang.solo{ margin:3rem 0; }
-    .rang.solo img{ flex:none !important; width:62%; }
-    .rang.solo.d{ justify-content:flex-end; }
+    .bloc{ position:relative; }
+    .bloc img{ position:absolute; display:block; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
     .bas{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:0 2rem 3rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .bas a{ color:var(--ink); text-decoration:none; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); }
     footer{ padding:1.5rem 2rem 2.5rem; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); }
@@ -33,9 +29,6 @@
       :root{ --gap:12px; }
       .menu{ position:static; padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0; }
       .mur{ padding:1.6rem 1rem 3rem; }
-      .rang{ flex-direction:column; }
-      .rang img{ width:100% !important; flex:none !important; }
-      .rang.solo{ margin:0; }
       .bas{ padding:0 1rem 2rem; }
       footer{ padding:1rem 1rem 2rem; }
     }
@@ -63,33 +56,57 @@
   <footer>© 2026 Laurent Bourdoiseau</footer>
   <div class="lightbox" id="lb"><img id="lbImg" src="" alt=""></div>
   <script>
-    // Chaque ligne est une rangée : [fichier, largeur, hauteur]. Ajouter une image = ajouter une entrée ici.
-    const RANGS=[
-      ['g',['serie_01.jpg',1344,768]],
-      [['serie_02.jpg',1344,768],['serie_03.jpg',1344,768]],
-      [['serie_04.jpg',1344,768],['serie_05.jpg',1344,768],['serie_06.jpg',1344,1111]],
-      ['d',['serie_07.jpg',1344,768]],
-      [['serie_08.jpg',1344,768],['serie_09.jpg',1344,768]],
-      [['serie_10.jpg',1344,768],['serie_12.jpg',1344,1111],['serie_13.jpg',1344,1111]],
-      ['g',['serie_15.jpg',1344,1111]],
-      [['serie_16.jpg',1344,1111],['serie_17.jpg',1344,1111]],
-      [['serie_18.jpg',1344,768],['serie_20.jpg',1164,1222],['serie_22.jpg',1344,1222]],
-      ['d',['serie_24.jpg',1344,768]],
-      [['serie_25.jpg',1344,1222],['serie_26.jpg',1344,1222]],
-      [['serie_27.jpg',1344,1222],['serie_28.jpg',1344,768],['serie_30.jpg',1344,768]],
+    // Compositions imbriquées, sans case blanche ni recadrage : chaque bloc remplit toute la largeur. H(...) = côte à côte
+    // à la même hauteur, V(...) = empilées à la même largeur ; les tailles sont calculées pour que tout tombe juste.
+    const I=(f,l,h)=>({f,l,h}), H=(...c)=>({t:'H',c}), V=(...c)=>({t:'V',c});
+    const COMPO=[
+      H(I('serie_02.jpg',1344,768), I('serie_03.jpg',1344,768)),
+      H(V(I('serie_04.jpg',1344,768), I('serie_05.jpg',1344,768)), I('serie_06.jpg',1344,1111)),
+      H(I('serie_07.jpg',1344,768), I('serie_08.jpg',1344,768), I('serie_09.jpg',1344,768)),
+      H(I('serie_10.jpg',1344,768), V(I('serie_12.jpg',1344,1111), I('serie_13.jpg',1344,1111))),
+      H(I('serie_15.jpg',1344,1111), I('serie_16.jpg',1344,1111), I('serie_17.jpg',1344,1111)),
+      H(V(I('serie_18.jpg',1344,768), I('serie_24.jpg',1344,768)), I('serie_20.jpg',1164,1222)),
+      H(I('serie_22.jpg',1344,1222), I('serie_25.jpg',1344,1222), I('serie_27.jpg',1344,1222)),
+      H(I('serie_26.jpg',1344,1222), V(I('serie_28.jpg',1344,768), I('serie_30.jpg',1344,768))),
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
-    RANGS.forEach(r=>{
-      const d=document.createElement('div'); d.className='rang';
-      if(typeof r[0]==='string'){ d.classList.add('solo', r[0]); r=r.slice(1); }
-      r.forEach(([f,l,h])=>{
-        const im=document.createElement('img'); im.src='images/'+f; im.alt=''; im.width=l; im.height=h; im.loading='lazy';
-        im.style.flex=(l/h)+' 1 0';       // même hauteur dans la rangée, sans recadrer
-        im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
-        d.appendChild(im);
+    // largeur d'un bloc en fonction de sa hauteur : w = a*h + b (b vient des filets entre images)
+    function lin(n,g){
+      if(!n.t) return {a:n.l/n.h, b:0};
+      const k=n.c.map(c=>lin(c,g));
+      if(n.t==='H') return {a:k.reduce((s,x)=>s+x.a,0), b:k.reduce((s,x)=>s+x.b,0)+(k.length-1)*g};
+      const S=k.reduce((s,x)=>s+1/x.a,0);
+      return {a:1/S, b:(k.reduce((s,x)=>s+x.b/x.a,0)-(k.length-1)*g)/S};
+    }
+    function poser(n,x,y,w,h,g,sortie){
+      if(!n.t){ sortie.push([n,x,y,w,h]); return; }
+      const k=n.c.map(c=>lin(c,g));
+      if(n.t==='H'){ let cx=x; n.c.forEach((c,i)=>{ const cw=(i===n.c.length-1)? x+w-cx : k[i].a*h+k[i].b; poser(c,cx,y,cw,h,g,sortie); cx+=cw+g; }); }
+      else { let cy=y; n.c.forEach((c,i)=>{ const ch=(i===n.c.length-1)? y+h-cy : (w-k[i].b)/k[i].a; poser(c,x,cy,w,ch,g,sortie); cy+=ch+g; }); }
+    }
+    const images=new Map();
+    function image(n){
+      if(images.has(n)) return images.get(n);
+      const im=document.createElement('img'); im.src='images/'+n.f; im.alt=''; im.width=n.l; im.height=n.h; im.loading='lazy';
+      im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
+      images.set(n,im); return im;
+    }
+    function mettreEnPage(){
+      const g=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'))||40;
+      const W=mur.clientWidth-parseFloat(getComputedStyle(mur).paddingLeft)-parseFloat(getComputedStyle(mur).paddingRight);
+      const mobile=window.matchMedia('(max-width:768px)').matches;
+      // sur téléphone : une image par ligne, dans le même ordre
+      const blocs=mobile ? [V(...COMPO.flatMap(function plat(n){ return n.t ? n.c.flatMap(plat) : [n]; }))] : COMPO;
+      mur.textContent='';
+      blocs.forEach(b=>{
+        const k=lin(b,g), h=(W-k.b)/k.a, d=document.createElement('div'); d.className='bloc'; d.style.height=h+'px';
+        const sortie=[]; poser(b,0,0,W,h,g,sortie);
+        sortie.forEach(([n,x,y,w,hh])=>{ const im=image(n); Object.assign(im.style,{left:x+'px',top:y+'px',width:w+'px',height:hh+'px'}); d.appendChild(im); });
+        mur.appendChild(d);
       });
-      mur.appendChild(d);
-    });
+    }
+    mettreEnPage();
+    let attente; window.addEventListener('resize',()=>{ clearTimeout(attente); attente=setTimeout(mettreEnPage,100); });
     lb.addEventListener('click',()=>{ lb.classList.remove('open'); lbImg.src=''; });
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') lb.click(); });
   </script>
