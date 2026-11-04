@@ -294,7 +294,7 @@
         function composer(tel, W, g) {
           // une bande est refusée si une photo d'un petit fichier y dépasserait 350 px de large (ordinateur seulement)
           const convient = (arbre, images) => { if (tel) return true; let ok = true; tracer(arbre, images, W, g, 0, (it, x, y, w) => { if (petit_(it) && w > 350) ok = false; }); return ok; };
-          const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [5, 3, 6, 5, 4, 5, 3, 6], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 7;
+          const rythme = tel ? [3, 2, 3, 1, 2, 3, 2] : [4, 3, 5, 3, 4, 3, 5, 4], modeles = tel ? MODELES_TEL : MODELES, max = tel ? 4 : 5;   // ordinateur : 5 photos par bande au plus, pour qu'elles restent grandes
           const bandes = []; let i = 0, tour = 0; const vus = {};
           // une bande de k portraits : le premier modèle (à tour de rôle) dont les cases grandes peuvent toutes recevoir un grand fichier
           const essayer = k => {
@@ -313,7 +313,7 @@
             return null;
           };
           // une simple rangée d'au moins « mini » images : la plus courte où aucun petit fichier ne dépasse 350 px
-          const enRangee = mini => { const rest = loaded.length - i, haut = Math.min(rest, 7); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
+          const enRangee = mini => { const rest = loaded.length - i, haut = Math.min(rest, 5); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
           while (i < loaded.length) {
             const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
             const j = loaded.slice(i, i + envie).findIndex(large_);
