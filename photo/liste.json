@@ -141,11 +141,6 @@
 "grand": true
 },
 {
-"name": "25.jpg",
-"type": "file",
-"sha": "5f28df913800c6e5706fe421e192e01bba1db395"
-},
-{
 "name": "26.jpg",
 "type": "file",
 "sha": "82d9cc2273da8ee00de88d58dc18afa8754276b5"
@@ -255,11 +250,6 @@
 "name": "45.jpg",
 "type": "file",
 "sha": "39f94b1388d53418235f919d097a7a433d5d2fb2"
-},
-{
-"name": "46.jpg",
-"type": "file",
-"sha": "97158a9c7e4a7af4572be642884bb989df07a23c"
 },
 {
 "name": "47.jpg",

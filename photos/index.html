@@ -376,7 +376,7 @@
           const fin = bandes[bandes.length - 1];
           if (!tel && bandes.length > 1 && fin.images.length < 3 && !fin.images.some(large_) && !fin.grand && !bandes[bandes.length - 2].grand) {
             const tout = bandes.splice(-2).flatMap(b => b.images), n = tout.length;
-            const parts = n <= 6 ? [[n]] : [[Math.ceil(n / 2), Math.floor(n / 2)], [Math.floor(n / 2), Math.ceil(n / 2)], [n]];
+            const parts = n <= 5 ? [[n]] : [[Math.ceil(n / 2), Math.floor(n / 2)], [Math.floor(n / 2), Math.ceil(n / 2)], [n]];
             const choix = parts.find(p => { let d = 0; return p.every(k => { const lot = tout.slice(d, d + k); d += k; return convient(rangee(k), lot); }); }) || parts[parts.length - 1];
             let d = 0; choix.forEach(k => { bandes.push({ arbre: rangee(k), images: tout.slice(d, d + k) }); d += k; });
           }
