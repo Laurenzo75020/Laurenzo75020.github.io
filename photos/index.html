@@ -314,6 +314,8 @@
           };
           // une simple rangée d'au moins « mini » images : la plus courte où aucun petit fichier ne dépasse 350 px
           const enRangee = mini => { const rest = loaded.length - i, haut = Math.min(rest, 5); for (let k = Math.min(mini, haut); k <= haut; k++) if (convient(rangee(k), loaded.slice(i, i + k))) return k; return haut; };
+          // ordinateur : la galerie s'ouvre toujours sur une simple rangée de quatre photos côte à côte (son choix)
+          if (!tel && loaded.length >= 4) { bandes.push({ arbre: rangee(4), images: loaded.slice(0, 4) }); i = 4; tour = 1; }
           while (i < loaded.length) {
             const rest = loaded.length - i, envie = Math.min(rythme[tour++ % rythme.length], rest);
             const j = loaded.slice(i, i + envie).findIndex(large_);
