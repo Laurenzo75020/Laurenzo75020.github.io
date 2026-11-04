@@ -98,9 +98,11 @@ Deux chantiers liés :
 ### Accueil — `index.html`
 - Depuis le 4 novembre 2026 : `accueil-baigneurs.jpg` (les baigneurs, version sombre qu'il a mise sur le Bureau,
   999 × 1421), peinte en fond d'un bloc (`.scene.still.plein::before`) qui ne dépasse jamais de la fenêtre.
-  Téléphone (écran plus étroit que la photo) : plein cadre (`cover`, calé à 38 % de la hauteur). Ordinateur
-  (`min-aspect-ratio:999/1421`) : la photo entière sur toute la hauteur, calée à gauche, bande noire à droite où se trouve
-  le menu (sa demande, le plein cadre coupait plus de la moitié de la photo).
+  Téléphone (écran vertical) : plein cadre (`cover`, calé à 38 % de la hauteur). Ordinateur (`min-aspect-ratio:1/1`) :
+  son recadrage plus large `accueil-baigneurs-large.jpg` (« IMG_7884 copie 2 » du Bureau, 1772 × 1991), en `cover`
+  (un peu zoomé, calé à 40 % de la hauteur), sur tout l'écran sauf une bande noire à droite large comme une marge
+  (`--marge:12.5rem`, 200 px), où se trouve le menu. Une première version (photo entière, la moitié de l'écran en noir)
+  laissait trop de noir.
 - Ancienne image gardée de côté : `accueil-colonne.jpg` (la colonne de la Bastille, calage par `--gy`, `--gx`, `--iw`,
   en commentaire dans le CSS).
 - Menu de l'accueil (4 novembre 2026) : Photo, Portfolio, IA, Macro IA, New série (le même que les autres pages, sans

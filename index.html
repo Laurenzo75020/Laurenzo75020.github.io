@@ -101,11 +101,11 @@
     background-size:cover; background-position:center 38%;
   }
   .scene.still.plein .signature{ color:#fff; }
-  /* ordinateur (écran plus large que la photo) : la photo entière, toute la hauteur, calée à gauche ; bande noire à droite,
-     où se trouve le menu. 0.703 = largeur / hauteur de la photo (999 × 1421). */
-  @media (min-aspect-ratio:999/1421){
-    .scene.still.plein{ background:#000; }
-    .scene.still.plein::before{ right:auto; width:calc(100vh * 0.703); background-size:100% 100%; background-position:left top; }
+  /* ordinateur (écran horizontal) : le recadrage plus large (accueil-baigneurs-large.jpg, 1772 × 1991), qui remplit tout
+     l'écran sauf une bande noire à droite, large comme une marge, où se trouve le menu ; la photo y est un peu zoomée. */
+  @media (min-aspect-ratio:1/1){
+    .scene.still.plein{ background:#000; --marge:12.5rem; }
+    .scene.still.plein::before{ right:var(--marge); background-image:url(accueil-baigneurs-large.jpg); background-size:cover; background-position:center 40%; }
   }
 
   .scrub-img{ opacity:0; }
