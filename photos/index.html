@@ -302,6 +302,7 @@
             for (let n = 0; n < liste.length; n++) {
               const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
               if (grandes.length > libres) continue;
+              if (avecTags && grandes.length && grandes.length < k) continue;   // les grandes cases sont réservées aux photos taguées
               const essai = lot.slice(), casees = new Array(k);
               grandes.forEach(c => { const q = essai.findIndex(it => tel || !petit_(it)); casees[c] = essai.splice(q, 1)[0]; });
               for (let c = 0; c < k; c++) if (!casees[c]) casees[c] = essai.shift();
@@ -318,6 +319,7 @@
           if (!tel && loaded.length >= 4) { bandes.push({ arbre: rangee(4), images: loaded.slice(0, 4) }); i = 4; tour = 1; }
           // Photos marquées « en grand » (tag du Finder, inscrit dans photo/liste.json par _outils/listes.py). Les bandes
           // ordinaires s'arrêtent juste avant la prochaine d'entre elles, qui ouvre sa propre bande.
+          const avecTags = loaded.some(it => it.grand);
           const borne = () => { for (let n = i; n < loaded.length; n++) if (loaded[n].grand) return n; return loaded.length; };
           let cote = 0;
           // une grande photo : à côté d'elle, quatre photos ordinaires en deux rangées de deux (deux si la place manque),
