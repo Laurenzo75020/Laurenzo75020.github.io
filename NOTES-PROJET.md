@@ -96,11 +96,15 @@ Deux chantiers liés :
 ## 4. Ce qui a été fait (état actuel en ligne)
 
 ### Accueil — `index.html`
-- Une seule photo plein écran : `accueil-colonne.jpg` (la colonne de la Bastille et le génie, 1723 × 1444), peinte en fond
-  d'un bloc (`.scene.still.plein::before`) qui ne dépasse jamais de la fenêtre.
-- Calage : la pointe de l'aile du génie (35,3 % de la hauteur, 44,7 % de la largeur de l'image) tombe juste sous le nom
-  (variables CSS `--gy`, `--gx`, `--iw`). Ordinateur : génie à 38 % de la largeur, sous « BOURDOISEAU ». Téléphone : génie
-  à 39 %, sous le nom et le menu.
+- Depuis le 4 novembre 2026 : `accueil-baigneurs.jpg` (les baigneurs, version sombre qu'il a mise sur le Bureau,
+  999 × 1421), peinte en fond d'un bloc (`.scene.still.plein::before`) qui ne dépasse jamais de la fenêtre.
+  Téléphone (écran plus étroit que la photo) : plein cadre (`cover`, calé à 38 % de la hauteur). Ordinateur
+  (`min-aspect-ratio:999/1421`) : la photo entière sur toute la hauteur, calée à gauche, bande noire à droite où se trouve
+  le menu (sa demande, le plein cadre coupait plus de la moitié de la photo).
+- Ancienne image gardée de côté : `accueil-colonne.jpg` (la colonne de la Bastille, calage par `--gy`, `--gx`, `--iw`,
+  en commentaire dans le CSS).
+- Menu de l'accueil (4 novembre 2026) : Photo, Portfolio, IA, Macro IA, New série (le même que les autres pages, sans
+  « ← Accueil »), en colonne à droite.
 - Nom en blanc ; le haut du premier onglet du menu est aligné sur le haut des capitales du nom (0,1365 corps sur
   ordinateur, 0,267 sur téléphone). Barre du navigateur forcée en blanc (`theme-color`).
 - Un clic sur la photo ou sur « IA » ouvre la page IA, préchargée dans une iframe cachée (`entrerAvecSon`,
@@ -289,7 +293,7 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - **Après tout ajout, retrait ou remplacement d'image** dans `photo/`, `photo/book/` ou `photo/book-mobile/` : lancer `python3 _outils/listes.py` et committer les listes avec les images. Sinon l'image n'apparaît pas (ou l'ancienne version reste).
 
 ### Menu des pages intérieures (4 novembre 2026)
-- Toutes les pages sauf l'accueil ont le même menu, en haut et en bas, dans cet ordre : ← Accueil, Photo, Portfolio, IA, Macro IA, New série (pages `ia`, `photos`, `macro`, `serie`, `serie/essai.html`, `portfolio`). Sur sa propre page, l'onglet remonte en haut. Le menu du haut est **en ligne** (et non plus en colonne) sur toutes ces pages : six onglets en colonne couvraient le texte de présentation de la page IA, la mention « English version » et le haut des premières images. Le bouton Sound off/on de la page IA garde sa hauteur d'avant (150 px au moins).
+- Toutes les pages sauf l'accueil (qui a les mêmes onglets sans « ← Accueil ») ont le même menu, en haut et en bas, dans cet ordre : ← Accueil, Photo, Portfolio, IA, Macro IA, New série (pages `ia`, `photos`, `macro`, `serie`, `serie/essai.html`, `portfolio`). Sur sa propre page, l'onglet remonte en haut. Le menu du haut est **en ligne** (et non plus en colonne) sur toutes ces pages : six onglets en colonne couvraient le texte de présentation de la page IA, la mention « English version » et le haut des premières images. Le bouton Sound off/on de la page IA garde sa hauteur d'avant (150 px au moins).
 
 ### Photos « en grand » (4 novembre 2026)
 - Il pose un tag du Finder (n'importe quelle couleur, aujourd'hui jaune) sur les photos de `photo/` qu'il veut voir en grand. `_outils/listes.py` lit ces tags et ajoute `"grand": true` dans `photo/liste.json` (le tag lui-même ne part pas en ligne) : relancer le script après tout changement de tag.

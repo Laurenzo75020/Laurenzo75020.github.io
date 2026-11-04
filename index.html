@@ -101,6 +101,12 @@
     background-size:cover; background-position:center 38%;
   }
   .scene.still.plein .signature{ color:#fff; }
+  /* ordinateur (écran plus large que la photo) : la photo entière, toute la hauteur, calée à gauche ; bande noire à droite,
+     où se trouve le menu. 0.703 = largeur / hauteur de la photo (999 × 1421). */
+  @media (min-aspect-ratio:999/1421){
+    .scene.still.plein{ background:#000; }
+    .scene.still.plein::before{ right:auto; width:calc(100vh * 0.703); background-size:100% 100%; background-position:left top; }
+  }
 
   .scrub-img{ opacity:0; }
   .scrub-img.on{ opacity:1; }
@@ -328,6 +334,8 @@ if(/[?&]entree\b/.test(location.search)) document.write('<style>#entree{position
     <a class="photo" href="photos/">Photo</a>
     <a class="portfolio" href="portfolio/">Portfolio</a>
     <a class="ia" href="ia/">IA</a>
+    <a class="macro" href="macro/">Macro IA</a>
+    <a class="serie" href="serie/">New série</a>
   </nav>
 
   <script>
