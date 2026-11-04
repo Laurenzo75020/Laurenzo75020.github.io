@@ -102,11 +102,9 @@
   }
   .scene.still.plein .signature{ color:#fff; }
   /* ordinateur (écran horizontal) : la photo du vélo au coucher de soleil (accueil-velo.jpg, 2219 × 1543), qui remplit tout
-     l'écran sauf une bande noire à droite, large comme une marge, où se trouve le menu ; calée à droite (le vélo), la gauche
-     est coupée au besoin. Avant (4 novembre 2026) : les baigneurs, accueil-baigneurs-large.jpg, calés à « center 40% ». */
+     l'écran, sans bande noire (menu posé sur la photo) ; calée à droite (le vélo), la gauche est coupée au besoin. Avant (4 novembre 2026) : les baigneurs, accueil-baigneurs-large.jpg, calés à « center 40% ». */
   @media (min-aspect-ratio:1/1){
-    .scene.still.plein{ background:#000; --marge:12.5rem; }
-    .scene.still.plein::before{ right:var(--marge); background-image:url(accueil-velo.jpg); background-size:cover; background-position:right center; }
+    .scene.still.plein::before{ background-image:url(accueil-velo.jpg); background-size:cover; background-position:right center; }
   }
 
   .scrub-img{ opacity:0; }
