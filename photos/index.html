@@ -302,7 +302,7 @@
             for (let n = 0; n < liste.length; n++) {
               const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
               if (grandes.length > libres) continue;
-              if (avecTags && grandes.length && grandes.length < k) continue;   // les grandes cases sont réservées aux photos taguées
+              if (avecTags && grandes.length && grandes.length < k && borne() < loaded.length) continue;   // les grandes cases sont réservées aux photos taguées (après la dernière, mise en page imbriquée libre)
               const essai = lot.slice(), casees = new Array(k);
               grandes.forEach(c => { const q = essai.findIndex(it => tel || !petit_(it)); casees[c] = essai.splice(q, 1)[0]; });
               for (let c = 0; c < k; c++) if (!casees[c]) casees[c] = essai.shift();
@@ -328,6 +328,8 @@
           const bandeGrande = avant => {
             const t = i + avant.length, T = loaded[t];
             if (tel) return { arbre: 0, images: [T], grand: true, prises: avant.length + 1, avant };
+            // une grande photo horizontale sans voisines d'avant : seule, sur toute la largeur (son choix pour l'épaule, 04c)
+            if (avant.length === 0 && T.ratio >= 1.2) return { arbre: 0, images: [T], grand: true, prises: 1 };
             if (avant.length === 0 && t + 1 < loaded.length && loaded[t + 1].grand) {
               // trois grandes de suite : la première en très grand, les deux autres empilées à côté
               if (t + 2 < loaded.length && loaded[t + 2].grand) {
