@@ -5,7 +5,7 @@
 <script>
 // Arrivée directe sur la page IA (lien reçu, favori) : on passe par l'écran ENTER de l'accueil, qui ouvre cette page par le
 // chemin éprouvé (page chargée en arrière-plan puis affichée dans le clic : son et vidéos démarrent aussi dans Safari).
-// Venant d'une autre page du site (Macro IA, New série, Photo, Portfolio), on reste ici, sans écran ENTER : le son vient au premier clic.
+// Venant d'une autre page du site (Macro IA, Bombek, Santé mentale, Photo, Portfolio), on reste ici, sans écran ENTER : le son vient au premier clic.
 (function(){
   let duSite=false; try{ duSite=!!document.referrer && new URL(document.referrer).hostname.replace(/^www\./,'')===location.hostname.replace(/^www\./,''); }catch(e){}
   if(window.top===window.self && !duSite) location.replace('/?entree');
@@ -338,7 +338,8 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   <a href="../portfolio/?from=ia">Portfolio</a>
   <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
   <a href="../macro/" data-en="AI Macro">Macro IA</a>
-  <a href="../serie/" data-en="New series">New série</a>
+  <a href="../serie/" data-en="Bombek">Bombek</a>
+  <a href="../sante-mentale/" data-en="Mental health">Santé mentale</a>
 </div>
 <div class="name-hero">
   <div class="bio-strip">
@@ -372,7 +373,8 @@ footer span { font-family:'Barlow',sans-serif; font-size:.6rem; letter-spacing:.
   <a href="../portfolio/?from=ia">Portfolio</a>
   <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" data-en="AI">IA</a>
   <a href="../macro/" data-en="AI Macro">Macro IA</a>
-  <a href="../serie/" data-en="New series">New série</a>
+  <a href="../serie/" data-en="Bombek">Bombek</a>
+  <a href="../sante-mentale/" data-en="Mental health">Santé mentale</a>
 </div>
 </div>
 
