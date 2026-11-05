@@ -268,7 +268,7 @@
           7: [[H(V(0, 1), 2, V(H(3, 4), H(5, 6))), [2]]]
         };
         const MODELES_TEL = { 1: [[0, []]], 2: [[H(0, 1), []]], 3: [[H(0, V(1, 2)), []], [H(V(0, 1), 2), []]], 4: [[H(V(0, 1), V(2, 3)), []]] };
-        const large_ = it => it.ratio >= 0.95;                                    // paysage ou carré
+        const large_ = it => it.ratio >= (it.fin ? 1.1 : 0.95);                  // paysage ou carré (après la dernière photo taguée : vrai paysage seulement, pour que le bas reste imbriqué)
         const petit_ = it => it.el.naturalWidth <= 760;                           // petit fichier : reste petit
         // largeur d'un élément en fonction de sa hauteur : l = a × h + b (les écarts entre images sont comptés exactement)
         function tracer(arbre, images, W, g, y, poserImage) {
@@ -320,6 +320,7 @@
           // Photos marquées « en grand » (tag du Finder, inscrit dans photo/liste.json par _outils/listes.py). Les bandes
           // ordinaires s'arrêtent juste avant la prochaine d'entre elles, qui ouvre sa propre bande.
           const avecTags = loaded.some(it => it.grand);
+          let dernier_ = -1; loaded.forEach((it, n) => { if (it.grand) dernier_ = n; }); loaded.forEach((it, n) => { it.fin = avecTags && n > dernier_; });
           const borne = () => { for (let n = i; n < loaded.length; n++) if (loaded[n].grand) return n; return loaded.length; };
           let cote = 0;
           // une grande photo : à côté d'elle, quatre photos ordinaires en deux rangées de deux (deux si la place manque),
