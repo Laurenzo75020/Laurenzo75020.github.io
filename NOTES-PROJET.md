@@ -152,6 +152,8 @@ Deux chantiers liés :
 - **4 novembre 2026** : dossier source sur le Bureau, `_Macro_Select` (le site suit ce dossier : remplacer ou enlever d'après lui). 18 images (dernière mise à jour le 4 novembre en fin d'après-midi : 2 ajoutées, 1 retirée), `macro/images/macro_01..18.jpg` dans l'ordre du dossier, renumérotées à chaque mise à jour (les deux originaux en 2688 px ramenés à 2000 px). Mise en page Tetris comme `serie/essai.html` (compositions H/V, aucune case vide), adresse des images en `?v=N` (4 aujourd'hui), à augmenter à chaque mise à jour car les noms sont repris. `_Macro_ALL` sur le Bureau : toutes ses macros, pas utilisé par le site.
 - Première mise en page (11 images, `macro/images/`), accessible seulement depuis les menus de la page IA (en haut et en bas), sous le nom « Macro IA » (anglais : « AI Macro »). Retirée du menu de l'accueil le 3 novembre 2026.
 
+- Page IA, 5 novembre 2026 : l'image « Corps » (`images/image10.jpg`, deux femmes aux fleurs, gants bleu et rouge) retirée à sa demande (passée en `type:'hidden'`, la numérotation des images suivantes ne bouge pas ; le fichier reste dans `images/`).
+
 ### Page Santé mentale — `sante-mentale/index.html`
 - Créée le 5 novembre 2026 (anglais : « Mental health »), même modèle que Bombek (tableau `RANGS`, rangées sans recadrage). Première image : `sante-mentale/images/sante_01.jpg` (1344 × 1295, deux personnes dos à dos couvertes de plaquettes de médicaments, logo Santé publique France), copiée depuis l'image qu'il a envoyée dans la conversation. Mise en page à décider avec lui quand la série grandira.
 
