@@ -105,7 +105,7 @@ Deux chantiers liés :
   le menu. Avec la photo du vélo, plus de bande noire (sa demande) : la photo remplit tout l'écran, le menu est posé dessus.
 - Ancienne image gardée de côté : `accueil-colonne.jpg` (la colonne de la Bastille, calage par `--gy`, `--gx`, `--iw`,
   en commentaire dans le CSS).
-- Page Photo, 4 novembre 2026 (fin d'après-midi) : il a remplacé dans `photo/` `12b` par `12c` (les baigneurs, version sombre) et `28` par `28b` (deux garçons, ciel d'orage), et tagué `24.jpg` (affichée en grand). `28c.jpg` posé à la racine du dépôt (variante de 28b) n'est pas sur le site. Puis, à sa demande, `25.jpg` (la barrière rouge et blanche) et `46.jpg` (les cannes) retirés du dossier (51 photos), et la dernière ligne limitée à 5 photos (au-delà, deux rangées).
+- Page Photo, 4 novembre 2026 (fin d'après-midi) : il a remplacé dans `photo/` `12b` par `12c` (les baigneurs, version sombre) et `28` par `28b` (deux garçons, ciel d'orage), et tagué `24.jpg` (affichée en grand). `28c.jpg` posé à la racine du dépôt (variante de 28b) n'est pas sur le site. Puis, à sa demande, `25.jpg` (la barrière rouge et blanche) et `46.jpg` (les cannes) retirés du dossier (51 photos), et la dernière ligne limitée à 5 photos (au-delà, deux rangées). 5 novembre 2026 : le bloc baigneurs + garçons au soleil + épaule remonté juste sous la première ligne, en renommant les fichiers (`12c` → `04a`, `13` → `04b`, `13b` → `04c`, tag gardé) : l'ordre de la page est l'ordre des noms.
 - Menu de l'accueil (4 novembre 2026) : Photo, Portfolio, IA, Macro IA, New série (le même que les autres pages, sans
   « ← Accueil »), en colonne à droite.
 - Nom en blanc ; le haut du premier onglet du menu est aligné sur le haut des capitales du nom (0,1365 corps sur
