@@ -299,8 +299,11 @@
           // une bande de k portraits : le premier modèle (à tour de rôle) dont les cases grandes peuvent toutes recevoir un grand fichier
           const essayer = k => {
             const lot = loaded.slice(i, i + k), liste = modeles[k] || [], libres = lot.filter(it => tel || !petit_(it)).length;
-            for (let n = 0; n < liste.length; n++) {
+            // après la dernière photo taguée (ordinateur) : une simple rangée seulement si aucune composition imbriquée ne va
+            const imbrique = !tel && k >= 4 && lot[0].fin;
+            for (let n = 0; n < liste.length * (imbrique ? 2 : 1); n++) {
               const [arbre, grandes] = liste[((vus[k] || 0) + n) % liste.length];
+              if (imbrique && n < liste.length && !grandes.length) continue;
               if (grandes.length > libres) continue;
               if (avecTags && grandes.length && grandes.length < k && borne() < loaded.length) continue;   // les grandes cases sont réservées aux photos taguées (après la dernière, mise en page imbriquée libre)
               const essai = lot.slice(), casees = new Array(k);
