@@ -337,7 +337,8 @@
               return { arbre: H(0, 1), images: [T, loaded[t + 1]], grand: true, prises: 2 };
             }
             const voisins = avant.slice(); let n = t + 1;
-            while (voisins.length < 4 && n < loaded.length && !loaded[n].grand) voisins.push(loaded[n++]);
+            // deux photos d'avant : elles suffisent, empilées à sa gauche (son choix : le bloc baigneurs + épaule tel quel)
+            while (avant.length !== 2 && voisins.length < 4 && n < loaded.length && !loaded[n].grand) voisins.push(loaded[n++]);
             if (voisins.length === 3 && avant.length < 3) { voisins.pop(); }     // trois ne s'arrangent pas : deux
             const pile = voisins.length >= 4 ? V(H(1, 2), H(3, 4)) : voisins.length >= 2 ? V(1, 2) : voisins.length === 1 ? 1 : null;
             const gauche = avant.length ? false : (cote++ % 2 === 0);              // ses voisines d'avant restent à sa gauche
