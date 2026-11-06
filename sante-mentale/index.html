@@ -62,14 +62,13 @@
     const I=(f,l,h)=>({f,l,h}), H=(...c)=>({t:'H',c}), V=(...c)=>({t:'V',c});
     const COMPO=[
       H(I('sante_64.jpg',1774,1014), V(I('sante_21.jpg',1344,768), I('sante_49.jpg',1774,1014))),
-      H(V(I('sante_47.jpg',1774,1014), I('sante_43.jpg',1774,1014)), I('sante_60.jpg',1774,1014)),
-      H(I('sante_45.jpg',1774,1014), I('sante_57.jpg',1774,1014)),
+      H(V(I('sante_47.jpg',1774,1014), I('sante_43.jpg',1774,1014)), I('sante_65.jpg',1774,1014)),
+      H(I('sante_60.jpg',1774,1014), V(I('sante_45.jpg',1774,1014), I('sante_57.jpg',1774,1014))),
       H(I('sante_48.jpg',1774,1014), I('sante_53.jpg',1774,1014)),
-      H(I('sante_62.jpg',1774,1014), V(I('sante_22.jpg',1344,768), I('sante_51.jpg',1774,1014))),
+      H(I('sante_22.jpg',1344,768), I('sante_51.jpg',1774,1014)),
       H(I('sante_42.jpg',1774,1014), I('sante_50.jpg',1774,1014)),
       H(V(I('sante_46.jpg',1774,1014), I('sante_58.jpg',1774,1014)), I('sante_61.jpg',1774,1014)),
-      H(I('sante_52.jpg',1774,1014), I('sante_54.jpg',1774,1014)),
-      H(I('sante_55.jpg',1774,1014), I('sante_56.jpg',1774,1014)),
+      H(I('sante_55.jpg',1774,1014), V(I('sante_52.jpg',1774,1014), I('sante_54.jpg',1774,1014))),
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     // largeur d'un bloc en fonction de sa hauteur : w = a*h + b (b vient des filets entre images)
