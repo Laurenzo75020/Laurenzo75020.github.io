@@ -310,3 +310,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 
 
 - 7 novembre 2026, page IA : le polaroïd sur papier peint fleuri (`images/ia_polaroid.jpg`, 1314 × 768, envoyé dans la conversation) ajouté en ligne 4, à côté de Split Screen, juste avant « Désir » dans `CONFIG` (`horsCompte:true`, titre « Sans titre XII ») ; « Désir » descend d'un cran.
+  Annulé aussitôt : la grille IA donne la taille de chaque case selon sa position (`.cell:nth-child(n)` dans le CSS), donc ajouter une case décale toute la page (Faces passait en pleine largeur, etc.). Pour ajouter une image sans tout décaler : remplacer une case existante (même position), pas en insérer une. `images/ia_polaroid.jpg` reste dans le dépôt.
