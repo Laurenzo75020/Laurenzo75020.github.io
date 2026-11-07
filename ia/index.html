@@ -62,6 +62,8 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 .cell.cell-hero.cell-third { order:-5; }
 /* Teasing avec son : tout en haut, avant le film mis en avant */
 .cell.cell-hero.cell-top { order:-9; }
+/* Image ajoutée en ligne 4, à côté de Split Screen (même ordre -5, placée après lui dans le tableau) : le reste descend d'un cran */
+.grid .cell.ajout-l4 { order:-5; grid-column:span 2; aspect-ratio:16/9; }
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -473,6 +475,9 @@ const CONFIG = [
   {type:'vimeo', t:'Sans titre',        s:'Film IA · 2026', vimeoId:'1233706459', duree:'0:30', preview:'../images/montage_def_preview_son.mov?v=4', hero:true, sound:true},
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
+  // Ajouts placés en haut sans décaler les formes des autres cases : ils restent EN FIN de tableau (les tailles des cases dépendent
+  // de leur position, nth-child) et la classe 'ajout-l4' les met en ligne 4, juste après Split Screen ; tout le reste descend d'un cran.
+  {type:'image', t:'Sans titre XII',    s:'Image IA · 2026', src:'../images/ia_polaroid.jpg', horsCompte:true, cls:'ajout-l4'},   // polaroïd sur papier peint fleuri, 7 novembre 2026
 ];
 // ============================================================
 
@@ -769,6 +774,7 @@ CONFIG.forEach((item,i)=>{
   if(item.third) cell.classList.add('cell-third');
   if(item.noIso) cell.classList.add('no-iso');      // cette vidéo ne s'isole pas sur fond blanc
   if(item.top) cell.classList.add('cell-top');
+  if(item.cls) cell.classList.add(item.cls);   // placement particulier (voir le CSS)
 
   if(item.type==='series'){
     cell.classList.add('cell-series');
