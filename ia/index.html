@@ -62,8 +62,9 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 .cell.cell-hero.cell-third { order:-5; }
 /* Teasing avec son : tout en haut, avant le film mis en avant */
 .cell.cell-hero.cell-top { order:-9; }
-/* Image ajoutée en ligne 4, à côté de Split Screen (même ordre -5, placée après lui dans le tableau) : le reste descend d'un cran */
-.grid .cell.ajout-l4 { order:-5; grid-column:span 2; aspect-ratio:16/9; }
+/* Image ajoutée seule en ligne 4 (pleine largeur, sans recadrage) : order -6 la place juste après Mirror (ligne 3) ;
+   Split Screen + Désir passent en ligne 5, Shore Stories en ligne 6, et tout le reste descend d'une ligne */
+.grid .cell.ajout-l4 { order:-6; grid-column:1 / -1; aspect-ratio:1314/768; }
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -476,7 +477,7 @@ const CONFIG = [
   // Montage de la série split screen de l'accueil, pleine largeur en ligne 3 (hero:true + third:true)
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
   // Ajouts placés en haut sans décaler les formes des autres cases : ils restent EN FIN de tableau (les tailles des cases dépendent
-  // de leur position, nth-child) et la classe 'ajout-l4' les met en ligne 4, juste après Split Screen ; tout le reste descend d'un cran.
+  // de leur position, nth-child) et la classe 'ajout-l4' la met seule en ligne 4 ; tout le reste descend d'une ligne.
   {type:'image', t:'Sans titre XII',    s:'Image IA · 2026', src:'../images/ia_polaroid.jpg', horsCompte:true, cls:'ajout-l4'},   // polaroïd sur papier peint fleuri, 7 novembre 2026
 ];
 // ============================================================
