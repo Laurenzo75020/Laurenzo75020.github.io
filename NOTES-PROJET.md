@@ -325,3 +325,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - IA (9 nov. 2026) : image dos à dos aux gélules (ia_gelules_dos.jpg) seule en ligne 3 (classe ajout-l3, order -8) ; film Sans titre (cell-hero) passé à order -7.
 
 - IA (9 nov. 2026) : ordre du haut = Mirror / Faces + Sans titre I / film Sans titre (-8) / gélules dos à dos HD (ajout-l3, -7) / Pantone + salon (ajout-l4) / appareil + polaroïd (ajout-l5) / Split Screen + Désir...
+
+- IA (9 nov. 2026) : ligne 1 = serie_17 (couple) + serie_16 (clown), classe ajout-l1, order -11 ; images partagées avec Bombek.
