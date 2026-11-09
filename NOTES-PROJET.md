@@ -331,3 +331,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - IA (9 nov. 2026) : le polaroïd (ia_polaroid2) remplace Latence (case 15, carrée, object-position 45%) ; ligne appareil photo seule.
 
 - IA (9 nov. 2026) : femme sous blister (ia_blister_corps.jpg, classe ajout-l3b) seule sous Sans titre XIII ; tout le reste descend.
+
+- IA (9 nov. 2026) : ia_gelules_hanche.jpg à côté de l appareil photo (ligne ajout-l5).
