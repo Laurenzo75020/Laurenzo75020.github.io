@@ -335,3 +335,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - IA (9 nov. 2026) : ia_gelules_hanche.jpg à côté de l appareil photo (ligne ajout-l5).
 
 - IA (9 nov. 2026) : ligne 1 = mosaïque (type mosaique, classe mosaique-haut) : couple + clown, blister dessous, dos à dos coupés en 2 panneaux (ia_dos_fille/garcon.jpg). Mobile : quatuor-mobile (4 images en 2x2) + Désir (case 6) à droite, lignes ajout-l4/l5 masquées.
+- 9 nov. 2026 : IA, mosaïque du haut : nouveaux formats verticaux de la fille et du garçon (remplacent les deux moitiés découpées).
