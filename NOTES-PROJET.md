@@ -321,3 +321,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - IA (9 nov. 2026) : ligne 4 = trois images côte à côte (type trio, cellule ajout-l4) : appareil photo, salon aux polaroïds, nouvelle version du polaroïd (ia_polaroid2.jpg ; ia_polaroid.jpg supprimée).
 
 - IA (9 nov. 2026) : Sans titre VIII (image27) retirée par display:none sur la case 35 (ne pas retirer l entrée de CONFIG : décalerait les nth-child) ; case 38 en pleine largeur.
+
+- IA (9 nov. 2026) : image dos à dos aux gélules (ia_gelules_dos.jpg) seule en ligne 3 (classe ajout-l3, order -8) ; film Sans titre (cell-hero) passé à order -7.
