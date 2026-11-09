@@ -338,3 +338,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 9 nov. 2026 : IA, mosaïque du haut : nouveaux formats verticaux de la fille et du garçon (remplacent les deux moitiés découpées).
 - 9 nov. 2026 : IA, mosaïque du haut réorganisée : couple + clown, femme sous blister dessous (pleine largeur), puis fille et garçon fond bleu côte à côte.
 - 9 nov. 2026 : Bombek : nouvelle version des deux hommes aux gélules (serie_33 remplace serie_32) ; nouvelle ligne 4 avec les deux distributeurs de chewing-gum (serie_34, serie_35).
+- 9 nov. 2026 : Bombek : retrait de serie_20 (couple de dos, têtes en gélules) et serie_26 (tête en gélules à oreilles, fond gris) ; les images suivantes sont remises par deux.
