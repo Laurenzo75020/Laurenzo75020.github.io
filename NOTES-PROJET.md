@@ -315,3 +315,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
   Corrigé le même jour : il voulait l'image SEULE sur la ligne 4 (pleine largeur), les deux images de cette ligne (Split Screen + Désir) descendant ensemble en ligne 5, et tout le reste d'une ligne. Classe : `order:-6; grid-column:1 / -1; aspect-ratio:1314/768`.
 
 - Bombek : serie_03 (tête fleur de gélules, fond jaune) retirée le 7 nov. 2026, le reste décalé (20 images, 10 lignes de deux).
+
+- IA (9 nov. 2026) : Mirror remonté en ligne 1 (order -10), le teasing Faces et tout le reste descendent d une ligne.
