@@ -342,3 +342,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 9 nov. 2026 : IA : fille et garçon remis à 6 px sous le blister ; pas d'agrandissement au survol dans les lignes de deux images (l'espace disparaissait) ; clip Air de nouveau seul sur sa ligne en 16:9, film au format d'origine (il était en case carrée).
 - 9 nov. 2026 : Bombek : serie_24 (visage en gélules, fond beige) retirée, remplacée à sa place par serie_34 (distributeur bleu) ; le militaire (serie_35) reste seul en ligne 4.
 - 9 nov. 2026 : IA : la page s'ouvre en haut (plus de calage automatique sur la vidéo) ; fondu blanc et glissement de fin gardés. Bombek mobile : images côte à côte comme sur ordinateur.
+- 9 nov. 2026 : Santé mentale mobile : tirages côte à côte et superposés comme sur ordinateur (plus empilés un par un).
