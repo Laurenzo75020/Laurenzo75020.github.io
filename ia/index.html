@@ -1211,14 +1211,15 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   ['mousemove','wheel','touchstart','touchmove','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,reveiller,{passive:true}));
   // à l'arrivée : la première vidéo seule, tout de suite
   const premiere=grille.querySelector('.cell-top');
-  if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); }
+  // 9 nov. 2026 : la page s'ouvre en haut, donc pas de blanc d'office à l'arrivée ; il vient comme d'habitude quand une vidéo est au centre
+  armer();
   window.__calmerBientot=()=>{ if(!arret) armer(); };      // remet le blanc en route (après un glissement fait par la page elle-même)
   window.__focusSur=(c)=>{
     if(!c) return; const avant=[...grille.querySelectorAll('.cell.focus')];
     c.classList.add('focus','on');
     setTimeout(()=>avant.forEach(a=>{ if(a!==c) a.classList.remove('focus'); }),900);
   };
-  window.__reposInitial=()=>{ arret=false; clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); if(premiere){ premiere.classList.add('focus','on'); document.body.classList.add('calme'); } };
+  window.__reposInitial=()=>{ arret=false; clearTimeout(minuterie); grille.querySelectorAll('.cell.focus').forEach(c=>c.classList.remove('focus')); armer(); };
 })();
 // Arrivée directe sur la première vidéo ; le texte d'introduction est au-dessus, on y remonte en défilant vers le haut.
 // La position est recalée tant que la mise en page bouge encore (polices, images, affichage par-dessus l'accueil),

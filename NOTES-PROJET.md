@@ -344,3 +344,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 9 nov. 2026 : IA : la page s'ouvre en haut (plus de calage automatique sur la vidéo) ; fondu blanc et glissement de fin gardés. Bombek mobile : images côte à côte comme sur ordinateur.
 - 9 nov. 2026 : Santé mentale mobile : tirages côte à côte et superposés comme sur ordinateur (plus empilés un par un).
 - 9 nov. 2026 : Bombek : trio — serie_04 et serie_09 superposées à gauche, le militaire (serie_35) à droite.
+- 9 nov. 2026 : IA : plus de blanc d'office à l'arrivée (la page restait blanche sur mobile depuis qu'elle s'ouvre en haut).
