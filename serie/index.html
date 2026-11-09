@@ -17,6 +17,8 @@
     /* rangées : une image seule en pleine largeur, ou deux images de même forme, à la même hauteur, sans recadrage */
     .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:calc(9rem + env(safe-area-inset-top)) 2rem 5rem; }
     .rang{ display:flex; gap:var(--gap); }
+    .col{ display:flex; flex-direction:column; gap:var(--gap); min-width:0; }
+    .col img{ display:block; height:auto; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
     .rang img{ display:block; min-width:0; width:0; height:auto; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
     .bas{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:0 2rem 3rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .bas a{ color:var(--ink); text-decoration:none; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); }
@@ -63,8 +65,7 @@
       [['serie_06.jpg',1344,1111],['serie_07.jpg',1344,768]],
       [['serie_17.jpg',1344,1111],['serie_16.jpg',1344,1111]],
       [['serie_33.jpg',1154,1014],['serie_02.jpg',1344,768]],
-      [['serie_35.jpg',1448,1014]],
-      [['serie_04.jpg',1344,768],['serie_09.jpg',1344,768]],
+      [[['serie_04.jpg',1344,768],['serie_09.jpg',1344,768]],['serie_35.jpg',1448,1014]],   // trio : deux superposées à gauche, le militaire à droite
       [['serie_10.jpg',1344,768],['serie_12.jpg',1344,1111]],
       [['serie_13.jpg',1344,1111],['serie_15.jpg',1344,1111]],
       [['serie_34.jpg',1344,768],['serie_25.jpg',1344,1222]],
@@ -74,11 +75,22 @@
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     RANGS.forEach(r=>{
       const d=document.createElement('div'); d.className='rang';
-      r.forEach(([f,l,h])=>{
+      const img=([f,l,h])=>{
         const im=document.createElement('img'); im.src='images/'+f; im.alt=''; im.width=l; im.height=h; im.loading='lazy';
-        im.style.flex=(l/h)+' 1 0';       // même hauteur dans la rangée, sans recadrer
         im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
-        d.appendChild(im);
+        return im;
+      };
+      r.forEach(e=>{
+        if(Array.isArray(e[0])){
+          // colonne de deux images superposées (même largeur), à la hauteur de sa voisine
+          const col=document.createElement('div'); col.className='col';
+          col.style.flex=(1/e.reduce((t,[,l,h])=>t+h/l,0))+' 1 0';
+          e.forEach(x=>{ const im=img(x); im.style.width='100%'; col.appendChild(im); });
+          d.appendChild(col);
+        } else {
+          const im=img(e); im.style.flex=(e[1]/e[2])+' 1 0';       // même hauteur dans la rangée, sans recadrer
+          d.appendChild(im);
+        }
       });
       mur.appendChild(d);
     });
