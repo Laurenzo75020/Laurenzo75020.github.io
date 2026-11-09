@@ -64,7 +64,7 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 .cell.cell-hero.cell-top { order:-9; }
 /* Image ajoutée seule en ligne 4 (pleine largeur, sans recadrage) : order -6 la place juste après Mirror (ligne 3) ;
    Split Screen + Désir passent en ligne 5, Shore Stories en ligne 6, et tout le reste descend d'une ligne */
-.grid .cell.ajout-l4 { order:-6; grid-column:1 / -1; aspect-ratio:1314/768; }
+.grid .cell.ajout-l4 { order:-6; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; }   /* ligne 4 : trois images à la même hauteur */
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
 /* Ligne 1 : image 16/9 + Mirror 16/9 (50/50) */
@@ -478,7 +478,7 @@ const CONFIG = [
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
   // Ajouts placés en haut sans décaler les formes des autres cases : ils restent EN FIN de tableau (les tailles des cases dépendent
   // de leur position, nth-child) et la classe 'ajout-l4' la met seule en ligne 4 ; tout le reste descend d'une ligne.
-  {type:'image', t:'Sans titre XII',    s:'Image IA · 2026', src:'../images/ia_polaroid.jpg', horsCompte:true, cls:'ajout-l4'},   // polaroïd sur papier peint fleuri, 7 novembre 2026
+  {type:'trio', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l4', images:[['../images/ia_trio_appareil.jpg',1244,768],['../images/ia_trio_salon.jpg',1344,768],['../images/ia_polaroid2.jpg',991,657]]},   // ligne 4 : trois images côte à côte (9 nov. 2026), la nouvelle version du polaroïd remplace l'ancienne
 ];
 // ============================================================
 
@@ -777,7 +777,17 @@ CONFIG.forEach((item,i)=>{
   if(item.top) cell.classList.add('cell-top');
   if(item.cls) cell.classList.add(item.cls);   // placement particulier (voir le CSS)
 
-  if(item.type==='series'){
+  if(item.type==='trio'){
+    // trois images côte à côte, à la même hauteur, chacune ouvre la visionneuse
+    const srcs=item.images.map(x=>x[0]);
+    item.images.forEach(([src,w,h])=>{
+      const im=document.createElement('img');
+      im.src=src; im.alt=item.t; im.loading='lazy';
+      im.style.cssText=`position:static;flex:${w/h} 1 0;min-width:0;width:auto;height:auto;aspect-ratio:${w}/${h};object-fit:cover;display:block;cursor:pointer;`;
+      im.onclick=()=>openLb(src, srcs);
+      cell.appendChild(im);
+    });
+  } else if(item.type==='series'){
     cell.classList.add('cell-series');
     let idx=0;
     const imgs=item.images;

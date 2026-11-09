@@ -317,3 +317,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - Bombek : serie_03 (tête fleur de gélules, fond jaune) retirée le 7 nov. 2026, le reste décalé (20 images, 10 lignes de deux).
 
 - IA (9 nov. 2026) : Mirror remonté en ligne 1 (order -10), le teasing Faces et tout le reste descendent d une ligne.
+
+- IA (9 nov. 2026) : ligne 4 = trois images côte à côte (type trio, cellule ajout-l4) : appareil photo, salon aux polaroïds, nouvelle version du polaroïd (ia_polaroid2.jpg ; ia_polaroid.jpg supprimée).
