@@ -333,3 +333,5 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - IA (9 nov. 2026) : femme sous blister (ia_blister_corps.jpg, classe ajout-l3b) seule sous Sans titre XIII ; tout le reste descend.
 
 - IA (9 nov. 2026) : ia_gelules_hanche.jpg à côté de l appareil photo (ligne ajout-l5).
+
+- IA (9 nov. 2026) : ligne 1 = mosaïque (type mosaique, classe mosaique-haut) : couple + clown, blister dessous, dos à dos coupés en 2 panneaux (ia_dos_fille/garcon.jpg). Mobile : quatuor-mobile (4 images en 2x2) + Désir (case 6) à droite, lignes ajout-l4/l5 masquées.

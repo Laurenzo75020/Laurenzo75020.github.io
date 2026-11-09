@@ -65,12 +65,22 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 /* Image ajoutée seule en ligne 4 (pleine largeur, sans recadrage) : order -6 la place juste après Mirror (ligne 3) ;
    Split Screen + Désir passent en ligne 5, Shore Stories en ligne 6, et tout le reste descend d'une ligne */
 /* 9 nov. 2026 : image ajoutée seule en ligne 3 (order -8) ; le film « Sans titre » passe à -7 (ligne 4) et tout le reste descend d'une ligne */
-.grid .cell.ajout-l3 { order:-7; grid-column:1 / -1; aspect-ratio:1344/763; }   /* ligne 4, juste après le film « Sans titre » */
-.grid .cell.ajout-l3b { order:-7; grid-column:1 / -1; aspect-ratio:1774/1014; }   /* 9 nov. 2026 : sous les dos aux gélules (même order, placée après dans le HTML), tout le reste descend */
 /* 9 nov. 2026 : ligne 1 = deux images de la série Bombek (couple à gauche, clown à droite), tout le reste descend d'une ligne */
 /* polaroïd dans une case verticale : cadrage sur le polaroïd tenu et le visage */
 .grid .cell.pos-polaroid img { object-position:45% 50%; }
-.grid .cell.ajout-l1 { order:-11; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; margin-bottom:6vh; }
+.grid .cell.mosaique-haut { order:-11; grid-column:1 / -1; aspect-ratio:auto; background:transparent; margin-bottom:6vh;
+  display:grid; grid-template-columns:1.3fr 1fr 1fr; grid-template-rows:auto auto; gap:6px; }
+/* ligne 1 en mosaïque : à gauche couple + clown, la femme sous blister dessous ; à droite les deux moitiés des dos à dos, sur toute la hauteur */
+.cell .bloc { position:relative; overflow:hidden; cursor:pointer; }
+.cell .bloc img { cursor:pointer; }
+.mosaique-haut .m-couple, .mosaique-haut .m-clown { aspect-ratio:1344/1111; grid-row:1; }
+.mosaique-haut .m-couple { grid-column:1; width:calc(50% - 3px); }
+.mosaique-haut .m-clown { grid-column:1; width:calc(50% - 3px); justify-self:end; }
+.mosaique-haut .m-blister { grid-column:1; grid-row:2; aspect-ratio:1774/1014; }
+.mosaique-haut .m-fille { grid-column:2; grid-row:1 / 3; }
+.mosaique-haut .m-garcon { grid-column:3; grid-row:1 / 3; }
+/* le quatuor n'existe que sur mobile */
+.grid .cell.quatuor-mobile { display:none; }
 .grid .cell.ajout-l4, .grid .cell.ajout-l5 { order:-6; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; }   /* lignes 5 et 6 : deux images côte à côte, à la même hauteur */
 /* Rangée 1: nouvelle image 16/9 en tête */
 .cell:nth-child(1)  { grid-column:span 2; aspect-ratio:16/9; }
@@ -176,6 +186,15 @@ html, body { overflow-x: hidden; max-width: 100%; }
 /* Mobile — panoramique puis 3 carrés en alternance */
 @media (max-width:768px) {
   .grid { grid-template-columns:repeat(3,1fr); }
+  /* mosaïque du haut : même disposition que sur ordinateur, sur toute la largeur */
+  .grid .cell.mosaique-haut { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:4px; margin-bottom:15%; }
+  .mosaique-haut .m-couple, .mosaique-haut .m-clown { width:calc(50% - 2px); }
+  /* les deux lignes de deux images sont remplacées par un quatuor (2 x 2) à gauche, Désir (case 6) à droite */
+  .grid .cell.ajout-l4, .grid .cell.ajout-l5 { display:none !important; }
+  .grid .cell.quatuor-mobile { display:grid !important; order:-6; grid-column:span 2 !important; aspect-ratio:auto !important; background:transparent !important;
+    grid-template-columns:1fr 1fr; gap:4px; align-self:start; }
+  .quatuor-mobile .q { aspect-ratio:16/9; }
+  .grid .cell:nth-child(6) { order:-5; grid-column:span 1 !important; aspect-ratio:auto !important; }
 
   /* Toutes les cases en carré 1/1 par défaut */
   .cell:nth-child(n) { grid-column:span 1 !important; aspect-ratio:1/1 !important; background:#0a0a0a; }
@@ -488,11 +507,10 @@ const CONFIG = [
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
   // Ajouts placés en haut sans décaler les formes des autres cases : ils restent EN FIN de tableau (les tailles des cases dépendent
   // de leur position, nth-child) et la classe 'ajout-l4' la met seule en ligne 4 ; tout le reste descend d'une ligne.
-  {type:'trio', t:'Bombek', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l1', images:[['../serie/images/serie_17.jpg',1344,1111],['../serie/images/serie_16.jpg',1344,1111]]},   // ligne 1 (9 nov. 2026), images aussi présentes sur la page Bombek
+  {type:'mosaique', t:'Sans titre XIII', s:'Images IA · 2026', horsCompte:true, cls:'mosaique-haut', blocs:[['../serie/images/serie_17.jpg','m-couple'],['../serie/images/serie_16.jpg','m-clown'],['../images/ia_blister_corps.jpg','m-blister'],['../images/ia_dos_fille.jpg','m-fille','../images/ia_gelules_dos.jpg'],['../images/ia_dos_garcon.jpg','m-garcon','../images/ia_gelules_dos.jpg']]},   // ligne 1 (9 nov. 2026) : couple + clown, femme sous blister dessous ; à droite les dos à dos coupés en deux panneaux
   {type:'trio', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l4', images:[['../images/ia_pantone.jpg',1344,768],['../images/ia_trio_salon.jpg',1344,768]]},   // ligne 5 : Pantone + salon aux polaroïds (9 nov. 2026)
   {type:'trio', t:'Sans titre XIV', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l5', images:[['../images/ia_trio_appareil.jpg',1244,768],['../images/ia_gelules_hanche.jpg',1774,1014]]},   // ligne 6 : appareil photo + gélules sur la hanche (9 nov. 2026)
-  {type:'image', t:'Sans titre XIII', s:'Image IA · 2026', src:'../images/ia_gelules_dos.jpg', horsCompte:true, cls:'ajout-l3'},   // dos à dos couverts de plaquettes de gélules, ligne 3 (9 nov. 2026)
-  {type:'image', t:'Sans titre XVI', s:'Image IA · 2026', src:'../images/ia_blister_corps.jpg', horsCompte:true, cls:'ajout-l3b'},   // femme sous blister, sous Sans titre XIII
+  {type:'mosaique', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'quatuor-mobile', blocs:[['../images/ia_pantone.jpg','q'],['../images/ia_trio_salon.jpg','q'],['../images/ia_trio_appareil.jpg','q'],['../images/ia_gelules_hanche.jpg','q']]},   // mobile seulement : les quatre images en carré, Désir à droite
 ];
 // ============================================================
 
@@ -791,7 +809,16 @@ CONFIG.forEach((item,i)=>{
   if(item.top) cell.classList.add('cell-top');
   if(item.cls) cell.classList.add(item.cls);   // placement particulier (voir le CSS)
 
-  if(item.type==='trio'){
+  if(item.type==='mosaique'){
+    // plusieurs images dans une seule case, placées par le CSS (classe de chaque bloc) ; chacune ouvre la visionneuse
+    const grands=item.blocs.map(b=>b[2]||b[0]);
+    item.blocs.forEach(([src,c,grand])=>{
+      const bloc=document.createElement('div'); bloc.className='bloc '+c;
+      const im=document.createElement('img'); im.src=src; im.alt=item.t; im.loading='lazy';
+      im.onclick=()=>openLb(grand||src, grands);
+      bloc.appendChild(im); cell.appendChild(bloc);
+    });
+  } else if(item.type==='trio'){
     // trois images côte à côte, à la même hauteur, chacune ouvre la visionneuse
     const srcs=item.images.map(x=>x[0]);
     item.images.forEach(([src,w,h])=>{
