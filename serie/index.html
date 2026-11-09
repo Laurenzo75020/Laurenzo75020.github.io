@@ -28,8 +28,7 @@
       :root{ --gap:12px; }
       .menu{ position:static; padding:calc(1.2rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 0 0; }
       .mur{ padding:1.6rem 1rem 3rem; }
-      .rang{ flex-direction:column; }
-      .rang img{ width:100% !important; flex:none !important; }
+      :root{ --gap:4px; }   /* sur téléphone aussi, les images restent côte à côte, imbriquées comme sur ordinateur */
       .bas{ padding:0 1rem 2rem; }
       footer{ padding:1rem 1rem 2rem; }
     }

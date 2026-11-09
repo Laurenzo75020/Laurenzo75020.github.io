@@ -1230,8 +1230,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     if(visiteurAgit || window.__glisse || location.hash || window.__enSommeil) return;
     const cible=document.querySelector('.cell-top') || document.getElementById('grid');
     if(!cible || !cible.getBoundingClientRect().width) return;
-    const r=cible.getBoundingClientRect(), vh=window.innerHeight;
-    const y=Math.max(0, Math.round(r.top+window.scrollY-Math.max(8,(vh-r.height)/2)));
+    const y=0;   // 9 nov. 2026 : la page s'ouvre en haut (plus d'arrivée directe sur la vidéo)
     if(Math.abs(window.scrollY-y)>1){ window.scrollTo(0,y); if(typeof mesurer==='function') mesurer(); }
   }
   function surveiller(){
