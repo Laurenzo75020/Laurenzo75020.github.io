@@ -138,6 +138,9 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 /* Avant-dernière ligne : la première case est retirée, la seconde occupe la ligne en bandeau */
 .grid .cell:nth-child(36) { display:none; }
 .grid .cell:nth-child(37) { grid-column:span 2; aspect-ratio:16/9; }
+/* 9 nov. 2026 : Sans titre VIII (image27, la mêlée contre le mur) retirée ; la dernière image passe en pleine largeur pour ne pas laisser de trou */
+.grid .cell:nth-child(35) { display:none; }
+.grid .cell:nth-child(38) { grid-column:1 / -1; aspect-ratio:16/9; }
 /* Ordinateur : les vidéos pleine largeur ne dépassent pas 80 % de la hauteur de l'écran (elles restent en 16:9, centrées),
    pour que le haut de la ligne suivante se voie en bas de l'écran ; écarts plus grands en haut, normaux à partir de la ligne 6 */
 @media (min-width:769px) {
