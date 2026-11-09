@@ -67,6 +67,8 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 /* 9 nov. 2026 : image ajoutée seule en ligne 3 (order -8) ; le film « Sans titre » passe à -7 (ligne 4) et tout le reste descend d'une ligne */
 .grid .cell.ajout-l3 { order:-7; grid-column:1 / -1; aspect-ratio:1344/763; }   /* ligne 4, juste après le film « Sans titre » */
 /* 9 nov. 2026 : ligne 1 = deux images de la série Bombek (couple à gauche, clown à droite), tout le reste descend d'une ligne */
+/* polaroïd dans une case verticale : cadrage sur le polaroïd tenu et le visage */
+.grid .cell.pos-polaroid img { object-position:45% 50%; }
 .grid .cell.ajout-l1 { order:-11; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; margin-bottom:6vh; }
 .grid .cell.ajout-l4, .grid .cell.ajout-l5 { order:-6; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; }   /* lignes 5 et 6 : deux images côte à côte, à la même hauteur */
 /* Rangée 1: nouvelle image 16/9 en tête */
@@ -444,7 +446,7 @@ const CONFIG = [
   {type:'series', t:'Le Réel', s:'Série · 2024', images: Array.from({length:9},(_,i)=>`../images/__SERIEs/serie1/${i+1}.jpg`)},
   // Ligne 5 : carré + série Le Réel span2 + carré
   {type:'hidden', t:'Corps',            s:'Image IA · 2024'},   // image10.jpg (deux femmes aux fleurs, gants bleu et rouge), retirée le 5 novembre 2026 à sa demande ; 'hidden' garde la numérotation
-  {type:'image', t:'Latence',           s:'Image IA · 2025'},
+  {type:'image', t:'Sans titre XV',     s:'Image IA · 2026', src:'../images/ia_polaroid2.jpg', cls:'pos-polaroid'},   // 9 nov. 2026 : le polaroïd remplace Latence (image11 n'est plus affichée)
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov?v=2', noLink:true},
   {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true, natif:[676,540,668]},   // natif : largeur, hauteur du fichier, largeur utile (8 colonnes noires à droite)
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
@@ -487,7 +489,7 @@ const CONFIG = [
   // de leur position, nth-child) et la classe 'ajout-l4' la met seule en ligne 4 ; tout le reste descend d'une ligne.
   {type:'trio', t:'Bombek', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l1', images:[['../serie/images/serie_17.jpg',1344,1111],['../serie/images/serie_16.jpg',1344,1111]]},   // ligne 1 (9 nov. 2026), images aussi présentes sur la page Bombek
   {type:'trio', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l4', images:[['../images/ia_pantone.jpg',1344,768],['../images/ia_trio_salon.jpg',1344,768]]},   // ligne 5 : Pantone + salon aux polaroïds (9 nov. 2026)
-  {type:'trio', t:'Sans titre XIV', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l5', images:[['../images/ia_trio_appareil.jpg',1244,768],['../images/ia_polaroid2.jpg',991,657]]},   // ligne 6 : appareil photo + polaroïd
+  {type:'trio', t:'Sans titre XIV', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l5', images:[['../images/ia_trio_appareil.jpg',1244,768]]},   // ligne 6 : appareil photo seul (le polaroïd est parti à la place de Latence)
   {type:'image', t:'Sans titre XIII', s:'Image IA · 2026', src:'../images/ia_gelules_dos.jpg', horsCompte:true, cls:'ajout-l3'},   // dos à dos couverts de plaquettes de gélules, ligne 3 (9 nov. 2026)
 ];
 // ============================================================
