@@ -75,7 +75,11 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 .cell .bloc img { cursor:pointer; }
 .mosaique-haut .m-couple, .mosaique-haut .m-clown { aspect-ratio:1344/1111; }
 .mosaique-haut .m-blister { grid-column:1 / -1; aspect-ratio:1774/1014; }
-.mosaique-haut .m-fille, .mosaique-haut .m-garcon { aspect-ratio:4/5; margin-top:6vh; }   /* deuxième bloc, séparé du premier */
+.mosaique-haut .m-fille, .mosaique-haut .m-garcon { aspect-ratio:4/5; }
+/* lignes de deux images : pas d'agrandissement au survol, sinon les images se touchent et l'espace entre elles disparaît */
+.grid .cell.ajout-l4:hover img, .grid .cell.ajout-l5:hover img { transform:none; }
+/* clip Air : seul sur sa ligne, case 16:9 au gabarit des vidéos du haut, le film au centre dans son format d'origine (blanc autour) */
+.grid .cell.cell-air { grid-column:1 / -1 !important; aspect-ratio:16/9 !important; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; background:#fff !important; }
 /* le quatuor n'existe que sur mobile */
 .grid .cell.quatuor-mobile { display:none; }
 .grid .cell.ajout-l4, .grid .cell.ajout-l5 { order:-6; grid-column:1 / -1; aspect-ratio:auto; display:flex; gap:6px; align-items:flex-start; background:transparent; }   /* lignes 5 et 6 : deux images côte à côte, à la même hauteur */
@@ -464,7 +468,7 @@ const CONFIG = [
   {type:'hidden', t:'Corps',            s:'Image IA · 2024'},   // image10.jpg (deux femmes aux fleurs, gants bleu et rouge), retirée le 5 novembre 2026 à sa demande ; 'hidden' garde la numérotation
   {type:'image', t:'Sans titre XV',     s:'Image IA · 2026', src:'../images/ia_polaroid2.jpg', cls:'pos-polaroid'},   // 9 nov. 2026 : le polaroïd remplace Latence (image11 n'est plus affichée)
   {type:'vimeo', t:'Moon',              s:'Film IA · 2025', vimeoId:'1189011734', preview:'../images/USA.mov?v=2', noLink:true},
-  {type:'vimeo', t:'Air',               s:'Film · 2018', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true, natif:[676,540,668]},   // natif : largeur, hauteur du fichier, largeur utile (8 colonnes noires à droite)
+  {type:'vimeo', t:'Air',               s:'Film · 2018', cls:'cell-air', vimeoId:'248891650', duree:'5:45', preview:'../images/Air_previz.mov?v=3', sound:true, natif:[676,540,668]},   // natif : largeur, hauteur du fichier, largeur utile (8 colonnes noires à droite)
   // Ligne 7 : L'Oréal 16/9 + Human Bomb 16/9
   {type:'image', t:'Spectre',           s:'Image IA · 2025', src:'../images/image17.jpg', horsCompte:true},   // déplacée ici pour éloigner L'Oréal du clip Air
   {type:'vimeo', t:'Human Bomb',        s:'Film IA · 2025', vimeoId:'1190055967', preview:'../images/HB.mov?v=2', noLink:true, noIso:true},
