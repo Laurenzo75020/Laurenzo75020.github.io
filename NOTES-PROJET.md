@@ -351,3 +351,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 12 nov. 2026 : IA : nouveau film (export Edit 16:9, compressé 7,5 Mo avec son, images/ia_film_2026.mov) en toute première ligne, au-dessus de la mosaïque.
 - 12 nov. 2026 : IA : son à l'arrivée rétabli — la page s'ouvrant en haut, aucune vidéo n'était au centre au moment du clic d'entrée ; la première vidéo sonore visible prend maintenant le son.
 - 12 nov. 2026 : IA : retour de l'arrivée directe sur la première vidéo (le nouveau film, qui prend le rôle de « première vidéo » : blanc autour, flèche, descente à la fin) ; Faces devient une vidéo ordinaire.
+- 12 nov. 2026 : IA — seule la ligne couple + clown reste entre le nouveau film et Mirror ; blister + fille/garçon déplacés sous Shore Stories.

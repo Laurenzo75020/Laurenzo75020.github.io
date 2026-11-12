@@ -75,6 +75,10 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 /* ligne 1 en mosaïque : couple + clown, la femme sous blister dessous, puis la fille et le garçon (fond bleu) côte à côte */
 .cell .bloc { position:relative; overflow:hidden; cursor:pointer; }
 .cell .bloc img { cursor:pointer; }
+/* 12 nov. 2026 : blister + fille/garçon déplacés sous Shore Stories (même order -4, placé après elle dans le HTML) */
+.grid .cell.mosaique-bas { order:-4; grid-column:1 / -1; aspect-ratio:auto; background:transparent; display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.mosaique-bas .m-blister { grid-column:1 / -1; aspect-ratio:1774/1014; }
+.mosaique-bas .m-fille, .mosaique-bas .m-garcon { aspect-ratio:4/5; }
 .mosaique-haut .m-couple, .mosaique-haut .m-clown { aspect-ratio:1344/1111; }
 .mosaique-haut .m-blister { grid-column:1 / -1; aspect-ratio:1774/1014; }
 .mosaique-haut .m-fille, .mosaique-haut .m-garcon { aspect-ratio:4/5; }
@@ -191,6 +195,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid { grid-template-columns:repeat(3,1fr); }
   /* mosaïque du haut : même disposition que sur ordinateur, sur toute la largeur */
   .grid .cell.mosaique-haut { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:4px; margin-bottom:15%; }
+  .grid .cell.mosaique-bas { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:4px; }
   /* les deux lignes de deux images sont remplacées par un quatuor (2 x 2) à gauche, Désir (case 6) à droite */
   .grid .cell.ajout-l4, .grid .cell.ajout-l5 { display:none !important; }
   .grid .cell.quatuor-mobile { display:grid !important; order:-6; grid-column:span 2 !important; aspect-ratio:auto !important; background:transparent !important;
@@ -511,11 +516,12 @@ const CONFIG = [
   {type:'video', t:'Split Screen',      s:'Série IA · 2026', src:'../images/split_screen_montage.mov?v=2', hero:true, third:true, noIso:true},
   // Ajouts placés en haut sans décaler les formes des autres cases : ils restent EN FIN de tableau (les tailles des cases dépendent
   // de leur position, nth-child) et la classe 'ajout-l4' la met seule en ligne 4 ; tout le reste descend d'une ligne.
-  {type:'mosaique', t:'Sans titre XIII', s:'Images IA · 2026', horsCompte:true, cls:'mosaique-haut', blocs:[['../serie/images/serie_17.jpg','m-couple'],['../serie/images/serie_16.jpg','m-clown'],['../images/ia_blister_corps.jpg','m-blister'],['../images/ia_dos_fille.jpg?v=2','m-fille'],['../images/ia_dos_garcon.jpg?v=2','m-garcon']]},   // ligne 1 (9 nov. 2026) : couple + clown, femme sous blister dessous ; à droite les dos à dos coupés en deux panneaux
+  {type:'mosaique', t:'Sans titre XIII', s:'Images IA · 2026', horsCompte:true, cls:'mosaique-haut', blocs:[['../serie/images/serie_17.jpg','m-couple'],['../serie/images/serie_16.jpg','m-clown']]},   // 12 nov. 2026 : seule la ligne couple + clown reste entre le nouveau film et Mirror   // ligne 1 (9 nov. 2026) : couple + clown, femme sous blister dessous ; à droite les dos à dos coupés en deux panneaux
   {type:'trio', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l4', images:[['../images/ia_pantone.jpg',1344,768],['../images/ia_trio_salon.jpg',1344,768]]},   // ligne 5 : Pantone + salon aux polaroïds (9 nov. 2026)
   {type:'trio', t:'Sans titre XIV', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l5', images:[['../images/ia_trio_appareil.jpg',1244,768],['../images/ia_gelules_hanche.jpg',1774,1014]]},   // ligne 6 : appareil photo + gélules sur la hanche (9 nov. 2026)
   {type:'mosaique', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'quatuor-mobile', blocs:[['../images/ia_pantone.jpg','q'],['../images/ia_trio_salon.jpg','q'],['../images/ia_trio_appareil.jpg','q'],['../images/ia_gelules_hanche.jpg','q']]},   // mobile seulement : les quatre images en carré, Désir à droite
   {type:'video', t:'Sans titre XVI', s:'Film IA · 2026', src:'../images/ia_film_2026.mov?v=1', hero:true, top:true, sound:true, horsCompte:true, cls:'ligne-un'},   // 12 nov. 2026 : nouveau film, en première ligne
+  {type:'mosaique', t:'Sans titre XIII', s:'Images IA · 2026', horsCompte:true, cls:'mosaique-bas', blocs:[['../images/ia_blister_corps.jpg','m-blister'],['../images/ia_dos_fille.jpg?v=2','m-fille'],['../images/ia_dos_garcon.jpg?v=2','m-garcon']]},   // 12 nov. 2026 : blister + fille/garçon, sous Shore Stories
 ];
 // ============================================================
 
