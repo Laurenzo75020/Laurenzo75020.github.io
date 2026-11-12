@@ -76,7 +76,7 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 .cell .bloc { position:relative; overflow:hidden; cursor:pointer; }
 .cell .bloc img { cursor:pointer; }
 /* 12 nov. 2026 : blister + fille/garçon déplacés sous Shore Stories (même order -4, placé après elle dans le HTML) */
-.grid .cell.mosaique-bas { order:-4; grid-column:1 / -1; aspect-ratio:auto; background:transparent; display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.grid .cell.mosaique-bas { order:-4; grid-column:1 / -1; aspect-ratio:auto; background:transparent; display:grid; grid-template-columns:1fr 1fr; gap:36px 6px; }   /* entre le blister et le duo : le même espace qu'entre les lignes de la page */
 .mosaique-bas .m-blister { grid-column:1 / -1; aspect-ratio:1774/1014; }
 .mosaique-bas .m-fille, .mosaique-bas .m-garcon { aspect-ratio:4/5; }
 .mosaique-haut .m-couple, .mosaique-haut .m-clown { aspect-ratio:1344/1111; }
@@ -196,7 +196,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .grid { grid-template-columns:repeat(3,1fr); }
   /* mosaïque du haut : même disposition que sur ordinateur, sur toute la largeur */
   .grid .cell.mosaique-haut { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:4px; margin-bottom:15%; }
-  .grid .cell.mosaique-bas { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:4px; }
+  .grid .cell.mosaique-bas { grid-column:1 / -1 !important; aspect-ratio:auto !important; background:transparent !important; gap:36px 4px; }
   /* les deux lignes de deux images sont remplacées par un quatuor (2 x 2) à gauche, Désir (case 6) à droite */
   .grid .cell.ajout-l4, .grid .cell.ajout-l5 { display:none !important; }
   .grid .cell.quatuor-mobile { display:grid !important; order:-6; grid-column:span 2 !important; aspect-ratio:auto !important; background:transparent !important;
