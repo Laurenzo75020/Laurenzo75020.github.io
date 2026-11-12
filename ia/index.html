@@ -675,7 +675,9 @@ function arbitrer(geste){
   let elue=null;
   if(!lbOuvert && !document.hidden && !window.__enSommeil){
     const tiers=(window.innerHeight||0)/6;                 // le centre de la vidéo doit être dans le tiers central de la fenêtre
-    if(!aDefile) elue=sonores.find(o=>o.cell.closest('.cell-top') && o.ratio>=o.seuil && o.ecart<=tiers) || null;
+    // à l'arrivée (page ouverte en haut, avant tout défilement) : la première vidéo sonore assez visible prend le son,
+    // même si elle n'est pas au centre ; c'est ce qui permet au son de partir dans le clic d'entrée (12 nov. 2026)
+    if(!aDefile) elue=sonores.filter(o=>o.ratio>=o.seuil).sort((a,b)=>a.cell.getBoundingClientRect().top-b.cell.getBoundingClientRect().top)[0] || null;
     if(!elue) sonores.forEach(o=>{ if(o.ratio>=o.seuil && o.ecart<=tiers && (!elue || o.ecart<elue.ecart)) elue=o; });
   }
   sonores.forEach(o=>{
