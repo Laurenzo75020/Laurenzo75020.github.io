@@ -354,3 +354,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 12 nov. 2026 : IA — seule la ligne couple + clown reste entre le nouveau film et Mirror ; blister + fille/garçon déplacés sous Shore Stories.
 - 12 nov. 2026 : IA — espaces égaux au-dessus et au-dessous de la ligne couple + clown.
 - 12 nov. 2026 : IA — sous Shore Stories, même espace entre blister et duo qu'entre les lignes de la page.
+- 12 nov. 2026 : IA mobile — écarts sous le premier film et sous couple + clown réduits (15 %).
