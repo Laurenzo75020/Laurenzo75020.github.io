@@ -68,6 +68,8 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
 /* 9 nov. 2026 : ligne 1 = deux images de la série Bombek (couple à gauche, clown à droite), tout le reste descend d'une ligne */
 /* polaroïd dans une case verticale : cadrage sur le polaroïd tenu et le visage */
 .grid .cell.pos-polaroid img { object-position:45% 50%; }
+/* 12 nov. 2026 : nouveau film en toute première ligne, au-dessus de la mosaïque */
+.grid .cell.ligne-un { order:-12; margin-bottom:6vh; }
 .grid .cell.mosaique-haut { order:-11; grid-column:1 / -1; aspect-ratio:auto; background:transparent; margin-bottom:6vh;
   display:grid; grid-template-columns:1fr 1fr; gap:6px; }
 /* ligne 1 en mosaïque : couple + clown, la femme sous blister dessous, puis la fille et le garçon (fond bleu) côte à côte */
@@ -513,6 +515,7 @@ const CONFIG = [
   {type:'trio', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l4', images:[['../images/ia_pantone.jpg',1344,768],['../images/ia_trio_salon.jpg',1344,768]]},   // ligne 5 : Pantone + salon aux polaroïds (9 nov. 2026)
   {type:'trio', t:'Sans titre XIV', s:'Images IA · 2026', horsCompte:true, cls:'ajout-l5', images:[['../images/ia_trio_appareil.jpg',1244,768],['../images/ia_gelules_hanche.jpg',1774,1014]]},   // ligne 6 : appareil photo + gélules sur la hanche (9 nov. 2026)
   {type:'mosaique', t:'Sans titre XII', s:'Images IA · 2026', horsCompte:true, cls:'quatuor-mobile', blocs:[['../images/ia_pantone.jpg','q'],['../images/ia_trio_salon.jpg','q'],['../images/ia_trio_appareil.jpg','q'],['../images/ia_gelules_hanche.jpg','q']]},   // mobile seulement : les quatre images en carré, Désir à droite
+  {type:'video', t:'Sans titre XVI', s:'Film IA · 2026', src:'../images/ia_film_2026.mov?v=1', hero:true, sound:true, horsCompte:true, cls:'ligne-un'},   // 12 nov. 2026 : nouveau film, en première ligne
 ];
 // ============================================================
 
