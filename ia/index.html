@@ -171,6 +171,7 @@ body.calme #sonGeneral.visible { opacity:.9 !important; pointer-events:auto !imp
   .grid, .bottom-nav { max-width:calc(80vh * 16 / 9); margin-left:auto; margin-right:auto; }      /* images et vidéos alignées sur les mêmes bords */
   .grid .cell.cell-hero { width:min(100%, calc(80vh * 16 / 9)); justify-self:center; }
   .grid .cell.cell-top { margin-bottom:10vh; }
+  .grid .cell.mosaique-haut { margin-bottom:10vh; }   /* même espace au-dessus et au-dessous de la ligne couple + clown */
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:8vh; }
   /* ligne 3 : Mirror seul, au même gabarit que les deux vidéos du dessus */
   .grid .cell:nth-child(3) { grid-column:1 / -1; width:min(100%, calc(80vh * 16 / 9)); justify-self:center; margin-bottom:6vh; }
@@ -224,7 +225,8 @@ html, body { overflow-x: hidden; max-width: 100%; }
 
   .grid .cell:nth-child(26) { grid-column:span 3 !important; aspect-ratio:16/9 !important; }
   /* plus d'air entre les premières lignes : une demi-hauteur de vidéo sous la première, puis de moins en moins, normal à la ligne 6 */
-  .grid .cell.cell-top { margin-bottom:calc(38vh - 28%); }   /* la première vidéo est au milieu de l'écran : la deuxième commence tout en bas de l'écran */
+  .grid .cell.cell-top { margin-bottom:calc(38vh - 28%); }
+  .grid .cell.mosaique-haut { margin-bottom:calc(38vh - 28%) !important; }   /* même espace au-dessus et au-dessous de la ligne couple + clown */   /* la première vidéo est au milieu de l'écran : la deuxième commence tout en bas de l'écran */
   .grid .cell.cell-hero:not(.cell-top):not(.cell-third) { margin-bottom:21%; }
   .grid .cell:nth-child(3) { margin-bottom:15%; }
   .grid .cell:nth-child(1) { margin-bottom:9%; }
