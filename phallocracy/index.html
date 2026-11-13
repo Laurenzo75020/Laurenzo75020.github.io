@@ -64,8 +64,8 @@
   <script>
     // Chaque ligne est une rangée : [fichier, largeur, hauteur]. Ajouter une image = ajouter une entrée ici.
     const RANGS=[
-      [['phallo_01.jpg',1350,1800],['phallo_07.jpg',1140,1521],['phallo_02.jpg',1800,1800]],
-      [['phallo_06.jpg',1045,1800],['phallo_03.jpg',1349,1800],['phallo_04.jpg',1800,1231]],
+      [['phallo_01.jpg?v=3',1728,2304],['phallo_02.jpg?v=3',1140,1521],['phallo_03.jpg?v=3',1626,1626]],   // Milei, Kim, le golfeur
+      [['phallo_05.jpg?v=3',1536,2645],['phallo_04.jpg?v=3',1140,1521],['phallo_06.jpg?v=3',2133,1459]],   // de Gaulle, Lénine/Staline, Yalta
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     RANGS.forEach(r=>{
@@ -83,7 +83,8 @@
           e.forEach(x=>{ const im=img(x); im.style.width='100%'; col.appendChild(im); });
           d.appendChild(col);
         } else {
-          const im=img(e); im.style.flex=(e[1]/e[2])+' 1 0';       // même hauteur dans la rangée, sans recadrer
+          const im=img(e); im.style.flex=(e[1]/e[2])+' 1 0';
+          im.addEventListener('load',()=>{ if(im.naturalWidth) im.style.flex=(im.naturalWidth/im.naturalHeight)+' 1 0'; });   // si une image est remplacée par une autre de format différent, la case suit ses vraies proportions       // même hauteur dans la rangée, sans recadrer
           d.appendChild(im);
         }
       });
