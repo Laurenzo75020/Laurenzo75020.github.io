@@ -358,3 +358,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 13 nov. 2026 : Phallocracy — Kim (phallo_07) entre Milei et le golfeur ; de Gaulle descend en ligne 2, à côté de Lénine/Staline.
 - 13 nov. 2026 : Phallocracy — un envoi direct sur GitHub (13 h 23) avait remplacé les images par des versions non masquées ; annulé, versions masquées remises.
 - 13 nov. 2026 : Phallocracy — nouvelles images masquées (envoi GitHub) mises en place avec leurs vraies proportions ; les cases suivent désormais le format réel de chaque image.
+- 14 nov. 2026 : Photo — nouvelle photo (main sur la vitre) en ligne 1 position 1 (photo/0-0.jpg, triée avant 0.jpg).
