@@ -108,9 +108,8 @@
     function mettreEnPage(){
       const g=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'))||40;
       const W=mur.clientWidth-parseFloat(getComputedStyle(mur).paddingLeft)-parseFloat(getComputedStyle(mur).paddingRight);
-      const mobile=window.matchMedia('(max-width:768px)').matches;
-      // sur téléphone : une image par ligne, dans le même ordre
-      const blocs=mobile ? [V(...COMPO.flatMap(function plat(n){ return n.t ? n.c.flatMap(plat) : [n]; }))] : COMPO;
+      // téléphone : même mise en page « Tetris » que sur ordinateur, réduite (18 nov. 2026 ; avant : une image par ligne)
+      const blocs=COMPO;
       mur.textContent='';
       blocs.forEach(b=>{
         const Wb=W*(b.larg||1);   // larg : rangée plus étroite que la page, centrée
