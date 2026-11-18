@@ -17,6 +17,7 @@
     /* compositions imbriquées (voir le script) : les images sont posées à leur place exacte dans chaque bloc */
     .mur{ display:flex; flex-direction:column; gap:var(--gap); padding:calc(9rem + env(safe-area-inset-top)) 2rem 5rem; }
     .bloc{ position:relative; }
+    .bloc video{ position:absolute; display:block; object-fit:cover; }
     .bloc img{ position:absolute; display:block; cursor:zoom-in; -webkit-user-drag:none; user-select:none; }
     .bas{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.6rem; padding:0 2rem 3rem; font-weight:600; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; }
     .bas a{ color:var(--ink); text-decoration:none; background:rgba(255,255,255,.95); padding:.35rem .7rem; box-shadow:0 1px 4px rgba(0,0,0,.12); }
@@ -65,7 +66,7 @@
     const COMPO=[
       H(I('macro_19.jpg',1880,1090), I('macro_20.jpg',1136,1072)),   // 18 nov. 2026 : ligne 1 = poussière sur la route + vague orange
       H(I('macro_21.jpg',1312,1238)),   // ligne 2 : l'arche, seule et en large
-      H(I('macro_01.jpg',1352,760), I('macro_02.jpg',1024,576), I('macro_03.jpg',1352,760)),
+      H(I('macro_01.jpg',1352,760), I('macro_03_video.mov',1280,720)),   // 18 nov. 2026 : 02 retirée ; 03 remplacée par sa vidéo
       H(I('macro_04.jpg',1352,760), V(I('macro_05.jpg',1024,576), I('macro_06.jpg',1024,576))),
       H(I('macro_08.jpg',1024,576)),   // 18 nov. 2026 : 07 et 09 retirées
       H(V(I('macro_10.jpg',1344,768), I('macro_11.jpg',1774,1014)), I('macro_12.jpg',1344,768)),
@@ -90,6 +91,11 @@
     const images=new Map();
     function image(n){
       if(images.has(n)) return images.get(n);
+      if(/\.mov$/.test(n.f)){   // vidéo : lecture en boucle, sans son, comme une image animée
+        const v=document.createElement('video'); v.src='images/'+n.f+'?v=1'; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
+        v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.preload='auto'; v.width=n.l; v.height=n.h;
+        images.set(n,v); return v;
+      }
       const im=document.createElement('img'); im.src='images/'+n.f+'?v=4';      // ?v=N : à augmenter à chaque nouvelle sélection (les noms de fichiers sont repris) im.alt=''; im.width=n.l; im.height=n.h; im.loading='lazy';
       im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
       images.set(n,im); return im;
@@ -104,7 +110,7 @@
       blocs.forEach(b=>{
         const k=lin(b,g), h=(W-k.b)/k.a, d=document.createElement('div'); d.className='bloc'; d.style.height=h+'px';
         const sortie=[]; poser(b,0,0,W,h,g,sortie);
-        sortie.forEach(([n,x,y,w,hh])=>{ const im=image(n); Object.assign(im.style,{left:x+'px',top:y+'px',width:w+'px',height:hh+'px'}); d.appendChild(im); });
+        sortie.forEach(([n,x,y,w,hh])=>{ const im=image(n); Object.assign(im.style,{left:x+'px',top:y+'px',width:w+'px',height:hh+'px'}); d.appendChild(im); if(im.play) im.play().catch(()=>{}); });
         mur.appendChild(d);
       });
     }
