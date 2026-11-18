@@ -69,11 +69,10 @@
       H(I('macro_19.jpg',1880,1090)),   // ligne 3 : la route au ciel sombre, seule et en large
       H(I('macro_01.jpg',1352,760), I('macro_03_video.mov',1280,720)),   // 18 nov. 2026 : 02 retirée ; 03 remplacée par sa vidéo
       H(I('macro_04.jpg',1352,760), V(I('macro_05.jpg',1024,576), I('macro_06.jpg',1024,576))),
-      H(I('macro_08.jpg',1024,576)),   // 18 nov. 2026 : 07 et 09 retirées
       H(V(I('macro_10.jpg',1344,768), I('macro_11.jpg',1774,1014)), I('macro_12.jpg',1344,768)),
       H(I('macro_13.jpg',1774,1014), I('macro_14.jpg',1344,768), I('macro_15.jpg',1344,768)),
       H(I('macro_16.jpg',1344,768), I('macro_17.jpg',1774,1014)),   // 18 nov. 2026 : 18 retirée
-      H(I('macro_24.jpg',1944,1667)),   // 18 nov. 2026 : en bas de page, la matière argentée en noir et blanc
+      Object.assign(H(I('macro_24.jpg',1944,1667), I('macro_08.jpg',1024,576)),{larg:0.6}),   // 18 nov. 2026 : en bas, en petit (60 % de la largeur, centré) : argent noir et blanc + rose et or
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     // largeur d'un bloc en fonction de sa hauteur : w = a*h + b (b vient des filets entre images)
@@ -110,8 +109,9 @@
       const blocs=mobile ? [V(...COMPO.flatMap(function plat(n){ return n.t ? n.c.flatMap(plat) : [n]; }))] : COMPO;
       mur.textContent='';
       blocs.forEach(b=>{
-        const k=lin(b,g), h=(W-k.b)/k.a, d=document.createElement('div'); d.className='bloc'; d.style.height=h+'px';
-        const sortie=[]; poser(b,0,0,W,h,g,sortie);
+        const Wb=W*(b.larg||1);   // larg : rangée plus étroite que la page, centrée
+        const k=lin(b,g), h=(Wb-k.b)/k.a, d=document.createElement('div'); d.className='bloc'; d.style.height=h+'px'; d.style.width=Wb+'px'; d.style.margin='0 auto';
+        const sortie=[]; poser(b,0,0,Wb,h,g,sortie);
         sortie.forEach(([n,x,y,w,hh])=>{ const im=image(n); Object.assign(im.style,{left:x+'px',top:y+'px',width:w+'px',height:hh+'px'}); d.appendChild(im); if(im.play) im.play().catch(()=>{}); });
         mur.appendChild(d);
       });
