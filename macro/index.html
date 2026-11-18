@@ -65,14 +65,14 @@
     const I=(f,l,h)=>({f,l,h}), H=(...c)=>({t:'H',c}), V=(...c)=>({t:'V',c});
     const COMPO=[
       H(I('macro_20.jpg',1136,1072), I('macro_21.jpg',1312,1238)),   // 18 nov. 2026 : ligne 1 = les deux ciels bleus (vague orange + arche)
-      H(I('macro_23.jpg',1548,816)),   // 18 nov. 2026 : ligne 2 = sac rouge transparent, seul et en large (remplace la matière argentée)
+      H(I('macro_25.jpg',1244,653)),   // 18 nov. 2026 : ligne 2 = cristal rayé, seul et en large
       H(I('macro_19.jpg',1880,1090)),   // ligne 3 : la route au ciel sombre, seule et en large
       H(I('macro_01.jpg',1352,760), I('macro_03_video.mov',1280,720)),   // 18 nov. 2026 : 02 retirée ; 03 remplacée par sa vidéo
       H(I('macro_04.jpg',1352,760), V(I('macro_05.jpg',1024,576), I('macro_06.jpg',1024,576))),
       H(V(I('macro_10.jpg',1344,768), I('macro_11.jpg',1774,1014)), I('macro_12.jpg',1344,768)),
       H(I('macro_13.jpg',1774,1014), I('macro_14.jpg',1344,768), I('macro_15.jpg',1344,768)),
       H(I('macro_16.jpg',1344,768), I('macro_17.jpg',1774,1014)),   // 18 nov. 2026 : 18 retirée
-      Object.assign(H(I('macro_24.jpg',1944,1667), I('macro_08.jpg',1024,576)),{larg:0.6}),   // 18 nov. 2026 : en bas, en petit (60 % de la largeur, centré) : argent noir et blanc + rose et or
+      Object.assign(H(I('macro_24.jpg',1944,1667), I('macro_08.jpg',1024,576), I('macro_23.jpg',1534,1217)),{larg:0.8}),   // 18 nov. 2026 : en bas, en petit (80 %, centré) : argent noir et blanc + rose et or + sac rouge (recadré)
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     // largeur d'un bloc en fonction de sa hauteur : w = a*h + b (b vient des filets entre images)
@@ -97,7 +97,7 @@
         v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.preload='auto'; v.width=n.l; v.height=n.h;
         images.set(n,v); return v;
       }
-      const im=document.createElement('img'); im.src='images/'+n.f+'?v=4';      // ?v=N : à augmenter à chaque nouvelle sélection (les noms de fichiers sont repris) im.alt=''; im.width=n.l; im.height=n.h; im.loading='lazy';
+      const im=document.createElement('img'); im.src='images/'+n.f+'?v=5';      // ?v=N : à augmenter à chaque nouvelle sélection (les noms de fichiers sont repris) im.alt=''; im.width=n.l; im.height=n.h; im.loading='lazy';
       im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
       images.set(n,im); return im;
     }

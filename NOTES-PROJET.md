@@ -371,3 +371,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA — macro_22 (matière argentée) seule en ligne 2 ; la route (macro_19) et le reste descendent d'une ligne.
 - 18 nov. 2026 : Macro IA — ligne 2 : macro_23 (sac rouge) remplace macro_22 (argent couleur, retirée) ; macro_24 (argent noir et blanc) seule en bas de page.
 - 18 nov. 2026 : Macro IA — en bas, rangée réduite (60 %, centrée) : macro_24 (argent N&B) + macro_08 (rose et or).
+- 18 nov. 2026 : Macro IA — ligne 2 : macro_25 (cristal rayé) ; le sac rouge (macro_23, nouveau recadrage) rejoint la dernière rangée (80 %, centrée).
