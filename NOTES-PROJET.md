@@ -376,3 +376,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Bombek — militaire (serie_35) et fleur de gélules (serie_02) intervertis.
 - 18 nov. 2026 : Macro IA — 15 (bulle rose sur fond beige) retirée.
 - 18 nov. 2026 : Macro IA — 12 nouvelles images de cristaux (macro_26 à 37) réparties en 4 nouvelles lignes intercalées après la ligne 5.
+- 18 nov. 2026 : Macro IA — 36 et 37 (cube bleu, plume irisée) retirées avec leur ligne.
