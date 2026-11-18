@@ -363,3 +363,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA — nouvelle image (macro_19, trou dans la poussière sur la route) seule en haut, pleine largeur ; le reste descend.
 - 18 nov. 2026 : Macro IA — macro_20 (vague de fibres orange) en position 2, à côté de macro_19 en ligne 1.
 - 18 nov. 2026 : Macro IA — macro_21 (arche blanche et orange) en position 3, ligne 1, à côté de macro_20.
+- 18 nov. 2026 : Macro IA — retirées : 07 (fleur bleue), 09 (oursin aux rubans), 18 (glace au chocolat).
