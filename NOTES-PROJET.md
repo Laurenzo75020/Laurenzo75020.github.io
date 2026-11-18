@@ -379,3 +379,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA — 36 et 37 (cube bleu, plume irisée) retirées avec leur ligne.
 - 18 nov. 2026 : Macro IA — cube net (30) et fleur de cristal aux pétales (34) intervertis.
 - 18 nov. 2026 : Macro IA — chargement progressif réparé (loading=lazy était caché dans un commentaire : les ~30 images se chargeaient toutes d'un coup) ; vidéo en preload metadata.
+- 18 nov. 2026 : Bombek — clown aux gélules (serie_16) et militaire (serie_35) intervertis.
