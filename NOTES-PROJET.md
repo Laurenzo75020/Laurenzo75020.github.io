@@ -386,3 +386,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA mobile en mise en page Tetris comme sur ordinateur ; accueil sur ordinateur : retour de l'écran ENTER (visage, entree_ia.jpg) à l'arrivée (pas avec ?accueil).
 - 18 nov. 2026 : page IA, Mirror et Sans titre XVI (visage aux cheveux) intervertis : Mirror en ligne 1.
 - 18 nov. 2026 : accueil sur ordinateur (bouton Accueil / ?accueil) : le visage d'entree_ia.jpg remplace le vélo, nom et menu en noir (cadre noir, sans fond).
+- 18 nov. 2026 : Macro ligne 2 : pavot blanc (macro_38) + cristal recadré (macro_39, à la place de macro_25).
