@@ -92,7 +92,7 @@
     function image(n){
       if(images.has(n)) return images.get(n);
       if(/\.mov$/.test(n.f)){   // vidéo : lecture en boucle, sans son, comme une image animée
-        const v=document.createElement('video'); v.src='images/'+n.f+'?v=1'; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
+        const v=document.createElement('video'); v.src='images/'+n.f+'?v=2'; v.muted=true; v.loop=true; v.autoplay=true; v.playsInline=true;
         v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.preload='auto'; v.width=n.l; v.height=n.h;
         images.set(n,v); return v;
       }

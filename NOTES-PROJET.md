@@ -365,5 +365,6 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA — macro_21 (arche blanche et orange) en position 3, ligne 1, à côté de macro_20.
 - 18 nov. 2026 : Macro IA — retirées : 07 (fleur bleue), 09 (oursin aux rubans), 18 (glace au chocolat).
 - 18 nov. 2026 : Macro IA — ligne 1 : macro_19 + macro_20 ; ligne 2 : macro_21 seule, pleine largeur.
-- 18 nov. 2026 : Macro IA — 02 (verre sur fond rouge) retirée ; 03 remplacée par sa vidéo (macro_03_video.mov, source _Macro/_MP4/creation_3620379587.mp4), en boucle sans son.
+- 18 nov. 2026 : Macro IA — 02 (verre sur fond rouge) retirée ; 03 remplacée par sa vidéo (macro_03_video.mov), en boucle sans son.
 - 18 nov. 2026 : Macro IA — corrigé : ligne 1 = macro_20 + macro_21 (ciels bleus), ligne 2 = macro_19 seule en large.
+- 18 nov. 2026 : Macro IA — vidéo de l'amas rose remplacée par la bonne : celle de la page IA (images/structure_loop.mov).
