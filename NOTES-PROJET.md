@@ -368,3 +368,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro IA — 02 (verre sur fond rouge) retirée ; 03 remplacée par sa vidéo (macro_03_video.mov), en boucle sans son.
 - 18 nov. 2026 : Macro IA — corrigé : ligne 1 = macro_20 + macro_21 (ciels bleus), ligne 2 = macro_19 seule en large.
 - 18 nov. 2026 : Macro IA — vidéo de l'amas rose remplacée par la bonne : celle de la page IA (images/structure_loop.mov).
+- 18 nov. 2026 : Macro IA — macro_22 (matière argentée) seule en ligne 2 ; la route (macro_19) et le reste descendent d'une ligne.
