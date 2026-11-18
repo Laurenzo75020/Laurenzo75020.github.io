@@ -382,3 +382,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Bombek — clown aux gélules (serie_16) et militaire (serie_35) intervertis.
 - 18 nov. 2026 : Macro IA — 28 et 29 retirées ; ligne 6 = les deux cristaux verticaux côte à côte.
 - 18 nov. 2026 : Bombek — serie_31 (jeune homme aux gélules, polaroïd) retirée ; serie_27 reste seule sur sa ligne.
+- 18 nov. 2026 : Macro IA — 28 et 29 remises (retour à la ligne 6 précédente : vertical / deux superposées / vertical).
