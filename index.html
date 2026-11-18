@@ -104,7 +104,13 @@
   /* ordinateur (écran horizontal) : la photo du vélo au coucher de soleil (accueil-velo.jpg, 2219 × 1543), qui remplit tout
      l'écran, sans bande noire (menu posé sur la photo) ; calée à droite (le vélo), la gauche est coupée au besoin. Avant (4 novembre 2026) : les baigneurs, accueil-baigneurs-large.jpg, calés à « center 40% ». */
   @media (min-aspect-ratio:1/1){
-    .scene.still.plein::before{ background-image:url(accueil-velo.jpg); background-size:cover; background-position:right center; }
+    /* 18 nov. 2026 : le visage moitié maquillé de l'écran ENTER (images/entree_ia.jpg) remplace le vélo ; le fond étant
+       très blanc, le nom et les onglets du menu passent en noir (texte noir, cadre noir fin, sans fond blanc).
+       Pour revenir au vélo : background-image:url(accueil-velo.jpg); background-position:right center; et retirer les règles noires. */
+    .scene.still.plein::before{ background-image:url(images/entree_ia.jpg?v=2); background-size:cover; background-position:center center; }
+    body .scene.still.plein .signature{ color:#0a0a0a; }
+    body nav.choice a{ background:transparent; color:#0a0a0a; border:1.5px solid #0a0a0a; box-shadow:none; transition:background .2s, color .2s; }
+    body nav.choice a:hover{ background:#0a0a0a; color:#fff; }
   }
 
   .scrub-img{ opacity:0; }
