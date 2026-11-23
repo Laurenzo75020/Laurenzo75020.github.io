@@ -391,3 +391,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro ligne 6 : silhouette N&B (macro_41) au centre, à la place de macro_28 + macro_29.
 - 18 nov. 2026 : Macro ligne 3 inversée : route à gauche, main à droite.
 - 19 nov. 2026 : Macro ligne 9 : image N&B voilée (macro_42) ajoutée à gauche de 13 et 14.
+- 23 nov. 2026 : Macro ligne 7 : image verticale de la vague (macro_43) ajoutée à droite.
