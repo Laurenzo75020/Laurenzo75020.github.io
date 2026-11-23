@@ -399,3 +399,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 23 nov. 2026 : Macro : pavot (38) et main (40) de part et d'autre de la silhouette (41) ; cristal (39) et route (19) superposés à droite de la vague ; cristaux verticaux 26 et 27 sur la ligne suivante.
 - 23 nov. 2026 : Macro : 34 + 33 associées sur une ligne avec la nouvelle mer rayée (macro_47) ; 31+32 puis 30+35 en lignes de deux.
 - 23 nov. 2026 : Macro : cristaux verticaux 26/27 encadrent 31+32 superposés (ligne de 2 supprimée) ; mer rayée (47) et route (19) interverties.
+- 23 nov. 2026 : Macro : mer rayée (47) et route (19) de nouveau interverties ; argent N&B (24) et silhouette voilée (42) intervertis.
