@@ -396,3 +396,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 23 nov. 2026 : Macro : marbre rose et or (macro_08) retiré de la dernière ligne.
 - 23 nov. 2026 : Macro : voile blanc sur la mer (macro_45) au centre de la dernière ligne, à la place du rose et or.
 - 23 nov. 2026 : Macro : cœur orange voilé (macro_46) ajouté à droite de la ligne cœur en verre + fourrure rose.
+- 23 nov. 2026 : Macro : pavot (38) et main (40) de part et d'autre de la silhouette (41) ; cristal (39) et route (19) superposés à droite de la vague ; cristaux verticaux 26 et 27 sur la ligne suivante.
