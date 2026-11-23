@@ -395,3 +395,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 23 nov. 2026 : Macro : vague striée (macro_44, nouveau fichier sans cadre) à gauche sur les lignes 2 et 3 ; retirée de la ligne 7 (macro_43 supprimé).
 - 23 nov. 2026 : Macro : marbre rose et or (macro_08) retiré de la dernière ligne.
 - 23 nov. 2026 : Macro : voile blanc sur la mer (macro_45) au centre de la dernière ligne, à la place du rose et or.
+- 23 nov. 2026 : Macro : cœur orange voilé (macro_46) ajouté à droite de la ligne cœur en verre + fourrure rose.
