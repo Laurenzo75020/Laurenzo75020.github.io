@@ -392,3 +392,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 18 nov. 2026 : Macro ligne 3 inversée : route à gauche, main à droite.
 - 19 nov. 2026 : Macro ligne 9 : image N&B voilée (macro_42) ajoutée à gauche de 13 et 14.
 - 23 nov. 2026 : Macro ligne 7 : image verticale de la vague (macro_43) ajoutée à droite.
+- 23 nov. 2026 : Macro : vague striée (macro_44, nouveau fichier sans cadre) à gauche sur les lignes 2 et 3 ; retirée de la ligne 7 (macro_43 supprimé).
