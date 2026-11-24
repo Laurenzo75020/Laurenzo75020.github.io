@@ -65,8 +65,8 @@
     const I=(f,l,h)=>({f,l,h}), H=(...c)=>({t:'H',c}), V=(...c)=>({t:'V',c});
     const COMPO=[
       H(I('macro_20.jpg',1136,1072), I('macro_21.jpg',1312,1238)),   // 18 nov. 2026 : ligne 1 = les deux ciels bleus (vague orange + arche)
-      H(I('macro_49.jpg',1312,928), V(I('macro_16.jpg',1344,768), I('macro_17.jpg',1774,1014))),   // 24 nov. 2026 : chambre rouge (49) en grand sous la ligne 1, avec 16 et 17 superposés (les cristaux 30/35 sont descendus sous les cristaux)
-      H(I('macro_23.jpg',1534,1217), V(I('macro_42.jpg',819,819), I('macro_45.jpg',1024,1024)), I('macro_50.jpg',688,440)),   // 24 nov. 2026 : bloc suivant la chambre rouge, remonté avec elle sous la ligne 1 : sac rouge (23), 42/45 superposés, salon aux nuages (50) en grand à droite
+      H(I('macro_49.jpg',1312,928), V(I('macro_42.jpg',819,819), I('macro_45.jpg',1024,1024))),   // 24 nov. 2026 : chambre rouge (49) en grand sous la ligne 1, avec la silhouette voilée (42) et le voile blanc (45) superposés (venus du bloc du dessous)
+      H(I('macro_23.jpg',1534,1217), I('macro_50.jpg',688,440)),   // 24 nov. 2026 : sac rouge (23) + salon aux nuages (50) en grand ; 42/45 sont montés à côté de la chambre rouge
       H(I('macro_44.jpg',843,1131), V(I('macro_51.jpg',1296,912), I('macro_19.jpg',1880,1090))),   // 23 nov. 2026 : la vague striée à gauche ; à droite, la fumée verte (51, à la place du cristal 39 le 24 nov.) et la route superposées (le pavot et la main sont descendus de part et d'autre de la silhouette)
       H(I('macro_01.jpg',1352,760), I('macro_03_video.mov',1280,720)),   // 18 nov. 2026 : 02 retirée ; 03 remplacée par sa vidéo
       H(I('macro_04.jpg',1352,760), V(I('macro_05.jpg',1024,576), I('macro_06.jpg',1024,576))),
@@ -75,7 +75,7 @@
       H(I('macro_48.jpg',1024,758), V(I('macro_30.jpg',1148,653), I('macro_35.jpg',1165,653)), I('macro_46.jpg',1024,1024)),   // 24 nov. 2026 : juste sous les cristaux : sculpture de câbles (48), les deux cristaux bleus (30, 35) superposés, cœur orange voilé (46)
       H(V(I('macro_10.jpg',1344,768), I('macro_11.jpg',1774,1014)), I('macro_12.jpg',1344,768)),   // 23 nov. 2026 : la vague striée (43) est montée en lignes 2-3
       H(I('macro_34.jpg',1165,653), I('macro_33.jpg',1165,653), I('macro_47.jpg',819,819)),   // 23 nov. 2026 : la fleur de cristal (34) et la fleur sombre (33) associées, + la mer rayée au rocher (47) ; la route (19) est à droite de la vague striée
-      H(I('macro_13.jpg',1774,1014), I('macro_14.jpg',1344,768)),   // 18 nov. 2026 : 15 retirée ; 19 nov. : à gauche, la silhouette voilée en noir et blanc (macro_42)
+      H(I('macro_13.jpg',1774,1014), V(I('macro_16.jpg',1344,768), I('macro_17.jpg',1774,1014)), I('macro_14.jpg',1344,768)),   // 24 nov. 2026 : 16 et 17 revenus en bas de page, superposés entre la sculpture tigrée (13) et le verre irisé (14)
     ];
     const mur=document.getElementById('mur'), lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
     // largeur d'un bloc en fonction de sa hauteur : w = a*h + b (b vient des filets entre images)
