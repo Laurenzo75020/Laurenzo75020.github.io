@@ -407,3 +407,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 24 nov. 2026 : Macro IA, la fumée verte sur la falaise (macro_51) remplace la fleur de cristal (macro_39, fichier gardé), au-dessus de la route.
 - 24 nov. 2026 : Macro IA, la fleur de cristal (39) prend la place du cristal vertical (27, fichier gardé).
 - 24 nov. 2026 : Macro IA, les cristaux bleus 30/35 descendus juste sous la ligne des cristaux (avec 48 et 46) ; 16/17 montés à côté de la chambre rouge.
+- 24 nov. 2026 : Macro IA, fleur 31 retirée (fichier gardé), remplacée par l'argent noir et blanc (24) ; la ligne 13 + 14 reste à deux.
