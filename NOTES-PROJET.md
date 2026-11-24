@@ -413,3 +413,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 24 nov. 2026 : Macro IA, tous les cristaux (26, 31, 32, 39, 33, 30, 35) réunis en un bloc de deux rangées ; 48 + 24/47 superposés + 46.
 - 24 nov. 2026 : Macro IA, ajout de 52/53/54 (sculptures ondulées, superposées) + 55 (visage en lignes, en grand), avant la dernière ligne.
 - 24 nov. 2026 : Macro IA, salon aux nuages (50) et route (19) intervertis.
+- 24 nov. 2026 : Macro IA, visage 55 réduit : 52/53 superposées + 55 + 54.
