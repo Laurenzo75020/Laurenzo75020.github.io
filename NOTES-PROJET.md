@@ -409,3 +409,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 24 nov. 2026 : Macro IA, les cristaux bleus 30/35 descendus juste sous la ligne des cristaux (avec 48 et 46) ; 16/17 montés à côté de la chambre rouge.
 - 24 nov. 2026 : Macro IA, fleur 31 retirée (fichier gardé), remplacée par l'argent noir et blanc (24) ; la ligne 13 + 14 reste à deux.
 - 24 nov. 2026 : Macro IA, 16/17 redescendus en bas (entre 13 et 14) ; 42/45 montés à côté de la chambre rouge ; 23 + 50 côte à côte.
+- 24 nov. 2026 : Macro IA, correction : 31 remise ; c'est la fleur 34 (avant-dernière ligne) qui est retirée, remplacée par l'argent noir et blanc (24).
