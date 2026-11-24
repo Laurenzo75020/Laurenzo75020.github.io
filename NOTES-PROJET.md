@@ -401,3 +401,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 23 nov. 2026 : Macro : cristaux verticaux 26/27 encadrent 31+32 superposés (ligne de 2 supprimée) ; mer rayée (47) et route (19) interverties.
 - 23 nov. 2026 : Macro : mer rayée (47) et route (19) de nouveau interverties ; argent N&B (24) et silhouette voilée (42) intervertis.
 - 23 nov. 2026 : Macro IA, ajout de macro_48 (sculpture de câbles colorés) à droite de la ligne 30 + 35.
+- 24 nov. 2026 : Macro IA, fin de page plus « Tetris » : chambre rouge (macro_49) en grand avec 30/35 superposés ; 48 + 16/17 superposés + 46.
