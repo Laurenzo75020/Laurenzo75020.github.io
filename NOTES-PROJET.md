@@ -414,3 +414,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 24 nov. 2026 : Macro IA, ajout de 52/53/54 (sculptures ondulées, superposées) + 55 (visage en lignes, en grand), avant la dernière ligne.
 - 24 nov. 2026 : Macro IA, salon aux nuages (50) et route (19) intervertis.
 - 24 nov. 2026 : Macro IA, visage 55 réduit : 52/53 superposées + 55 + 54.
+- 25 nov. 2026 : Macro IA, chambre rouge (49) + sac rouge (23) et route (19) superposés en un bloc ; 42/45 passés à droite du bloc vague striée.
