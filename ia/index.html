@@ -826,7 +826,7 @@ CONFIG.forEach((item,i)=>{
 
   if(item.type==='mosaique'){
     // plusieurs images dans une seule case, placées par le CSS (classe de chaque bloc) ; chacune ouvre la visionneuse
-    const grands=item.blocs.map(b=>b[2]||b[0]);
+    const grands=item.blocs.map(b=>b[2]||b[0]); cell._lbSrcs=grands;
     item.blocs.forEach(([src,c,grand])=>{
       const bloc=document.createElement('div'); bloc.className='bloc '+c;
       const im=document.createElement('img'); im.src=src; im.alt=item.t; im.loading='lazy';
@@ -835,7 +835,7 @@ CONFIG.forEach((item,i)=>{
     });
   } else if(item.type==='trio'){
     // trois images côte à côte, à la même hauteur, chacune ouvre la visionneuse
-    const srcs=item.images.map(x=>x[0]);
+    const srcs=item.images.map(x=>x[0]); cell._lbSrcs=srcs;
     item.images.forEach(([src,w,h])=>{
       const im=document.createElement('img');
       im.src=src; im.alt=item.t; im.loading='lazy';
@@ -846,7 +846,7 @@ CONFIG.forEach((item,i)=>{
   } else if(item.type==='series'){
     cell.classList.add('cell-series');
     let idx=0;
-    const imgs=item.images;
+    const imgs=item.images; cell._lbSrcs=imgs;
     const track=document.createElement('div');
     track.style.cssText='position:absolute;inset:0;width:100%;height:100%;overflow:hidden;cursor:none;';
     cell.appendChild(track);
@@ -919,7 +919,8 @@ CONFIG.forEach((item,i)=>{
     img.onerror=function(){
       cell.style.display='none';
     };
-    img.onclick=()=>openLb(src);
+    const grp=[src]; cell._lbSrcs=grp;
+    img.onclick=()=>openLb(src, grp);
     cell.appendChild(img);
     }
   } else if(item.type==='video'){
@@ -1035,6 +1036,13 @@ function openLb(src, images){
   lbImages = images || [src];
   lbCurrent = lbImages.indexOf(src);
   if(lbCurrent<0) lbCurrent=0;
+  // 25 nov. 2026 : on peut passer d'une image à l'autre sur toute la page (glisser le doigt, flèches, clavier),
+  // dans l'ordre où les cases apparaissent à l'écran ; les vidéos et films sont sautés.
+  const cases=[...document.querySelectorAll('#grid .cell')].filter(c=>c._lbSrcs && c.offsetParent)
+    .map(c=>({c,r:c.getBoundingClientRect()})).sort((a,b)=>(Math.abs(a.r.top-b.r.top)>4 ? a.r.top-b.r.top : a.r.left-b.r.left));
+  let tout=[], depart=-1;
+  cases.forEach(({c})=>{ if(c._lbSrcs===images) depart=tout.length+lbCurrent; tout=tout.concat(c._lbSrcs); });
+  if(depart>=0){ lbImages=tout; lbCurrent=depart; }
   _updateLb();
   document.getElementById('lb').classList.add('on'); if(typeof arbitrer==='function') arbitrer(false);
 }
@@ -1157,7 +1165,15 @@ function closeLb(){
   document.getElementById('lbImg').style.display='block';
 }
 document.getElementById('lb').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
-document.getElementById('lbImg').addEventListener('click',function(){ if(lbImages.length>1){ if(lbCurrent===lbImages.length-1) closeLb(); else lbNav(1); } else closeLb(); });
+// 25 nov. 2026 : glisser le doigt vers la gauche / la droite dans la visionneuse = image suivante / précédente
+(function(){
+  const lb=document.getElementById('lb'); let x0=0,y0=0,suivi=false;
+  lb.addEventListener('touchstart',e=>{ if(lbFilm||lbImages.length<2) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; suivi=true; },{passive:true});
+  lb.addEventListener('touchend',e=>{ if(!suivi) return; suivi=false; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){ lbGlisse=Date.now(); lbNav(dx<0?1:-1); } },{passive:true});
+})();
+let lbGlisse=0;
+document.getElementById('lbImg').addEventListener('click',function(){ if(Date.now()-lbGlisse<500) return; if(lbImages.length>1){ if(lbCurrent===lbImages.length-1) closeLb(); else lbNav(1); } else closeLb(); });
 document.addEventListener('keydown',e=>{ if(!document.getElementById('lb').classList.contains('on')) return; if(lbFilm){ if(e.key==='Escape') closeLb(); return; } if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); if(e.key==='Escape') closeLb(); });
 
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.05});
