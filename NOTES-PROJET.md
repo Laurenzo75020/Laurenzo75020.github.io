@@ -417,3 +417,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 25 nov. 2026 : Macro IA, chambre rouge (49) + sac rouge (23) et route (19) superposés en un bloc ; 42/45 passés à droite du bloc vague striée.
 - 25 nov. 2026 : Macro IA, 48 et 47 retirées (fichiers gardés) ; 42/45 descendus à leur place, avec 24 et 46.
 - 25 nov. 2026 : Macro IA, image cassée vue une fois (macro_30, le fichier est sain) : les images réessaient seules de charger en cas d'échec.
+- 25 nov. 2026 : Macro IA, salon aux nuages (50) retiré (fichier gardé) ; 49, 23/19, 44 et 51 réunis en un bloc de deux rangées.
