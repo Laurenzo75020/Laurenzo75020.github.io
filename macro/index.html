@@ -102,6 +102,7 @@
       const im=document.createElement('img'); im.alt=''; im.width=n.l; im.height=n.h; im.loading='lazy'; im.decoding='async';   // chargement au fil du défilement (avant, cette ligne était cachée dans le commentaire : tout se chargeait d'un coup)
       im.src='images/'+n.f+'?v=5';      // ?v=N : à augmenter à chaque nouvelle sélection (les noms de fichiers sont repris)
       im.addEventListener('click',()=>{ lbImg.src=im.src; lb.classList.add('open'); });
+      let essais=0; im.addEventListener('error',()=>{ if(essais++<3) setTimeout(()=>{ im.src='images/'+n.f+'?v=5&r='+essais; },800*essais); });   // 25 nov. 2026 : si une image échoue au chargement (vu sur macro_30 chez Laurent), on réessaie jusqu'à 3 fois
       images.set(n,im); return im;
     }
     function mettreEnPage(){
