@@ -420,3 +420,4 @@ Sources hors dépôt, toutes dans `~/Desktop/FACES/` : `11111` (+ `_PL1`), `2222
 - 25 nov. 2026 : Macro IA, salon aux nuages (50) retiré (fichier gardé) ; 49, 23/19, 44 et 51 réunis en un bloc de deux rangées.
 - 25 nov. 2026 : page IA, visionneuse : on passe d'une image à l'autre sur toute la page (glisser sur téléphone, flèches et clavier sur ordinateur), vidéos sautées.
 - 25 nov. 2026 : Macro IA, visionneuse en carrousel (voisines visibles sur 10 %, voile clair flouté sur la page, glisser au doigt, flèches, s'arrête aux bouts).
+- 26 nov. 2026 : Macro IA, ajout du baiser aux couronnes (macro_56) à droite de la ligne 01 + vidéo 03.
